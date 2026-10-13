@@ -1,0 +1,37 @@
+{
+  "baseline": false,
+  "cases": [
+    {
+      "case": "lost_confirm",
+      "passed": true,
+      "authority": "COMMITTED"
+    },
+    {
+      "case": "late_review_after_cancel",
+      "passed": true,
+      "authority": "CANCELLED"
+    },
+    {
+      "case": "late_page_after_confirm",
+      "passed": true,
+      "authority": "COMMITTED"
+    },
+    {
+      "case": "unknown_then_recover",
+      "passed": true,
+      "authority": "COMMITTED"
+    },
+    {
+      "case": "lost_cancel",
+      "passed": true,
+      "authority": "CANCELLED"
+    },
+    {
+      "case": "inflight_page_error",
+      "passed": true,
+      "authority": "COMMITTED"
+    }
+  ],
+  "passed": true,
+  "syntheticOnly": true
+}

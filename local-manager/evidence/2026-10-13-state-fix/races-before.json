@@ -1,0 +1,31 @@
+{
+  "baseline": true,
+  "cases": [
+    {
+      "case": "lost_confirm",
+      "passed": false,
+      "error": "server committed but frontend did not recover authoritative receipt",
+      "authority": "COMMITTED",
+      "frontendState": "DRAFT · 未提交",
+      "message": "Failed to fetch"
+    },
+    {
+      "case": "late_review_after_cancel",
+      "passed": false,
+      "error": "late review repainted cancelled draft as DRAFT",
+      "authority": "CANCELLED",
+      "frontendState": "DRAFT · 未提交",
+      "message": "草稿核验完成。可查看完整变更、切换成员并预览获准页。"
+    },
+    {
+      "case": "late_page_after_confirm",
+      "passed": false,
+      "error": "late page error removed committed receipt retry state",
+      "authority": "COMMITTED",
+      "frontendState": "COMMITTED · 已保存",
+      "message": "Draft is already committed"
+    }
+  ],
+  "passed": false,
+  "syntheticOnly": true
+}

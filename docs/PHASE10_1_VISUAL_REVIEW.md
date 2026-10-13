@@ -9,3 +9,7 @@
 最终本地测试及浏览器交互结果以 `local-manager/evidence/2026-10-13-visual/` 为准；Library 包补充已实际查看的截图、真实合成 PDF、HTTP 请求证据、最终提交、远端 CI 状态和精确补丁回放。历史 49/74/105 项不累计相加；未重跑 Android/Kotlin/Gradle 或 R2。
 
 完成后停留待 PM 复审。未做新导入编辑表单、永久 Windows UI/安装包、账号/授权管理、网络/NAS、成员配送、真实成员谱、合并或部署；既有 CLI 导入/完整开放包能力保持原样。只证明当前本地可视原型，不表示整个 Phase 10.1 通过。
+
+## PR #4 条件复审后的状态收口
+
+PM 对 `967d154` 条件通过受信本机可视原型，要求先修复三处前端竞态，不扩业务。已分别用真实后端和可控响应丢失/延迟复现：COMMITTED 后界面仍 DRAFT；CANCELLED 被迟到 review 改回 DRAFT；COMMITTED 后迟到 page 错误禁用回执重试。修订统一前端状态与 epoch、在保存/取消期间锁定所有相关控件，并通过既有 status/receipt 恢复权威结果；无结果时显示 UNKNOWN，不假装未提交。已有确认核心、服务器、资产/schema/权限均不变。新证据见 `local-manager/evidence/2026-10-13-state-fix/`，Library 包包含修前预期失败、修后、实际截图及最终提交增量补丁；保持原 PR #4 draft，未合并/部署，待 PM 再审。

@@ -1,0 +1,189 @@
+{
+  "passed": true,
+  "cases": [
+    "administrator has no implicit member-view permission",
+    "complete administrator summary and authorized actual PDF source page2; no formal writes",
+    "member switch immediately clears previously rendered page",
+    "explicit acknowledgment and repeat confirmation preserve single authoritative receipt",
+    "cancel through UI leaves formal assets unchanged",
+    "concurrent live numbering rejects old confirmation in UI",
+    "changed source PDF invalidates page preview and disables confirmation"
+  ],
+  "caseCount": 7,
+  "pageScriptErrors": [],
+  "requests": [
+    {
+      "path": "/",
+      "status": 200,
+      "type": "text/html; charset=utf-8"
+    },
+    {
+      "path": "/style.css",
+      "status": 200,
+      "type": "text/css; charset=utf-8"
+    },
+    {
+      "path": "/ui.js",
+      "status": 200,
+      "type": "text/javascript; charset=utf-8"
+    },
+    {
+      "path": "/api/status",
+      "status": 200,
+      "type": "application/json; charset=utf-8"
+    },
+    {
+      "path": "/api/review",
+      "status": 200,
+      "type": "application/json; charset=utf-8"
+    },
+    {
+      "path": "/api/review",
+      "status": 200,
+      "type": "application/json; charset=utf-8"
+    },
+    {
+      "path": "/api/page",
+      "status": 200,
+      "type": "image/png"
+    },
+    {
+      "path": "/7456183f-2d88-4a00-a288-fa15796b76dd",
+      "status": 200,
+      "type": "image/png"
+    },
+    {
+      "path": "/api/review",
+      "status": 200,
+      "type": "application/json; charset=utf-8"
+    },
+    {
+      "path": "/api/review",
+      "status": 200,
+      "type": "application/json; charset=utf-8"
+    },
+    {
+      "path": "/api/confirm",
+      "status": 200,
+      "type": "application/json; charset=utf-8"
+    },
+    {
+      "path": "/api/confirm",
+      "status": 200,
+      "type": "application/json; charset=utf-8"
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "type": "text/html; charset=utf-8"
+    },
+    {
+      "path": "/style.css",
+      "status": 200,
+      "type": "text/css; charset=utf-8"
+    },
+    {
+      "path": "/ui.js",
+      "status": 200,
+      "type": "text/javascript; charset=utf-8"
+    },
+    {
+      "path": "/api/status",
+      "status": 200,
+      "type": "application/json; charset=utf-8"
+    },
+    {
+      "path": "/api/review",
+      "status": 200,
+      "type": "application/json; charset=utf-8"
+    },
+    {
+      "path": "/api/cancel",
+      "status": 200,
+      "type": "application/json; charset=utf-8"
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "type": "text/html; charset=utf-8"
+    },
+    {
+      "path": "/style.css",
+      "status": 200,
+      "type": "text/css; charset=utf-8"
+    },
+    {
+      "path": "/ui.js",
+      "status": 200,
+      "type": "text/javascript; charset=utf-8"
+    },
+    {
+      "path": "/api/status",
+      "status": 200,
+      "type": "application/json; charset=utf-8"
+    },
+    {
+      "path": "/api/review",
+      "status": 200,
+      "type": "application/json; charset=utf-8"
+    },
+    {
+      "path": "/api/confirm",
+      "status": 409,
+      "type": "application/json; charset=utf-8"
+    },
+    {
+      "path": "/api/status",
+      "status": 200,
+      "type": "application/json; charset=utf-8"
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "type": "text/html; charset=utf-8"
+    },
+    {
+      "path": "/style.css",
+      "status": 200,
+      "type": "text/css; charset=utf-8"
+    },
+    {
+      "path": "/ui.js",
+      "status": 200,
+      "type": "text/javascript; charset=utf-8"
+    },
+    {
+      "path": "/api/status",
+      "status": 200,
+      "type": "application/json; charset=utf-8"
+    },
+    {
+      "path": "/api/review",
+      "status": 200,
+      "type": "application/json; charset=utf-8"
+    },
+    {
+      "path": "/api/review",
+      "status": 200,
+      "type": "application/json; charset=utf-8"
+    },
+    {
+      "path": "/api/page",
+      "status": 409,
+      "type": "application/json; charset=utf-8"
+    }
+  ],
+  "browserVersion": "154.0.8037.57",
+  "renderer": "pdftocairo 25.03.0 (installed, not bundled)",
+  "listenAddress": "127.0.0.1",
+  "pdfResponses": 0,
+  "screenshots": [
+    "01-admin-no-permission.png",
+    "02-authorized-source-page2.png",
+    "03-narrow-review.png",
+    "04-confirmed-receipt.png",
+    "05-stale-data-rejected.png",
+    "06-complete-summary-detail.png"
+  ],
+  "scope": "Actual local administrator browser prototype; synthetic only; no deployment, authentication or member delivery"
+}

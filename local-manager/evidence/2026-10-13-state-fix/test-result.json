@@ -1,0 +1,12 @@
+{
+  "tests": 116,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "passed": true,
+  "python": "3.12.14",
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "pypdf": "6.20.1",
+  "schema3Sha256": "67c5e6a23c52b3315f7c9c22eaab43bc561963bcbe13a0ee4c5aec9f74172ab4",
+  "scope": "Synthetic local core only; no Android runtime, native Windows UI, device, network or NAS acceptance"
+}
