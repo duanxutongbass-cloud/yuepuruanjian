@@ -1,0 +1,75 @@
+{
+  "numbers": [
+    998,
+    999,
+    1000,
+    1001
+  ],
+  "sourcePageMap": [
+    {
+      "versionId": "legacy-v1",
+      "sourcePage": 1,
+      "sourceHash": "55e1c1cf8c3e1b48ba7a186a21b2aacc69f35f21d1a19540fc76ef2baca42735",
+      "geometry": {
+        "cropBox": [
+          10.0,
+          20.0,
+          380.0,
+          580.0
+        ],
+        "mediaBox": [
+          0.0,
+          0.0,
+          401.0,
+          601.0
+        ],
+        "rotation": 90,
+        "userUnit": 1.0
+      }
+    },
+    {
+      "versionId": "legacy-v1",
+      "sourcePage": 2,
+      "sourceHash": "55e1c1cf8c3e1b48ba7a186a21b2aacc69f35f21d1a19540fc76ef2baca42735",
+      "geometry": {
+        "cropBox": [
+          0.0,
+          0.0,
+          402.0,
+          602.0
+        ],
+        "mediaBox": [
+          0.0,
+          0.0,
+          402.0,
+          602.0
+        ],
+        "rotation": 0,
+        "userUnit": 1.0
+      }
+    }
+  ],
+  "tableCounts": {
+    "pieces": 4,
+    "movements": 1,
+    "part_definitions": 13,
+    "piece_parts": 13,
+    "score_pdfs": 1,
+    "score_pdf_versions": 2,
+    "part_score_bindings": 1,
+    "members": 2,
+    "member_part_permissions": 1,
+    "member_piece_part_permissions": 1,
+    "piece_part_assignments": 1,
+    "concerts": 1,
+    "concert_items": 1,
+    "annotation_pages": 1,
+    "annotation_revisions": 1,
+    "annotation_concert_snapshots": 1
+  },
+  "verifiedOriginalPdfs": 2,
+  "activeVersion": "legacy-v1",
+  "personalLayersInMother": 0,
+  "tableEquality": true,
+  "sourceMappingEquality": true
+}

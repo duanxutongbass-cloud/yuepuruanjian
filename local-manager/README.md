@@ -2,7 +2,7 @@
 
 本目录是可独立测试的管理领域核心，不是 Windows 原生 UI、安装包或联网服务。沿用仓库 `tools/Verify-AssetArchive.py` 的 Python 工具惯例；Python 只是本批可执行实现，不冻结 Windows 最终技术栈。产品规则仍以 `docs/PRODUCT_ROADMAP.md`、`PHASE10_0_REQUIREMENTS.md`、`TEAM_SYNC_CONTRACT.md` 为准。
 
-PM 复审发现初版冻结/归档保护缺口后已收紧候选。逐项写操作与既有 Android Domain 对照见 [MANAGEMENT_INVARIANTS.md](MANAGEMENT_INVARIANTS.md)。初版 49 项测试记录是历史证据，不表示 PM 已放行；修订结果见阶段报告的复审修订段。
+PM 复审发现初版冻结/归档保护缺口后已修订，并限定放行 `4a00ba8` 的离线核心（74 项测试）。逐项写操作与既有 Android Domain 对照见 [MANAGEMENT_INVARIANTS.md](MANAGEMENT_INVARIANTS.md)。新增独立最小工作流批次仍待复审，CLI、草稿/确认语义及成员只读预览边界见 [WORKFLOW.md](WORKFLOW.md)。初版 49 项测试保留为历史证据。
 
 ## 运行与复审
 
