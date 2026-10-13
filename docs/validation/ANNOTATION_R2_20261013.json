@@ -1,0 +1,269 @@
+{
+  "scope": "R2 annotation reliability and Phase10.0 contract documentation",
+  "baseline": "32b702e6019b4a8f4471634163d3844b28f03d65",
+  "application": {
+    "versionName": "0.9.6",
+    "versionCode": 8,
+    "roomSchema": 3
+  },
+  "validation": {
+    "dateUTC": "2026-10-13",
+    "environment": {
+      "gradle": "8.13",
+      "jdk": "Temurin 21.0.8",
+      "compileSdk": 36,
+      "buildTools": "35.0.0"
+    },
+    "tasks": [
+      ":app:testDebugUnitTest",
+      ":app:assembleDebug",
+      ":app:assembleDebugAndroidTest",
+      ":app:lintDebug"
+    ],
+    "result": "BUILD SUCCESSFUL",
+    "tests": {
+      "tests": 152,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "suiteCount": 25,
+    "lint": {
+      "errors": 0,
+      "warnings": 10,
+      "hints": 1
+    }
+  },
+  "suites": [
+    {
+      "name": "com.ensemble.scorelibrary.annotation.AnnotationGestureTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestampUTC": "2026-10-13T15:32:55.080Z"
+    },
+    {
+      "name": "com.ensemble.scorelibrary.annotation.AnnotationMigrationTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestampUTC": "2026-10-13T15:33:21.078Z"
+    },
+    {
+      "name": "com.ensemble.scorelibrary.annotation.AnnotationRepositoryTest",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestampUTC": "2026-10-13T15:33:22.017Z"
+    },
+    {
+      "name": "com.ensemble.scorelibrary.annotation.AnnotationViewModelTest",
+      "tests": 21,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestampUTC": "2026-10-13T15:33:25.061Z"
+    },
+    {
+      "name": "com.ensemble.scorelibrary.backup.ArchivePanelTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestampUTC": "2026-10-13T15:33:27.178Z"
+    },
+    {
+      "name": "com.ensemble.scorelibrary.backup.ArchiveViewModelTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestampUTC": "2026-10-13T15:33:29.250Z"
+    },
+    {
+      "name": "com.ensemble.scorelibrary.backup.AssetArchiveTest",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestampUTC": "2026-10-13T15:33:29.457Z"
+    },
+    {
+      "name": "com.ensemble.scorelibrary.core.database.PresentationRepositoryTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestampUTC": "2026-10-13T15:33:33.615Z"
+    },
+    {
+      "name": "com.ensemble.scorelibrary.core.database.RepositoryIntegrationTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestampUTC": "2026-10-13T15:33:33.848Z"
+    },
+    {
+      "name": "com.ensemble.scorelibrary.core.database.ScoreLibraryDatabaseTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestampUTC": "2026-10-13T15:33:34.169Z"
+    },
+    {
+      "name": "com.ensemble.scorelibrary.core.pedal.PedalTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestampUTC": "2026-10-13T15:33:34.726Z"
+    },
+    {
+      "name": "com.ensemble.scorelibrary.data.LibraryManagementTest",
+      "tests": 15,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestampUTC": "2026-10-13T15:33:35.891Z"
+    },
+    {
+      "name": "com.ensemble.scorelibrary.domain.PresentationTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestampUTC": "2026-10-13T15:33:39.074Z"
+    },
+    {
+      "name": "com.ensemble.scorelibrary.domain.ScoreResolverTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestampUTC": "2026-10-13T15:33:39.170Z"
+    },
+    {
+      "name": "com.ensemble.scorelibrary.pdf.ConcertReaderTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestampUTC": "2026-10-13T15:33:39.207Z"
+    },
+    {
+      "name": "com.ensemble.scorelibrary.pdf.PdfReaderViewModelTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestampUTC": "2026-10-13T15:33:40.053Z"
+    },
+    {
+      "name": "com.ensemble.scorelibrary.pdf.PerformancePreparationTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestampUTC": "2026-10-13T15:33:40.447Z"
+    },
+    {
+      "name": "com.ensemble.scorelibrary.pdf.ReaderGeometryTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestampUTC": "2026-10-13T15:33:41.053Z"
+    },
+    {
+      "name": "com.ensemble.scorelibrary.pdf.ReaderInteractionTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestampUTC": "2026-10-13T15:33:41.102Z"
+    },
+    {
+      "name": "com.ensemble.scorelibrary.ui.DeviceAvailabilityTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestampUTC": "2026-10-13T15:33:41.145Z"
+    },
+    {
+      "name": "com.ensemble.scorelibrary.ui.LibraryScreenTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestampUTC": "2026-10-13T15:33:41.205Z"
+    },
+    {
+      "name": "com.ensemble.scorelibrary.ui.LibraryViewModelTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestampUTC": "2026-10-13T15:33:41.713Z"
+    },
+    {
+      "name": "com.ensemble.scorelibrary.ui.ManagementViewModelTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestampUTC": "2026-10-13T15:33:41.892Z"
+    },
+    {
+      "name": "com.ensemble.scorelibrary.ui.NavigationTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestampUTC": "2026-10-13T15:33:42.276Z"
+    },
+    {
+      "name": "com.ensemble.scorelibrary.ui.PadScreenshotTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestampUTC": "2026-10-13T15:33:46.396Z"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "app-debug.apk",
+      "bytes": 19875670,
+      "sha256": "edd7dd8a4b2471475807254fe7a4af5216d44081935c10b362be8b6a8cb9e9b0",
+      "includedInGit": false
+    },
+    {
+      "name": "app-debug-androidTest.apk",
+      "bytes": 1271416,
+      "sha256": "8d61a2543fb8645dacae5a530806732dc322494e2b4115f9cda95264cf11c4aa",
+      "includedInGit": false
+    }
+  ],
+  "regressionEvidence": {
+    "beforeFix": {
+      "tests": 4,
+      "failures": 4
+    },
+    "afterFix": "All four pass within the final 152-test suite"
+  },
+  "limitations": [
+    "Android instrumentation/emulator",
+    "physical stylus/pedal/device",
+    "process-death pending-ink recovery",
+    "NAS/network implementation or deployment"
+  ],
+  "recovery": "ViewModel/session memory only",
+  "repositoryUpload": "Source, tests, documentation and this summary only; no APK, SDK, credentials, private scores or raw logs",
+  "ci": "No workflow configured at submission; remote checks must be reported separately"
+}

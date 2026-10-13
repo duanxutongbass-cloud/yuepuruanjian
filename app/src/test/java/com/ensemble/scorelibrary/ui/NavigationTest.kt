@@ -22,7 +22,8 @@ class NavigationTest {
     private val store = ViewModelStore()
     private lateinit var restoration: StateRestorationTester
     @After fun close() { store.clear() }
-    private fun open(withReader: Boolean = false) {
+    private var ink: com.ensemble.scorelibrary.annotation.AnnotationViewModel? = null
+    private fun open(withReader: Boolean = false, withInk: Boolean = false) {
         val part = VisiblePart("part", "d", "Violin I")
         val item = ResolvedConcertItem("item", "piece", "Music", part, if (withReader) listOf(
             ResolvedScoreSegment("binding", null, "pdf", "v", "fixture", "hash", 1, 2,
@@ -56,8 +57,42 @@ class NavigationTest {
                 com.ensemble.scorelibrary.pdf.PerformancePreparation(engine,
                     com.ensemble.scorelibrary.pdf.TestPerformanceAnnotations())).also { store.put("pdf", it) }
         } else null
+        if (withInk) ink = com.ensemble.scorelibrary.annotation.AnnotationViewModel(object : com.ensemble.scorelibrary.annotation.AnnotationStore {
+            override suspend fun load(scope: com.ensemble.scorelibrary.annotation.AnnotationScope) = com.ensemble.scorelibrary.annotation.AnnotationData(
+                emptyList(), emptyList(), emptyList(), 0, 0, false, null, false)
+            override suspend fun save(scope: com.ensemble.scorelibrary.annotation.AnnotationScope, layer: com.ensemble.scorelibrary.annotation.AnnotationLayer,
+                marks: List<com.ensemble.scorelibrary.annotation.InkMark>, generation: Long) { error("模拟保存失败") }
+            override suspend fun publish(scope: com.ensemble.scorelibrary.annotation.AnnotationScope) = Unit
+            override suspend fun freeze(scope: com.ensemble.scorelibrary.annotation.AnnotationScope) = Unit
+        }).also { store.put("ink", it) }
         restoration = StateRestorationTester(compose)
-        restoration.setContent { MaterialTheme { ScoreLibraryApp(vm, pdf) } }
+        restoration.setContent { androidx.compose.runtime.CompositionLocalProvider(
+            com.ensemble.scorelibrary.annotation.LocalAnnotations provides ink) { MaterialTheme { ScoreLibraryApp(vm, pdf) } } }
+    }
+    @Test fun pendingInkBlocksReaderTransitionsAndBackOffersMemoryOnlyExit() {
+        open(withReader = true, withInk = true)
+        compose.onNodeWithTag("piece-piece").performClick()
+        compose.onNodeWithTag("part-part").performClick()
+        compose.waitUntil { ink!!.state.value.data != null }
+        compose.runOnIdle {
+            ink!!.tool(com.ensemble.scorelibrary.annotation.AnnotationTool.PEN)
+            ink!!.stroke(listOf(com.ensemble.scorelibrary.annotation.InkPoint(.2f, .3f)))
+        }
+        compose.waitUntil { ink!!.state.value.error != null }
+        compose.onNodeWithTag("next-page").assertIsNotEnabled()
+        compose.onNodeWithTag("play-mode").assertIsNotEnabled()
+        compose.onNodeWithText("适合整页").assertIsNotEnabled()
+        compose.onNodeWithContentDescription("重新打开").assertIsNotEnabled()
+        compose.onNodeWithTag("back").performClick()
+        compose.onNodeWithText("批注尚未完成保存").assertExists()
+        compose.onNodeWithText("留下处理").performClick()
+        compose.onNodeWithTag("annotation-pending").assertExists()
+        compose.onNodeWithTag("back").performClick()
+        compose.onNodeWithText("保留在内存并离开").performClick()
+        compose.onNodeWithTag("part-part").performClick()
+        compose.waitUntil { ink!!.state.value.data != null }
+        org.junit.Assert.assertEquals(1, ink!!.state.value.marks.size)
+        compose.onNodeWithTag("annotation-重试保存").assertExists()
     }
     @Test fun libraryDetailReaderBackAndSingleTopTabsWork() {
         open()

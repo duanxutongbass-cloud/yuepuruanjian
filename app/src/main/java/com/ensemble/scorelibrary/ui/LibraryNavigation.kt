@@ -94,7 +94,26 @@ fun ScoreLibraryApp(vm: LibraryViewModel, pdf: com.ensemble.scorelibrary.pdf.Pdf
     val fullscreen = pdf?.fullscreen?.collectAsStateWithLifecycle()?.value == true
     val current = if (memberId == envelope.memberId) envelope else envelope.copy(state = UiState.Loading)
     val reader = Routes.isViewer(route)
+    val ink = com.ensemble.scorelibrary.annotation.LocalAnnotations.current
+    val inkState = ink?.state?.collectAsStateWithLifecycle()?.value
+    var confirmLeave by remember { mutableStateOf(false) }
+    val leaveReader: () -> Unit = {
+        if (reader && inkState?.transitionBlocked == true) confirmLeave = true
+        else { ink?.suspendSession(); nav.popBackStack() }
+    }
+    androidx.activity.compose.BackHandler(reader && !fullscreen) { leaveReader() }
+    LaunchedEffect(memberId) {
+        if (ink?.state?.value?.scope?.member?.let { it != memberId } == true) ink.suspendSession()
+    }
+    if (confirmLeave) AlertDialog(onDismissRequest = { confirmLeave = false }, title = { Text("批注尚未完成保存") },
+        text = { Text("建议留下并重试。继续离开会停止保存，待处理内容仅在当前进程内保留；返回同一成员的原页面后可重试。关闭应用或系统回收可能丢失。") },
+        confirmButton = { TextButton(onClick = { confirmLeave = false; ink?.suspendSession(); nav.popBackStack() },
+            enabled = inkState?.gestureActive != true) { Text("保留在内存并离开") } },
+        dismissButton = { TextButton(onClick = { confirmLeave = false }) { Text("留下处理") } })
     val viewer = (((current.state as? UiState.Ready)?.presentation?.content as? DomainResult.Success)?.value as? ScreenContent.Viewer)
+    LaunchedEffect(reader, viewer) {
+        if (reader && viewer == null) ink?.suspendSession()
+    }
     val pdfBinding = pdf?.binding?.collectAsStateWithLifecycle()?.value
     val pdfAnchor = pdf?.anchor?.collectAsStateWithLifecycle()?.value
     val playing = pdf?.playMode?.collectAsStateWithLifecycle()?.value == true
@@ -121,10 +140,10 @@ fun ScoreLibraryApp(vm: LibraryViewModel, pdf: com.ensemble.scorelibrary.pdf.Pdf
             overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis) },
             navigationIcon = {
                 if (reader || route == Routes.PIECE || route == Routes.CONCERT) IconButton(
-                    onClick = { nav.popBackStack() }, modifier = Modifier.testTag("back")) {
+                    onClick = leaveReader, modifier = Modifier.testTag("back")) {
                     Icon(Icons.AutoMirrored.Outlined.ArrowBack, "返回")
                 }
-            }, actions = { IconButton(onClick = vm::retry, enabled = !reader || !playing && !preparing) { Icon(Icons.Outlined.Refresh, "刷新") } })
+            }, actions = { IconButton(onClick = vm::retry, enabled = !reader || !playing && !preparing && inkState?.transitionBlocked != true) { Icon(Icons.Outlined.Refresh, "刷新") } })
         }
     }, bottomBar = {
         if (!reader) NavigationBar(Modifier.testTag("bottom-navigation")) {

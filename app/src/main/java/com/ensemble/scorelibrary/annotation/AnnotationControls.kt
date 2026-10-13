@@ -57,28 +57,37 @@ fun AnnotationToolbar(state: AnnotationState, model: AnnotationViewModel) {
         Row(Modifier.fillMaxWidth().padding(horizontal = 8.dp).horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically) {
             SingleChoiceSegmentedButtonRow {
                 SegmentedButton(state.layer == AnnotationLayer.PERSONAL, { model.layer(AnnotationLayer.PERSONAL) },
-                    SegmentedButtonDefaults.itemShape(0, 2), enabled = !state.busy, modifier = Modifier.widthIn(min = 128.dp)) { Text("我的批注", maxLines = 1) }
+                    SegmentedButtonDefaults.itemShape(0, 2), enabled = !state.transitionBlocked, modifier = Modifier.widthIn(min = 128.dp)) { Text("我的批注", maxLines = 1) }
                 SegmentedButton(state.layer == AnnotationLayer.SHARED, { model.layer(AnnotationLayer.SHARED) },
-                    SegmentedButtonDefaults.itemShape(1, 2), enabled = !state.busy, modifier = Modifier.widthIn(min = 128.dp)) { Text(if (state.data?.admin == true && state.data.concert == null) "共享草稿" else "共享批注", maxLines = 1) }
+                    SegmentedButtonDefaults.itemShape(1, 2), enabled = !state.transitionBlocked, modifier = Modifier.widthIn(min = 128.dp)) { Text(if (state.data?.admin == true && state.data.concert == null) "共享草稿" else "共享批注", maxLines = 1) }
             }
             Checkbox(state.showPersonal, { model.visible(AnnotationLayer.PERSONAL, it) }); Text("我的")
             Checkbox(state.showShared, { model.visible(AnnotationLayer.SHARED, it) }); Text("共享")
             ToolButton(if (state.editLocked) "解除编辑锁定" else "锁定编辑", if (state.editLocked) Icons.Outlined.LockOpen else Icons.Outlined.Lock,
-                !state.busy && !state.gestureActive, selected = state.editLocked, action = model::toggleEditLock)
+                !state.transitionBlocked, selected = state.editLocked, action = model::toggleEditLock)
             if (state.data?.locked == true) { Icon(Icons.Outlined.Inventory2, "本场共享版本已冻结"); Text("本场共享版本已冻结") }
             else if (state.data?.concert != null) Text("演出批注未锁定")
             if (state.data?.admin == true && state.data.concert == null && state.layer == AnnotationLayer.SHARED) {
-                ToolButton("发布当前页", Icons.Outlined.Publish, !state.busy && state.error == null, action = model::publish)
+                ToolButton("发布当前页", Icons.Outlined.Publish, !state.transitionBlocked && state.error == null, action = model::publish)
             }
             if (state.data?.admin == true && state.data.concert != null && !state.data.locked) {
                 var confirm by remember { mutableStateOf(false) }
-                ToolButton("冻结本场共享版本", Icons.Outlined.Inventory2, !state.busy && state.error == null) { confirm = true }
+                ToolButton("冻结本场共享版本", Icons.Outlined.Inventory2, !state.transitionBlocked && state.error == null) { confirm = true }
                 if (confirm) AlertDialog(onDismissRequest = { confirm = false }, title = { Text("冻结本场共享版本？") },
                     text = { Text("本场使用当前已发布共享批注，之后不再随草稿更新，节目项与引用曲谱结构也将受到保护。仍可阅读和编辑自己的批注；后续修改请编辑共享草稿并新建场次。此操作不覆盖或解冻历史版本。") },
                     confirmButton = { TextButton(onClick = { confirm = false; model.freeze() }) { Text("冻结本场") } },
                     dismissButton = { TextButton(onClick = { confirm = false }) { Text("取消") } })
             }
-            ToolButton("刷新批注", Icons.Outlined.Refresh, !state.busy, action = model::retry)
+            ToolButton(if (state.pending) "重试保存" else "刷新批注", Icons.Outlined.Refresh,
+                !state.busy && !state.saving && !state.gestureActive, action = model::retry)
+            if (state.pending) {
+                var discard by remember { mutableStateOf(false) }
+                ToolButton("放弃未保存批注", Icons.Outlined.Delete, !state.saving && !state.busy && !state.gestureActive) { discard = true }
+                if (discard) AlertDialog(onDismissRequest = { discard = false }, title = { Text("放弃未保存批注？") },
+                    text = { Text("将丢弃本页待保存的修改，并重新读取已保存版本。此操作无法撤销。") },
+                    confirmButton = { TextButton(onClick = { discard = false; model.discardPending() }) { Text("放弃并重新读取") } },
+                    dismissButton = { TextButton(onClick = { discard = false }) { Text("继续保留") } })
+            }
         }
         Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically) {
             val tools = listOf(Triple(AnnotationTool.READ, "阅读", Icons.Outlined.PanTool),
@@ -120,33 +129,44 @@ fun AnnotationToolbar(state: AnnotationState, model: AnnotationViewModel) {
                     }
                 }
             }, confirmButton = { TextButton(onClick = { menu = false }) { Text("关闭") } })
-        Box(Modifier.fillMaxWidth().height(2.dp)) { if (state.busy) LinearProgressIndicator(Modifier.fillMaxWidth()) }
+        Box(Modifier.fillMaxWidth().height(2.dp)) { if (state.busy || state.saving) LinearProgressIndicator(Modifier.fillMaxWidth()) }
+        if (state.pending) Text(if (state.saving) "正在保存批注，可继续书写；保存完成前请勿切页或入场"
+            else "批注尚未保存，仅在当前进程内保留；请重试，关闭应用可能丢失", Modifier.padding(horizontal = 12.dp).testTag("annotation-pending"))
+        state.inputNotice?.let { Text(it, Modifier.padding(horizontal = 12.dp).testTag("annotation-input-notice")) }
         state.error?.let { Text(it, Modifier.padding(horizontal = 12.dp).testTag("annotation-error"), color = MaterialTheme.colorScheme.error) }
     }
 }
 
 @Composable
 fun AnnotationOverlay(transform: PdfPageTransform, state: AnnotationState, model: AnnotationViewModel) {
-    var trail by remember(state.scope, state.tool, transform) { mutableStateOf<List<InkPoint>>(emptyList()) }
-    val input = if (state.tool == AnnotationTool.READ || !state.editable) Modifier else Modifier.pointerInput(state.scope, state.tool, state.editable, transform) {
+    var trail by remember(state.scope, state.inputToken, state.tool, transform) { mutableStateOf<List<InkPoint>>(emptyList()) }
+    val input = if (state.tool == AnnotationTool.READ || !state.editable) Modifier else Modifier.pointerInput(state.scope, state.inputToken, state.tool, state.editable, transform) {
         if (state.tool != AnnotationTool.READ && state.editable) awaitEachGesture {
             val down = awaitFirstDown(requireUnconsumed = false)
             val first = transform.screenToNormalized(PagePoint(down.position.x, down.position.y))
             if (first != null) {
-                model.gesture(state.scope, true)
+                model.gesture(state.scope, true, state.inputToken)
+                var completed = false
                 try {
                 down.consume(); trail = listOf(InkPoint(first.x, first.y))
                 do {
                     val event = awaitPointerEvent()
-                    val change = event.changes.firstOrNull { it.id == down.id } ?: break
+                    if (event.changes.count { it.pressed } > 1) return@awaitEachGesture
+                    val change = event.changes.firstOrNull { it.id == down.id } ?: return@awaitEachGesture
+                    // Compose cancellation delivers consumed synthetic releases; these are not completed strokes.
+                    if (change.isConsumed) return@awaitEachGesture
                     change.consume()
                     transform.screenToNormalized(PagePoint(change.position.x, change.position.y))?.let { point ->
                         if (trail.size < 4096) trail = trail + InkPoint(point.x, point.y)
+                        else return@awaitEachGesture
                     }
                     val pressed = change.pressed
                 } while (pressed)
-                model.stroke(trail); trail = emptyList()
-                } finally { model.gesture(state.scope, false); trail = emptyList() }
+                model.stroke(trail, state.scope, state.inputToken); completed = true; trail = emptyList()
+                } finally {
+                    if (!completed) model.cancelGesture(state.scope, state.inputToken)
+                    model.gesture(state.scope, false, state.inputToken); trail = emptyList()
+                }
             }
         }
     }

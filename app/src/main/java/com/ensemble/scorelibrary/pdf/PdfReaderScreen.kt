@@ -68,7 +68,16 @@ fun PdfReaderScreen(member: String, score: ResolvedConcertItem, model: PdfReader
         com.ensemble.scorelibrary.annotation.AnnotationScope(member, activeScore.pieceId, activeScore.part.id,
             page.reference.segment.versionId, page.reference.pageIndex, activeScore.itemId.takeIf { it.isNotEmpty() })
     }
-    LaunchedEffect(annotations, pageScope) { if (annotations != null && pageScope != null) annotations.bind(pageScope) }
+    LaunchedEffect(annotations, pageScope) {
+        if (annotations != null && pageScope != null) {
+            val old = annotations.state.value.scope
+            // A changed authority/projection is not an ordinary page turn: quarantine its draft.
+            if (old != null && (old.member != pageScope.member || old.piece != pageScope.piece ||
+                old.part != pageScope.part || old.item != pageScope.item ||
+                activeScore.segments.none { it.versionId == old.version })) annotations.suspendSession()
+            annotations.bind(pageScope)
+        }
+    }
     LaunchedEffect(playMode, annotations, pageScope) {
         if (playMode && annotations != null && pageScope != null) {
             annotations.bind(pageScope)
@@ -95,7 +104,7 @@ fun PdfReaderScreen(member: String, score: ResolvedConcertItem, model: PdfReader
     }
     LaunchedEffect(canManage, pageScope, annotationRaw?.data?.admin) {
         if (annotations != null && annotationRaw != null && annotationRaw.scope == pageScope && canManage != null &&
-            annotationRaw.data?.admin != null && annotationRaw.data.admin != canManage && !annotationRaw.busy) annotations.retry()
+            annotationRaw.data?.admin != null && annotationRaw.data.admin != canManage) annotations.refreshAuthorization()
     }
     var viewportSize by remember { mutableStateOf(androidx.compose.ui.unit.IntSize.Zero) }
     Column(Modifier.fillMaxSize()) {
@@ -103,7 +112,7 @@ fun PdfReaderScreen(member: String, score: ResolvedConcertItem, model: PdfReader
         Row(Modifier.fillMaxWidth().padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween) {
             val ready = state as? PdfState.Ready
-            IconButton(onClick = model::previousPage, enabled = !preparing && scopedAnnotation?.busy != true && scopedAnnotation?.gestureActive != true && ready != null && (ready.index > 0 || (model.itemNumber()?.first ?: 1) > 1),
+            IconButton(onClick = model::previousPage, enabled = !preparing && scopedAnnotation?.transitionBlocked != true && ready != null && (ready.index > 0 || (model.itemNumber()?.first ?: 1) > 1),
                 modifier = Modifier.testTag("previous-page")) { Icon(Icons.AutoMirrored.Outlined.NavigateBefore, "上一页") }
             Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.weight(1f)) {
                 if (concert != null) Text(activeScore.title, maxLines = 1, style = MaterialTheme.typography.titleSmall,
@@ -117,7 +126,7 @@ fun PdfReaderScreen(member: String, score: ResolvedConcertItem, model: PdfReader
                 if (concert != null && annotations != null) Text(if (scopedAnnotation?.data?.locked == true) "本场共享版本已冻结"
                     else if (scopedAnnotation?.data != null) "本场共享版本未冻结" else "批注正在读取", maxLines = 1, style = MaterialTheme.typography.labelSmall)
             }
-            IconButton(onClick = model::nextPage, enabled = !preparing && scopedAnnotation?.busy != true && scopedAnnotation?.gestureActive != true && ready != null && (ready.index < ready.total - 1 ||
+            IconButton(onClick = model::nextPage, enabled = !preparing && scopedAnnotation?.transitionBlocked != true && ready != null && (ready.index < ready.total - 1 ||
                 model.itemNumber()?.let { it.first < it.second } == true),
                 modifier = Modifier.testTag("next-page")) { Icon(Icons.AutoMirrored.Outlined.NavigateNext, "下一页") }
         }
@@ -125,21 +134,21 @@ fun PdfReaderScreen(member: String, score: ResolvedConcertItem, model: PdfReader
             SingleChoiceSegmentedButtonRow {
                 FitMode.entries.forEachIndexed { index, mode ->
                     SegmentedButton(selected = (state as? PdfState.Ready)?.mode == mode,
-                        onClick = { model.fit(mode) }, enabled = !preparing, modifier = Modifier.widthIn(min = 128.dp),
+                        onClick = { model.fit(mode) }, enabled = !preparing && scopedAnnotation?.transitionBlocked != true, modifier = Modifier.widthIn(min = 128.dp),
                         shape = SegmentedButtonDefaults.itemShape(index, 2)) {
                         Text(if (mode == FitMode.WIDTH) "适合宽度" else "适合整页", maxLines = 1)
                     }
                 }
             }
-            IconButton(onClick = model::retry, enabled = !preparing && !playMode) { Icon(Icons.Outlined.Refresh, "重新打开") }
-            IconButton(onClick = { model.setFullscreen(true) }, enabled = state is PdfState.Ready && !preparing && scopedAnnotation?.busy != true && scopedAnnotation?.gestureActive != true,
+            IconButton(onClick = model::retry, enabled = !preparing && !playMode && scopedAnnotation?.transitionBlocked != true) { Icon(Icons.Outlined.Refresh, "重新打开") }
+            IconButton(onClick = { model.setFullscreen(true) }, enabled = state is PdfState.Ready && !preparing && scopedAnnotation?.transitionBlocked != true,
                 modifier = Modifier.testTag("reader-fullscreen")) { Icon(Icons.Outlined.Fullscreen, "全屏看谱") }
-            IconButton(onClick = { model.transform(1.25f, 0f, 0f) }, enabled = state is PdfState.Ready && !preparing && scopedAnnotation?.busy != true && scopedAnnotation?.gestureActive != true,
+            IconButton(onClick = { model.transform(1.25f, 0f, 0f) }, enabled = state is PdfState.Ready && !preparing && scopedAnnotation?.transitionBlocked != true,
                 modifier = Modifier.testTag("reader-zoom-in")) { Icon(Icons.Outlined.ZoomIn, "放大") }
-            IconButton(onClick = model::resetView, enabled = state is PdfState.Ready && !preparing && scopedAnnotation?.busy != true && scopedAnnotation?.gestureActive != true,
+            IconButton(onClick = model::resetView, enabled = state is PdfState.Ready && !preparing && scopedAnnotation?.transitionBlocked != true,
                 modifier = Modifier.testTag("reader-zoom-reset")) { Icon(Icons.Outlined.ZoomOut, "恢复页面大小") }
             IconButton(onClick = { model.action(PedalAction.TOGGLE_PLAY_MODE) },
-                enabled = !preparing && state is PdfState.Ready && scopedAnnotation?.busy != true && scopedAnnotation?.gestureActive != true,
+                enabled = !preparing && state is PdfState.Ready && scopedAnnotation?.transitionBlocked != true,
                 modifier = Modifier.testTag("play-mode")) {
                 Icon(if (playMode) Icons.Outlined.Stop else Icons.Outlined.PlayArrow, if (playMode) "退出正式演出" else "准备正式演出")
             }
@@ -182,8 +191,8 @@ fun PdfReaderScreen(member: String, score: ResolvedConcertItem, model: PdfReader
                     Image(page.frame.bitmap.asImageBitmap(), "${activeScore.title}，PDF 第 ${page.sourcePage} 页",
                         modifier = Modifier.fillMaxSize().testTag("pdf-page").pointerInput(page.mode, page.reference,
                             page.frame.transform.viewportWidth, page.frame.transform.viewportHeight, annotationState?.tool, playMode,
-                            fullscreen, annotationState?.editLocked, annotationState?.busy) {
-                            val inkReady = annotations == null || annotationState?.let { !it.busy && it.data != null && it.error == null } == true
+                            fullscreen, annotationState?.editLocked, annotationState?.transitionBlocked) {
+                            val inkReady = annotations == null || annotationState?.let { !it.transitionBlocked && it.data != null && it.error == null } == true
                             val reading = fullscreen || playMode || annotationState == null || annotationState.editLocked ||
                                 annotationState.tool == com.ensemble.scorelibrary.annotation.AnnotationTool.READ
                             if (inkReady && !preparing && reading) {
@@ -214,7 +223,7 @@ fun PdfReaderScreen(member: String, score: ResolvedConcertItem, model: PdfReader
                                 }
                             }
                         }, contentScale = androidx.compose.ui.layout.ContentScale.FillBounds)
-                    if (annotations != null && annotationState != null) {
+                    if (annotations != null && annotationState?.data != null) {
                         com.ensemble.scorelibrary.annotation.AnnotationOverlay(page.frame.transform,
                             if (playMode) annotationState.copy(tool = com.ensemble.scorelibrary.annotation.AnnotationTool.READ,
                                 draftMode = false, showShared = true, showPersonal = true, selection = emptySet())
