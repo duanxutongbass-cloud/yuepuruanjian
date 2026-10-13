@@ -35,3 +35,5 @@
 2026-10-13 新云端任务从 32b702e 基线继续批注可靠性与 Phase10.0 契约收口；形成串行保存、失败保留/重试、导航与身份隔离、手势取消提示及测试补丁。版本仍 0.9.6/code8/schema3。新决定的在演撤权例外、个人 NAS 备份默认开启且同团队管理员可读，仅同步设计，未实现联网。本次 148 JVM 全通过，APK/测试 APK 构建成功，Lint 0 错误/10 警告/1 提示；证据见 ANNOTATION_RELIABILITY_REVIEW；交独立审核，不宣布完整模拟器或 10.0 整体通过。
 
 同日 R2 独立复审修正：复现恢复/刷新鉴权前公开旧笔画的窗口（新增 4 项修复前全部失败），改为公开 data 先清空、私有队列保留、鉴权成功后再恢复；Reader 不绘制无 data 的批注层。最终 152 JVM 全通过、APK/测试 APK 构建成功、Lint 0 错误/10 警告/1 提示。交完整及 R1→R2 增量补丁，旧 R1 被替代；模拟器/真机/NAS 未验，等待独立复审。
+
+同日 R2 经产品经理复审接受后，用户新授权每批更新保存到 GitHub 的独立分支和草稿 PR。核对远端 main 仍为 32b702e，无需适配；推送 R2 代码提交 7557788939bf9bd07e37f4e1839188d1718c5fb9 至 `feat/annotation-reliability-phase10-r2`，创建[草稿 PR #1](https://github.com/duanxutongbass-cloud/yuepuruanjian/pull/1)。仅代码、测试及文档入库，精简证据单列 validation/ANNOTATION_R2_20261013.json；未上传 SDK、APK、日志大包、凭据或私人曲谱。main 未改、未合并发布部署；无已配置远端 Actions，本地通过不代称远端 CI 通过。

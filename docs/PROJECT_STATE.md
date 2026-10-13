@@ -4,7 +4,7 @@
 
 ## 当前批次
 
-2026-10-13 批注可靠性补丁与 10.0 契约收口已形成，R2 本次 152 项 JVM 全部通过、APK/测试 APK 构建成功、Lint 0 错误/10 警告/1 提示，恢复草稿鉴权显示窗口已修正，等待独立复审；本批证据单列 ANNOTATION_RELIABILITY_REVIEW。历史 130 JVM/40 模拟器不是本次结果，完整模拟器回归仍未过。版本与 schema 不变，后续阶段未开始。最新联网决定以 PHASE10_0_REQUIREMENTS 为准：共享设备多账号已确认；已进入冻结演出收到撤权可完成当前场次，退出不得重开；个人 NAS 备份默认开启且同团队管理员可读，但首次上传仍须每位成员知情确认，尚未实现网络权限。
+2026-10-13 批注可靠性补丁与 10.0 契约收口已形成，R2 本次 152 项 JVM 全部通过、APK/测试 APK 构建成功、Lint 0 错误/10 警告/1 提示，恢复草稿鉴权显示窗口已修正，R2 已获产品经理复审接受，并按用户授权保存为独立分支的草稿 PR；本批证据单列 ANNOTATION_RELIABILITY_REVIEW。历史 130 JVM/40 模拟器不是本次结果，完整模拟器回归仍未过。版本与 schema 不变，后续阶段未开始。最新联网决定以 PHASE10_0_REQUIREMENTS 为准：共享设备多账号已确认；已进入冻结演出收到撤权可完成当前场次，退出不得重开；个人 NAS 备份默认开启且同团队管理员可读，但首次上传仍须每位成员知情确认，尚未实现网络权限。
 
 ## 历史基线
 
@@ -78,3 +78,5 @@ Phase 9.5 本地软件范围已通过，模拟器重装与独立设备恢复通�
 - Lint：`../app/build/reports/lint-results-debug.html`
 
 这些 build 路径会被后续构建更新；阶段历史测试数字必须保留在阶段报告中，不能把最新产物当成旧阶段专属产物。
+
+GitHub 保存入口：[草稿 PR #1](https://github.com/duanxutongbass-cloud/yuepuruanjian/pull/1)，分支 `feat/annotation-reliability-phase10-r2`；R2 代码提交 `7557788939bf9bd07e37f4e1839188d1718c5fb9`。远端 main 基线未改动，没有合并、release 或部署。仓库未配置 Actions workflow，检查时该代码提交无 workflow run 或 commit status；152 项为本次云端本地测试结果，不能称为 GitHub CI 已通过。
