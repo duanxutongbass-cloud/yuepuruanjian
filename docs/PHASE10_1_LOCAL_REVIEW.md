@@ -1,6 +1,6 @@
 # Phase 10.1 无网络本地核心候选审查记录
 
-2026-10-13。状态：本批实现与本地自动验证完成，等待独立 PM 复审；**不宣布完整 Phase 10.1 或 Windows 原生交付通过**。
+2026-10-13。状态：PM 复审确认初版测试证据可信，但发现管理写操作的归档/冻结保护缺口，**初版未放行**。修订候选与证据见本文末尾；仍等待 PM 独立复审，不宣布完整 Phase 10.1 或 Windows 原生交付通过。
 
 ## 授权与基线
 
@@ -30,7 +30,7 @@ PDF 原字节作为 SQLite BLOB，与元数据共用事务。校验或提交前�
 
 旧 Android 只能消费提取后的 `library.zip`，不能恢复侧车编号/分类；完整本地往返必须保存整个 bundle。未来原生工具格式融合仍需单独审查，不宣称旧 Android 自动识别新元数据。旧 v1 导入不编造编号、不重建身份。所有共享 payload、revision、冻结 manifest 字符串原样保留，母库排除所有个人层；PERSONAL 包明确拒绝进入本模块，既有本人备份/恢复流程未修改。
 
-## 最终实际验证
+## 初版实际验证（82bee7c；PM 未放行）
 
 执行环境：Linux x86_64，Python 3.12.14，pypdf 6.20.1（官方 wheel，BSD-3-Clause，哈希锁定）。
 
@@ -61,4 +61,19 @@ PDF 结果是结构解析，不是原生渲染/图像字体解码全覆盖，不
 
 Android Gradle APK、Lint、JVM/模拟器/真机未重跑：本批无 Android 修改，环境没有 Gradle/JDK 编译器；不沿用历史 170 项冒充本次测试。没有读取私人曲谱/真实成员资料，没有凭据、SDK 或缓存交付，没有认证、联网同步/上传/分发、NAS 部署、生产权限、破坏性迁移或 main 合并。NAS 参数未知不阻本批，但后续部署仍需核验。
 
-结论：此候选已达到本批所列本地自动验证结果，可提交独立复审；完整 10.1、Windows 原生交付及 Phase 10 整体尚未通过，不据此放行联网或部署。
+初版结论已由下述 PM 复审更新：49 项测试通过不能代表本批业务不变量完整，修复并重测后再交复审。完整 10.1、Windows 原生交付及 Phase 10 整体尚未通过，不据此放行联网或部署。
+
+## PM 复审修订：归档与冻结结构保护
+
+PM 发现 `archive_piece` 可归档启用节目项引用的曲目，且 manifest 没有曲目归档字段，原校验未拒绝。随后扩展检查发现乐器定义编辑/归档、未绑定声部/乐章新增也不能仅依赖 manifest 相等。已对照 `LibraryManagement.kt` 的 `lockedPieces`、`guardPiece`、`guardPdf` 及 Piece/Definition/Part/Movement/Binding 分支，集中收紧本地核心，不重写 Android Domain。
+
+- 写前保护：启用节目项引用时禁止归档曲目；活跃声部或成员默认声部使用的乐器禁止归档；冻结曲目的声部、乐章、绑定和使用中乐器编辑拒绝，所用 PDF 的版本追加和激活拒绝（包括激活同一当前版本）。保护检查与写入在同一 SQLite 写事务。
+- 状态校验：恢复/导出/事务提交拒绝启用节目项指向已归档曲目、活跃声部/成员默认指向已归档定义。不重新生成冻结 manifest/payload 来绕过保护。
+- 相关写操作收紧：绑定检查原所属曲目/定义未归档，已归档的同范围绑定也不能另建身份；版本激活重验原始 PDF 字节；新增文本/排序输入沿用 Android 管理端长度、裁剪和 Int 边界。
+- 完整对照矩阵见 [MANAGEMENT_INVARIANTS.md](../local-manager/MANAGEMENT_INVARIANTS.md)。编号/分类仅写本地侧车，不修改 Android 曲目或冻结结构；未开放的成员编辑、授权、节目项或解除冻结操作没有新入口。
+- 修复前先运行新回归：最初 8 项得到 7 条失败记录；扩大为 20 项得到 18 条失败记录（unittest 统计包含子测试）。随后修复，首轮 23 项保护回归通过，再加 2 项绑定/历史引用边界并跑完整套件。失败路径比较全库 `iterdump()`，包括 PDF BLOB、所有元数据和编号占用；另验证事务中其他写入一起回滚。
+- 原证据生成器曾给已冻结曲目追加未绑定声部；现在将 12 个动态声部样本放到独立可编辑的 999 号曲目，保留原冻结曲目及源页证据，不放宽保护迁就样本。
+
+本修订仍只是 PR #2 的追加候选，不 force、不改 main、不合并、不 release/deploy；Android、schema、版本、批注格式和 R2 文件不变。最终本地测试、补丁重放和远端 CI 状态分别记录，不将本地通过当作 GitHub CI 通过。
+
+修订最终本地验证：`run_validation.py /workspace/phase101-pm1-final-evidence` 实际执行 **74 项，0 失败/错误/跳过，用时 101.336 秒**；独立合成旧 v1 往返及原 `Verify-AssetArchive.py` 再次通过（2 个 PDF 版本、1 个共享批注页）。compileall、diff --check 成功，Android/构建配置/原工具相对 main 基线 diff 仍为空。证据：[最终结果](../local-manager/evidence/2026-10-13-pm1/test-result.json)、[全集日志](../local-manager/evidence/2026-10-13-pm1/tests.log)、[修复前失败日志](../local-manager/evidence/2026-10-13-pm1/guards-before.log)、[往返](../local-manager/evidence/2026-10-13-pm1/round-trip.json)。远端新提交的 CI 查询回执随本次 Library 交接包提供，PM 仍须复审业务，不将本地 74 项自动计为放行。

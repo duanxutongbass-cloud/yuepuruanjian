@@ -2,6 +2,8 @@
 
 本目录是可独立测试的管理领域核心，不是 Windows 原生 UI、安装包或联网服务。沿用仓库 `tools/Verify-AssetArchive.py` 的 Python 工具惯例；Python 只是本批可执行实现，不冻结 Windows 最终技术栈。产品规则仍以 `docs/PRODUCT_ROADMAP.md`、`PHASE10_0_REQUIREMENTS.md`、`TEAM_SYNC_CONTRACT.md` 为准。
 
+PM 复审发现初版冻结/归档保护缺口后已收紧候选。逐项写操作与既有 Android Domain 对照见 [MANAGEMENT_INVARIANTS.md](MANAGEMENT_INVARIANTS.md)。初版 49 项测试记录是历史证据，不表示 PM 已放行；修订结果见阶段报告的复审修订段。
+
 ## 运行与复审
 
 需要 Python 3.10+。在仓库根目录运行（Linux/macOS）：
@@ -56,6 +58,7 @@ with Catalog("new-workbench.sqlite", create=True) as c:
 - `import_pdfs` 整批原子提交；缺失、重复字节、损坏、加密、空 PDF、取消或写入失败全部回滚。相同 PDF 要供多个声部使用时，复用已有 source 并创建绑定，不重新导入。
 - 每个版本保留原字节/ID/hash/页数/几何。后续版本先作为非当前版本入库；显式 `activate_version` 可切换/回滚，但越界页段、错误归属或已冻结演出映射改变会拒绝。
 - 绑定沿用 Android 的一基闭区间；`source_pages` 输出零基源页，不改变裁切/旋转、不制造配送文件。绑定组合、跨曲乐章、重复全曲绑定、全曲与乐章混用均拒绝。
+- 曲目仍被启用节目项引用时禁止归档；乐器仍被活跃声部或成员默认声部使用时禁止归档。冻结曲目的声部、乐章、绑定和所用乐器编辑、所用 PDF 的版本追加/激活均显式拒绝，不只检查 manifest 是否改变。旧包或现存库含这些非法归档引用时拒绝恢复/导出，不改写冻结快照掩盖错误。
 - PDF 字节和 schema 3 元数据在同一 SQLite 事务提交，无独立已提交资产文件可遗留。取消在解析期间和提交前生效，成功提交后到达的取消不撤销已完成动作。SQLite 意外进程退出回滚另有测试。
 
 ## 开放格式兼容

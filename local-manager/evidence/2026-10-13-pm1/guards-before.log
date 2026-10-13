@@ -1,0 +1,217 @@
+test_active_member_default_blocks_instrument_archive_without_parts (test_archive_guard.ArchivePieceGuardTest.test_active_member_default_blocks_instrument_archive_without_parts) ... FAIL
+test_active_part_blocks_instrument_archive_without_frozen_concert (test_archive_guard.ArchivePieceGuardTest.test_active_part_blocks_instrument_archive_without_frozen_concert) ... FAIL
+test_archived_concert_does_not_bypass_enabled_item_guard (test_archive_guard.ArchivePieceGuardTest.test_archived_concert_does_not_bypass_enabled_item_guard) ... FAIL
+test_archived_item_allows_archive (test_archive_guard.ArchivePieceGuardTest.test_archived_item_allows_archive) ... ok
+test_binding_does_not_replace_archived_whole_piece_binding (test_archive_guard.ArchivePieceGuardTest.test_binding_does_not_replace_archived_whole_piece_binding) ... FAIL
+test_binding_rejects_archived_owner_piece (test_archive_guard.ArchivePieceGuardTest.test_binding_rejects_archived_owner_piece) ... FAIL
+test_disabled_item_allows_archive_and_keeps_number_reserved (test_archive_guard.ArchivePieceGuardTest.test_disabled_item_allows_archive_and_keeps_number_reserved) ... ok
+test_enabled_frozen_item_blocks_archive_without_rewriting_snapshot (test_archive_guard.ArchivePieceGuardTest.test_enabled_frozen_item_blocks_archive_without_rewriting_snapshot) ... FAIL
+test_enabled_unfrozen_item_blocks_archive_and_preserves_entire_transaction (test_archive_guard.ArchivePieceGuardTest.test_enabled_unfrozen_item_blocks_archive_and_preserves_entire_transaction) ... FAIL
+test_export_rejects_preexisting_invalid_library_without_final_file (test_archive_guard.ArchivePieceGuardTest.test_export_rejects_preexisting_invalid_library_without_final_file) ... FAIL
+test_frozen_pdf_rejects_activation_even_if_manifest_would_stay_equal (test_archive_guard.ArchivePieceGuardTest.test_frozen_pdf_rejects_activation_even_if_manifest_would_stay_equal) ... FAIL
+test_frozen_pdf_rejects_inactive_version_import (test_archive_guard.ArchivePieceGuardTest.test_frozen_pdf_rejects_inactive_version_import) ... FAIL
+test_frozen_piece_rejects_unbound_movement_addition (test_archive_guard.ArchivePieceGuardTest.test_frozen_piece_rejects_unbound_movement_addition) ... FAIL
+test_frozen_piece_rejects_unbound_part_addition (test_archive_guard.ArchivePieceGuardTest.test_frozen_piece_rejects_unbound_part_addition) ... FAIL
+test_frozen_piece_rejects_used_instrument_rename_and_archive (test_archive_guard.ArchivePieceGuardTest.test_frozen_piece_rejects_used_instrument_rename_and_archive) ...
+  test_frozen_piece_rejects_used_instrument_rename_and_archive (test_archive_guard.ArchivePieceGuardTest.test_frozen_piece_rejects_used_instrument_rename_and_archive) (archived=False) ... FAIL
+  test_frozen_piece_rejects_used_instrument_rename_and_archive (test_archive_guard.ArchivePieceGuardTest.test_frozen_piece_rejects_used_instrument_rename_and_archive) (archived=True) ... FAIL
+test_import_rejects_archived_instrument_with_active_part_or_member_default (test_archive_guard.ArchivePieceGuardTest.test_import_rejects_archived_instrument_with_active_part_or_member_default) ... FAIL
+test_import_rejects_enabled_archived_piece_in_unfrozen_and_frozen_packages (test_archive_guard.ArchivePieceGuardTest.test_import_rejects_enabled_archived_piece_in_unfrozen_and_frozen_packages) ...
+  test_import_rejects_enabled_archived_piece_in_unfrozen_and_frozen_packages (test_archive_guard.ArchivePieceGuardTest.test_import_rejects_enabled_archived_piece_in_unfrozen_and_frozen_packages) (frozen=False) ... FAIL
+  test_import_rejects_enabled_archived_piece_in_unfrozen_and_frozen_packages (test_archive_guard.ArchivePieceGuardTest.test_import_rejects_enabled_archived_piece_in_unfrozen_and_frozen_packages) (frozen=True) ... FAIL
+test_unrelated_new_records_and_sidecar_edits_preserve_frozen_snapshot (test_archive_guard.ArchivePieceGuardTest.test_unrelated_new_records_and_sidecar_edits_preserve_frozen_snapshot) ... ok
+test_unused_instrument_can_be_archived (test_archive_guard.ArchivePieceGuardTest.test_unused_instrument_can_be_archived) ... ok
+test_validation_rolls_back_other_writes_together_with_invalid_archive (test_archive_guard.ArchivePieceGuardTest.test_validation_rolls_back_other_writes_together_with_invalid_archive) ... FAIL
+
+======================================================================
+FAIL: test_active_member_default_blocks_instrument_archive_without_parts (test_archive_guard.ArchivePieceGuardTest.test_active_member_default_blocks_instrument_archive_without_parts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 124, in test_active_member_default_blocks_instrument_archive_without_parts
+    self.assert_rejected_unchanged(lambda: self.catalog.edit_dictionary(
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 39, in assert_rejected_unchanged
+    with self.assertRaises(Invalid):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Invalid not raised
+
+======================================================================
+FAIL: test_active_part_blocks_instrument_archive_without_frozen_concert (test_archive_guard.ArchivePieceGuardTest.test_active_part_blocks_instrument_archive_without_frozen_concert)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 117, in test_active_part_blocks_instrument_archive_without_frozen_concert
+    self.assert_rejected_unchanged(lambda: self.catalog.edit_dictionary(
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 39, in assert_rejected_unchanged
+    with self.assertRaises(Invalid):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Invalid not raised
+
+======================================================================
+FAIL: test_archived_concert_does_not_bypass_enabled_item_guard (test_archive_guard.ArchivePieceGuardTest.test_archived_concert_does_not_bypass_enabled_item_guard)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 54, in test_archived_concert_does_not_bypass_enabled_item_guard
+    self.assert_archive_rejected_unchanged()
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 33, in assert_archive_rejected_unchanged
+    with self.assertRaisesRegex(Invalid, "Disable or remove enabled concert items"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Invalid not raised
+
+======================================================================
+FAIL: test_binding_does_not_replace_archived_whole_piece_binding (test_archive_guard.ArchivePieceGuardTest.test_binding_does_not_replace_archived_whole_piece_binding)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 150, in test_binding_does_not_replace_archived_whole_piece_binding
+    self.assert_rejected_unchanged(lambda: self.catalog.bind(part, "legacy-pdf", 1, 1))
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 39, in assert_rejected_unchanged
+    with self.assertRaises(Invalid):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Invalid not raised
+
+======================================================================
+FAIL: test_binding_rejects_archived_owner_piece (test_archive_guard.ArchivePieceGuardTest.test_binding_rejects_archived_owner_piece)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 143, in test_binding_rejects_archived_owner_piece
+    self.assert_rejected_unchanged(lambda: self.catalog.bind(part, "legacy-pdf", 1, 1))
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 39, in assert_rejected_unchanged
+    with self.assertRaises(Invalid):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Invalid not raised
+
+======================================================================
+FAIL: test_enabled_frozen_item_blocks_archive_without_rewriting_snapshot (test_archive_guard.ArchivePieceGuardTest.test_enabled_frozen_item_blocks_archive_without_rewriting_snapshot)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 48, in test_enabled_frozen_item_blocks_archive_without_rewriting_snapshot
+    self.assert_archive_rejected_unchanged()
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 33, in assert_archive_rejected_unchanged
+    with self.assertRaisesRegex(Invalid, "Disable or remove enabled concert items"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Invalid not raised
+
+======================================================================
+FAIL: test_enabled_unfrozen_item_blocks_archive_and_preserves_entire_transaction (test_archive_guard.ArchivePieceGuardTest.test_enabled_unfrozen_item_blocks_archive_and_preserves_entire_transaction)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 45, in test_enabled_unfrozen_item_blocks_archive_and_preserves_entire_transaction
+    self.assert_archive_rejected_unchanged()
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 33, in assert_archive_rejected_unchanged
+    with self.assertRaisesRegex(Invalid, "Disable or remove enabled concert items"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Invalid not raised
+
+======================================================================
+FAIL: test_export_rejects_preexisting_invalid_library_without_final_file (test_archive_guard.ArchivePieceGuardTest.test_export_rejects_preexisting_invalid_library_without_final_file)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 97, in test_export_rejects_preexisting_invalid_library_without_final_file
+    with self.assertRaises(Invalid):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Invalid not raised
+
+======================================================================
+FAIL: test_frozen_pdf_rejects_activation_even_if_manifest_would_stay_equal (test_archive_guard.ArchivePieceGuardTest.test_frozen_pdf_rejects_activation_even_if_manifest_would_stay_equal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 137, in test_frozen_pdf_rejects_activation_even_if_manifest_would_stay_equal
+    self.assert_rejected_unchanged(lambda: self.catalog.activate_version("legacy-pdf", "legacy-v1"))
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 39, in assert_rejected_unchanged
+    with self.assertRaises(Invalid):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Invalid not raised
+
+======================================================================
+FAIL: test_frozen_pdf_rejects_inactive_version_import (test_archive_guard.ArchivePieceGuardTest.test_frozen_pdf_rejects_inactive_version_import)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 134, in test_frozen_pdf_rejects_inactive_version_import
+    self.assert_rejected_unchanged(lambda: self.catalog.import_pdf(source, pdf_id="legacy-pdf"))
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 39, in assert_rejected_unchanged
+    with self.assertRaises(Invalid):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Invalid not raised
+
+======================================================================
+FAIL: test_frozen_piece_rejects_unbound_movement_addition (test_archive_guard.ArchivePieceGuardTest.test_frozen_piece_rejects_unbound_movement_addition)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 107, in test_frozen_piece_rejects_unbound_movement_addition
+    self.assert_rejected_unchanged(lambda: self.catalog.add_movement("legacy-piece", "Not in manifest", 2))
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 39, in assert_rejected_unchanged
+    with self.assertRaises(Invalid):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Invalid not raised
+
+======================================================================
+FAIL: test_frozen_piece_rejects_unbound_part_addition (test_archive_guard.ArchivePieceGuardTest.test_frozen_piece_rejects_unbound_part_addition)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 104, in test_frozen_piece_rejects_unbound_part_addition
+    self.assert_rejected_unchanged(lambda: self.catalog.add_part("legacy-piece", instrument))
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 39, in assert_rejected_unchanged
+    with self.assertRaises(Invalid):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Invalid not raised
+
+======================================================================
+FAIL: test_frozen_piece_rejects_used_instrument_rename_and_archive (test_archive_guard.ArchivePieceGuardTest.test_frozen_piece_rejects_used_instrument_rename_and_archive) (archived=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 112, in test_frozen_piece_rejects_used_instrument_rename_and_archive
+    self.assert_rejected_unchanged(lambda: self.catalog.edit_dictionary(
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 39, in assert_rejected_unchanged
+    with self.assertRaises(Invalid):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Invalid not raised
+
+======================================================================
+FAIL: test_frozen_piece_rejects_used_instrument_rename_and_archive (test_archive_guard.ArchivePieceGuardTest.test_frozen_piece_rejects_used_instrument_rename_and_archive) (archived=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 112, in test_frozen_piece_rejects_used_instrument_rename_and_archive
+    self.assert_rejected_unchanged(lambda: self.catalog.edit_dictionary(
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 39, in assert_rejected_unchanged
+    with self.assertRaises(Invalid):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Invalid not raised
+
+======================================================================
+FAIL: test_import_rejects_archived_instrument_with_active_part_or_member_default (test_archive_guard.ArchivePieceGuardTest.test_import_rejects_archived_instrument_with_active_part_or_member_default)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 173, in test_import_rejects_archived_instrument_with_active_part_or_member_default
+    with self.assertRaises(Invalid):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Invalid not raised
+
+======================================================================
+FAIL: test_import_rejects_enabled_archived_piece_in_unfrozen_and_frozen_packages (test_archive_guard.ArchivePieceGuardTest.test_import_rejects_enabled_archived_piece_in_unfrozen_and_frozen_packages) (frozen=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 89, in test_import_rejects_enabled_archived_piece_in_unfrozen_and_frozen_packages
+    with self.assertRaises(Invalid):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Invalid not raised
+
+======================================================================
+FAIL: test_import_rejects_enabled_archived_piece_in_unfrozen_and_frozen_packages (test_archive_guard.ArchivePieceGuardTest.test_import_rejects_enabled_archived_piece_in_unfrozen_and_frozen_packages) (frozen=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 89, in test_import_rejects_enabled_archived_piece_in_unfrozen_and_frozen_packages
+    with self.assertRaises(Invalid):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Invalid not raised
+
+======================================================================
+FAIL: test_validation_rolls_back_other_writes_together_with_invalid_archive (test_archive_guard.ArchivePieceGuardTest.test_validation_rolls_back_other_writes_together_with_invalid_archive)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/yuepuruanjian/local-manager/tests/test_archive_guard.py", line 72, in test_validation_rolls_back_other_writes_together_with_invalid_archive
+    with self.assertRaises(Invalid):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Invalid not raised
+
+----------------------------------------------------------------------
+Ran 20 tests in 59.191s
+
+FAILED (failures=18)

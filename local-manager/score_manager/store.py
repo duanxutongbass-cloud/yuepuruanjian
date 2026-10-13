@@ -51,6 +51,19 @@ def category_code(value):
     return value
 
 
+def label(value, limit):
+    value = nonempty(value).strip()
+    require(len(value.encode("utf-16-le")) // 2 <= limit, "Label exceeds Android management limit")
+    return value
+
+
+def instrument_family(value):
+    require(value is None or isinstance(value, str), "Invalid family")
+    value = value.strip() or None if value is not None else None
+    require(value is None or len(value.encode("utf-16-le")) // 2 <= 100, "Family exceeds Android management limit")
+    return value
+
+
 class Catalog:
     def __init__(self, path, *, create=False):
         self.path = Path(path).resolve()
@@ -129,12 +142,29 @@ class Catalog:
         require(row is not None and (not active or not row["isArchived"]), "Missing or archived record: " + table)
         return dict(row)
 
+    def _guard_piece(self, piece_id):
+        # Mirror LibraryManagement.lockedPieces/guardPiece. A frozen manifest
+        # omits unbound parts/movements and dictionary names, so equality alone
+        # cannot authorize structural edits. Do not filter archived concerts.
+        protected = self._db.execute("""SELECT 1 FROM concert_items i
+            JOIN annotation_concert_snapshots s ON s.concertId=i.concertId
+            WHERE i.pieceId=? AND i.isArchived=0 AND i.isEnabled=1 LIMIT 1""", (piece_id,)).fetchone()
+        require(protected is None, "Piece is referenced by a frozen concert; use a new piece and program")
+
+    def _guard_pdf(self, pdf_id):
+        parts = self._db.execute("""SELECT DISTINCT p.pieceId FROM part_score_bindings b
+            JOIN piece_parts p ON p.id=b.piecePartId
+            WHERE b.scorePdfId=? AND b.isArchived=0 AND p.isArchived=0""", (pdf_id,)).fetchall()
+        for part in parts:
+            self._guard_piece(part[0])
+
     def add_member(self, name, *, administrator=False, member_id=None):
         member_id = identity(member_id or new_id())
         require(member_id != "shared", "Reserved member identity")
+        require(type(administrator) is bool, "Administrator flag must be Boolean")
         with self._transaction():
             self._db.execute("INSERT INTO members VALUES (?,?,?,?,?)",
-                             (member_id, nonempty(name), "ADMIN" if administrator else "MEMBER", None, 0))
+                             (member_id, label(name, 100), "ADMIN" if administrator else "MEMBER", None, 0))
         return member_id
 
     def add_category(self, code, name, *, category_id=None):
@@ -146,10 +176,9 @@ class Catalog:
 
     def add_instrument(self, name, *, family=None, instrument_id=None, sort_order=0):
         instrument_id = identity(instrument_id or new_id())
-        require(family is None or isinstance(family, str), "Invalid family")
         with self._transaction():
             self._db.execute("INSERT INTO part_definitions VALUES (?,?,?,?,0)",
-                             (instrument_id, nonempty(name), family, integer(sort_order)))
+                             (instrument_id, label(name, 100), instrument_family(family), integer(sort_order, 0, 2**31 - 1)))
         return instrument_id
 
     def edit_dictionary(self, kind, row_id, *, name, code=None, archived=False):
@@ -162,8 +191,14 @@ class Catalog:
                                  (nonempty(name), category_code(code), int(archived), row_id))
             else:
                 require(code is None, "Instrument codes are not a frozen product rule")
+                parts = self._db.execute("SELECT pieceId FROM piece_parts WHERE partDefinitionId=? AND isArchived=0", (row_id,)).fetchall()
+                for part in parts:
+                    self._guard_piece(part[0])
+                if archived:
+                    defaults = self._db.execute("SELECT 1 FROM members WHERE defaultPartDefinitionId=? AND isArchived=0 LIMIT 1", (row_id,)).fetchone()
+                    require(not parts and defaults is None, "Instrument is used by an active piece part or member default")
                 self._db.execute("UPDATE part_definitions SET name=?,isArchived=? WHERE id=?",
-                                 (nonempty(name), int(archived), row_id))
+                                 (label(name, 100), int(archived), row_id))
 
     def import_dictionary_csv(self, kind, text):
         """Additive UTF-8 CSV import; no same-name auto-merge or implicit updates."""
@@ -185,8 +220,8 @@ class Catalog:
                 else:
                     require(re.fullmatch(r"[0-9]+", row["sortOrder"]), "Invalid sort order")
                     self._db.execute("INSERT INTO part_definitions VALUES (?,?,?,?,?)",
-                                     (row_id, nonempty(row["name"]), row["family"] or None,
-                                      integer(int(row["sortOrder"])), int(row["isArchived"])))
+                                     (row_id, label(row["name"], 100), instrument_family(row["family"]),
+                                      integer(int(row["sortOrder"]), 0, 2**31 - 1), int(row["isArchived"])))
                 ids.append(row_id)
         return ids
 
@@ -220,7 +255,7 @@ class Catalog:
         piece_id = identity(piece_id or new_id())
         with self._transaction():
             self._db.execute("INSERT INTO pieces VALUES (?,?,?,?,?,?,?)",
-                             (piece_id, nonempty(title), None, None, None, 0, now()))
+                             (piece_id, label(title, 200), None, None, None, 0, now()))
             self._assign_number(piece_id, category_id, number)
         return piece_id
 
@@ -231,6 +266,8 @@ class Catalog:
     def archive_piece(self, piece_id):
         with self._transaction():
             self._get("pieces", piece_id)
+            enabled = self._db.execute("SELECT 1 FROM concert_items WHERE pieceId=? AND isArchived=0 AND isEnabled=1 LIMIT 1", (piece_id,)).fetchone()
+            require(enabled is None, "Disable or remove enabled concert items before archiving the piece")
             self._db.execute("UPDATE pieces SET isArchived=1 WHERE id=?", (piece_id,))
 
     def numbered_pieces(self):
@@ -241,6 +278,7 @@ class Catalog:
         with self._transaction():
             self._get("pieces", piece_id, active=True)
             self._get("part_definitions", instrument_id, active=True)
+            self._guard_piece(piece_id)
             self._db.execute("INSERT INTO piece_parts VALUES (?,?,?,?,0)", (part_id, piece_id, instrument_id, None))
         return part_id
 
@@ -253,8 +291,9 @@ class Catalog:
         movement_id = new_id()
         with self._transaction():
             self._get("pieces", piece_id, active=True)
+            self._guard_piece(piece_id)
             self._db.execute("INSERT INTO movements VALUES (?,?,?,?,0)",
-                             (movement_id, piece_id, nonempty(title), integer(sort_order)))
+                             (movement_id, piece_id, label(title, 200), integer(sort_order, 0, 2**31 - 1)))
         return movement_id
 
     def import_pdfs(self, paths, *, cancel=None):
@@ -268,9 +307,13 @@ class Catalog:
     def import_pdf(self, path, *, title=None, pdf_id=None, cancel=None):
         """A later version is stored inactive; explicit activation is separate."""
         with self._transaction(cancel):
-            return self._import_pdf(path, title or Path(path).stem, pdf_id, cancel)
+            return self._import_pdf(path, Path(path).stem if title is None else title, pdf_id, cancel)
 
     def _import_pdf(self, path, title, pdf_id, cancel):
+        title = label(title, 200)
+        if pdf_id is not None:
+            self._get("score_pdfs", pdf_id, active=True)
+            self._guard_pdf(pdf_id)
         data = read_pdf(path, cancel)
         info = inspect_pdf(data, cancel)
         require(self._db.execute("SELECT 1 FROM score_pdf_versions WHERE lower(fileHash)=?", (info["sha256"],)).fetchone() is None,
@@ -278,11 +321,12 @@ class Catalog:
         version_id = new_id()
         if pdf_id is None:
             pdf_id = new_id()
-            self._db.execute("INSERT INTO score_pdfs VALUES (?,?,NULL,0,?)", (pdf_id, nonempty(title), now()))
+            self._db.execute("INSERT INTO score_pdfs VALUES (?,?,NULL,0,?)", (pdf_id, title, now()))
             version_number, activate = 1, True
         else:
             self._get("score_pdfs", pdf_id, active=True)
             version_number = self._db.execute("SELECT coalesce(max(versionNumber),0)+1 FROM score_pdf_versions WHERE scorePdfId=?", (pdf_id,)).fetchone()[0]
+            integer(version_number, 1, 2**31 - 1)
             activate = False
         self._db.execute("INSERT INTO score_pdf_versions VALUES (?,?,?,?,?,?,?,?,?,?)",
                          (version_id, pdf_id, version_number, entry(version_id), "", info["sha256"], len(data), info["pageCount"], now(), None))
@@ -297,6 +341,12 @@ class Catalog:
             self._get("score_pdfs", pdf_id, active=True)
             version = self._get("score_pdf_versions", version_id)
             require(version["scorePdfId"] == pdf_id, "Version belongs to another PDF")
+            self._guard_pdf(pdf_id)
+            stored = self._db.execute("SELECT data,geometry FROM local_pdf_bytes WHERE versionId=?", (version_id,)).fetchone()
+            require(stored is not None, "Missing original PDF")
+            info = inspect_pdf(stored[0])
+            require(info["sha256"] == version["fileHash"].lower() and info["bytes"] == version["fileSizeBytes"]
+                    and info["pageCount"] == version["pageCount"] and info["pages"] == json.loads(stored[1]), "Original PDF integrity mismatch")
             self._db.execute("UPDATE score_pdfs SET activeVersionId=? WHERE id=?", (version_id, pdf_id))
             # validate_library rejects out-of-range bindings and frozen manifest changes.
 
@@ -305,10 +355,15 @@ class Catalog:
         integer(start_page, 1)
         integer(end_page, start_page)
         with self._transaction():
-            self._get("piece_parts", part_id, active=True)
+            part = self._get("piece_parts", part_id, active=True)
+            self._get("pieces", part["pieceId"], active=True)
+            self._get("part_definitions", part["partDefinitionId"], active=True)
+            self._guard_piece(part["pieceId"])
             self._get("score_pdfs", pdf_id, active=True)
             if movement_id is not None:
                 self._get("movements", movement_id, active=True)
+            existing = self._db.execute("SELECT 1 FROM part_score_bindings WHERE piecePartId=? AND movementId IS ? LIMIT 1", (part_id, movement_id)).fetchone()
+            require(existing is None, "Binding already exists, including archived records; do not replace its identity")
             self._db.execute("INSERT INTO part_score_bindings VALUES (?,?,?,?,?,?,0)",
                              (binding_id, part_id, movement_id, pdf_id, start_page, end_page))
         return binding_id

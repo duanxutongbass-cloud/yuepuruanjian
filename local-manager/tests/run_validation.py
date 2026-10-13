@@ -40,11 +40,14 @@ def main():
         restore_archive(source, original, expected_sha256=sha(original.read_bytes()))
         category = source.add_category("73", "Synthetic user-defined classification")
         source.assign_number("legacy-piece", category, number=998)
+        editable_piece = None
         for n in range(999, 1002):
-            source.add_piece(f"Synthetic boundary {n}", category)
+            piece = source.add_piece(f"Synthetic boundary {n}", category)
+            if n == 999:
+                editable_piece = piece
         for n in range(12):
-            part = source.add_part("legacy-piece", source.add_instrument(f"Synthetic instrument {n+1}"))
-            if source.part_number(part) != 998:
+            part = source.add_part(editable_piece, source.add_instrument(f"Synthetic instrument {n+1}"))
+            if source.part_number(part) != 999:
                 raise RuntimeError("Same-piece number diverged")
         bundle = args.output / "synthetic-local-bundle.zip"
         export_bundle(source, bundle, "legacy-admin")

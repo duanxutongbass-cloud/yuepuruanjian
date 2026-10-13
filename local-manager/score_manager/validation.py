@@ -159,6 +159,17 @@ def validate_library(db, require_admin=False):
     for table, rows in t.items():
         validate_rows(table, rows)
     members = {x["id"]: x for x in t["members"]}
+    pieces = {x["id"]: x for x in t["pieces"]}
+    definitions = {x["id"]: x for x in t["part_definitions"]}
+    for item in t["concert_items"]:
+        if not item["isArchived"] and item["isEnabled"]:
+            require(not pieces[item["pieceId"]]["isArchived"], "Disable or remove enabled concert items before archiving the piece")
+    for part in t["piece_parts"]:
+        if not part["isArchived"]:
+            require(not definitions[part["partDefinitionId"]]["isArchived"], "Active piece part uses an archived instrument")
+    for member in members.values():
+        if not member["isArchived"] and member["defaultPartDefinitionId"] is not None:
+            require(not definitions[member["defaultPartDefinitionId"]]["isArchived"], "Active member default uses an archived instrument")
     require("shared" not in members, "Reserved member identity")
     require(all(x["role"] in {"ADMIN", "MEMBER"} for x in members.values()), "Unknown role")
     if require_admin:
