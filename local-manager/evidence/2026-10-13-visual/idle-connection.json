@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "idleConnectionLeftOpen": true,
+  "anotherConnectionStatus": 200,
+  "responseSeconds": 0.014731477000168525,
+  "loopback": "127.0.0.1"
+}
