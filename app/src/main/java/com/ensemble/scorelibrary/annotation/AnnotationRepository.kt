@@ -81,6 +81,9 @@ class AnnotationRepository @Inject constructor(private val database: ScoreLibrar
         val dao = database.annotationDao()
         val owner = if (layer == AnnotationLayer.PERSONAL) scope.member else "shared"
         val page = dao.page(scope.version, scope.page, owner)
+        // A committed write may lose its acknowledgement on cancellation. Only the exact
+        // next-generation payload is idempotent; all other stale baselines remain conflicts.
+        if (generation < Long.MAX_VALUE && page?.generation == generation + 1 && page.payload == payload) return@withTransaction
         check((page?.generation ?: 0) == generation) { "批注已被其他操作修改，请刷新后再编辑" }
         check(generation < Long.MAX_VALUE)
         if (page == null) dao.insertPage(AnnotationPageEntity(versionId = scope.version, pageIndex = scope.page, ownerKey = owner,

@@ -7,6 +7,8 @@ import com.ensemble.scorelibrary.core.database.ScoreLibraryDatabase
 import com.ensemble.scorelibrary.core.database.entity.*
 import com.ensemble.scorelibrary.core.model.MemberRole
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -124,6 +126,50 @@ class AnnotationRepositoryTest {
             assertEquals(listOf(mark),repo.load(scope("m",item="i")).shared)
             try { repo.load(scope("m")); fail("Unfrozen reading must reject the invalid live pointer") }
             catch (_: IllegalStateException) { }
+        } finally { db.close() }
+    }
+    @Test fun concurrentDifferentPayloadsOnSameBaselineHaveExactlyOneWinner() = runBlocking {
+        val db = database()
+        try { setup(db); val repo = AnnotationRepository(db)
+            val first = listOf(mark()); val second = listOf(mark())
+            val outcomes = listOf(first, second).map { marks -> async {
+                runCatching { repo.save(scope(), AnnotationLayer.PERSONAL, marks, 0) }
+            } }.awaitAll()
+            assertEquals(1, outcomes.count { it.isSuccess })
+            assertEquals(1, outcomes.count { it.isFailure })
+            val stored = repo.load(scope())
+            assertEquals(1L, stored.personalGeneration)
+            assertTrue(stored.personal == first || stored.personal == second)
+        } finally { db.close() }
+    }
+    @Test fun exactReplayIsIdempotentButDifferentPayloadAndLaterGenerationConflict() = runBlocking {
+        val db = database()
+        try { setup(db); val repo = AnnotationRepository(db); val marks = listOf(mark())
+            repo.save(scope(), AnnotationLayer.PERSONAL, marks, 0)
+            repeat(3) { repo.save(scope(), AnnotationLayer.PERSONAL, marks, 0) }
+            assertEquals(1L, repo.load(scope()).personalGeneration)
+            try { repo.save(scope(), AnnotationLayer.PERSONAL, emptyList(), 0); fail("Different payload") }
+            catch (_: IllegalStateException) { }
+            repo.save(scope(), AnnotationLayer.PERSONAL, emptyList(), 1)
+            try { repo.save(scope(), AnnotationLayer.PERSONAL, marks, 0); fail("Later generation") }
+            catch (_: IllegalStateException) { }
+            assertTrue(repo.load(scope()).personal.isEmpty())
+        } finally { db.close() }
+    }
+    @Test fun replayStillRequiresCurrentPermissionAndSharedRole() = runBlocking {
+        val db = database()
+        try { setup(db); val repo = AnnotationRepository(db); val marks = listOf(mark())
+            repo.save(scope(), AnnotationLayer.PERSONAL, marks, 0)
+            repo.save(scope(), AnnotationLayer.SHARED, marks, 0)
+            val admin = db.resolutionDao().members().first { it.id == "a" }
+            db.libraryDao().updateMember(admin.copy(role = MemberRole.MEMBER))
+            try { repo.save(scope(), AnnotationLayer.SHARED, marks, 0); fail("Demoted replay") }
+            catch (_: IllegalStateException) { }
+            val permission = db.resolutionDao().permissions().first { it.memberId == "a" }
+            db.libraryDao().updatePermission(permission.copy(isArchived = true))
+            try { repo.save(scope(), AnnotationLayer.PERSONAL, marks, 0); fail("Revoked replay") }
+            catch (_: IllegalStateException) { }
+            assertEquals(1L, db.annotationDao().page("v", 1, "a")!!.generation)
         } finally { db.close() }
     }
     @Test fun geometrySelectsMovesClampsAndErasesSegmentInteriors() {

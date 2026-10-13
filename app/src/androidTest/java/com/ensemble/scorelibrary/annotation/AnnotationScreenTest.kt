@@ -86,7 +86,7 @@ class AnnotationScreenTest {
             CompositionLocalProvider(LocalAnnotations provides annotations) { PdfReaderScreen("a", requireNotNull(currentScore.value), reader,
                 canManage = canManage.value, concert = currentConcert.value) }
         } } } }
-        compose.waitUntil(20_000) { reader.state.value is PdfState.Ready && annotations.state.value.data != null && !annotations.state.value.busy }
+        compose.waitUntil(20_000) { reader.state.value is PdfState.Ready && annotations.state.value.data != null && !annotations.state.value.transitionBlocked }
         return annotations to reader
     }
     private fun screenshot(name: String) {
@@ -106,24 +106,24 @@ class AnnotationScreenTest {
         val (annotations, reader) = open(800, 1200)
         compose.onNodeWithTag("annotation-手写").performClick()
         compose.onNodeWithTag("annotation-canvas").performTouchInput { swipe(Offset(width * .25f, height * .45f), Offset(width * .75f, height * .45f), 400) }
-        compose.waitUntil(10_000) { !annotations.state.value.busy && annotations.state.value.data?.personal?.size == 1 }
+        compose.waitUntil(10_000) { !annotations.state.value.transitionBlocked && annotations.state.value.data?.personal?.size == 1 }
         val mark = annotations.state.value.data!!.personal.single()
         assertTrue(mark.points.all { it.x in 0f..1f && it.y in 0f..1f })
         screenshot("standard-pad")
         compose.onNodeWithTag("annotation-撤销").performClick()
-        compose.waitUntil(10_000) { !annotations.state.value.busy && annotations.state.value.data?.personal?.isEmpty() == true }
+        compose.waitUntil(10_000) { !annotations.state.value.transitionBlocked && annotations.state.value.data?.personal?.isEmpty() == true }
         compose.onNodeWithTag("annotation-重做").performClick()
-        compose.waitUntil(10_000) { !annotations.state.value.busy && annotations.state.value.data?.personal?.size == 1 }
+        compose.waitUntil(10_000) { !annotations.state.value.transitionBlocked && annotations.state.value.data?.personal?.size == 1 }
         assertEquals(listOf(mark), runBlocking { AnnotationRepository(db!!).load(annotations.state.value.scope!!).personal })
         compose.onNodeWithTag("next-page").performClick()
-        compose.waitUntil(20_000) { (reader.state.value as? PdfState.Ready)?.sourcePage == 3 && annotations.state.value.scope?.page == 2 && !annotations.state.value.busy }
+        compose.waitUntil(20_000) { (reader.state.value as? PdfState.Ready)?.sourcePage == 3 && annotations.state.value.scope?.page == 2 && !annotations.state.value.transitionBlocked }
         assertTrue(annotations.state.value.data!!.personal.isEmpty())
     }
     @Test fun largePadSymbolsLassoMoveAndEraseAreUndoable() {
         val (annotations, reader) = open(1280, 1800)
         compose.onNodeWithTag("annotation-音乐符号").performClick()
         compose.onNodeWithTag("annotation-canvas").performTouchInput { click(Offset(width * .4f, height * .4f)) }
-        compose.waitUntil(10_000) { !annotations.state.value.busy && annotations.state.value.data?.personal?.size == 1 }
+        compose.waitUntil(10_000) { !annotations.state.value.transitionBlocked && annotations.state.value.data?.personal?.size == 1 }
         assertEquals(MarkKind.SYMBOL, annotations.state.value.data!!.personal.single().kind)
         screenshot("large-pad")
         compose.onNodeWithTag("annotation-套索").performClick()
@@ -133,17 +133,17 @@ class AnnotationScreenTest {
             down(location(.1f, .1f)); moveTo(location(.9f, .1f)); moveTo(location(.9f, .9f))
             moveTo(location(.1f, .9f)); moveTo(location(.1f, .1f)); up()
         }
-        compose.waitUntil(10_000) { !annotations.state.value.busy && annotations.state.value.selection.size == 1 }
+        compose.waitUntil(10_000) { !annotations.state.value.transitionBlocked && annotations.state.value.selection.size == 1 }
         val original = annotations.state.value.marks.single().points.first()
         compose.onNodeWithTag("annotation-移动").performClick()
         compose.onNodeWithTag("annotation-canvas").performTouchInput { swipe(location(.3f, .3f), location(.4f, .4f), 400) }
-        compose.waitUntil(10_000) { !annotations.state.value.busy && annotations.state.value.marks.single().points.first() != original }
+        compose.waitUntil(10_000) { !annotations.state.value.transitionBlocked && annotations.state.value.marks.single().points.first() != original }
         val moved = annotations.state.value.marks.single().points.first()
         compose.onNodeWithTag("annotation-橡皮").performClick()
         compose.onNodeWithTag("annotation-canvas").performTouchInput { click(location(moved.x, moved.y)) }
-        compose.waitUntil(10_000) { !annotations.state.value.busy && annotations.state.value.marks.isEmpty() }
+        compose.waitUntil(10_000) { !annotations.state.value.transitionBlocked && annotations.state.value.marks.isEmpty() }
         compose.onNodeWithTag("annotation-撤销").performClick()
-        compose.waitUntil(10_000) { !annotations.state.value.busy && annotations.state.value.marks.size == 1 }
+        compose.waitUntil(10_000) { !annotations.state.value.transitionBlocked && annotations.state.value.marks.size == 1 }
         val before = annotations.state.value.marks
         compose.onNodeWithText("适合宽度").performClick()
         compose.waitUntil(20_000) { (reader.state.value as? PdfState.Ready)?.mode == FitMode.WIDTH }
@@ -158,7 +158,7 @@ class AnnotationScreenTest {
         compose.onNodeWithTag("music-symbol-picker").performClick()
         compose.onNodeWithTag("symbol-mp").performClick()
         compose.onNodeWithTag("annotation-canvas").performTouchInput { click(Offset(width * .4f, height * .4f)) }
-        compose.waitUntil(10_000) { !annotations.state.value.busy && annotations.state.value.marks.size == 1 }
+        compose.waitUntil(10_000) { !annotations.state.value.transitionBlocked && annotations.state.value.marks.size == 1 }
         assertEquals("mp", annotations.state.value.marks.single().symbol)
         compose.onNodeWithTag("annotation-锁定编辑").performClick()
         compose.onNodeWithTag("annotation-手写").assertIsNotEnabled()
@@ -169,7 +169,7 @@ class AnnotationScreenTest {
         val t = (reader.state.value as PdfState.Ready).frame.transform
         val start = t.normalizedToScreen(.8f, .5f); val end = t.normalizedToScreen(.2f, .5f)
         compose.onNodeWithTag("annotation-canvas").performTouchInput { swipe(Offset(start.x, start.y), Offset(end.x, end.y), 400) }
-        compose.waitUntil(10_000) { !annotations.state.value.busy && annotations.state.value.marks.size == 2 }
+        compose.waitUntil(10_000) { !annotations.state.value.transitionBlocked && annotations.state.value.marks.size == 2 }
         assertEquals(2, (reader.state.value as PdfState.Ready).sourcePage)
     }
     @Test fun sharedPublishAndConcertFreezeAreRealUiActions() {
@@ -177,9 +177,9 @@ class AnnotationScreenTest {
         compose.onNodeWithText("共享草稿").performClick()
         compose.onNodeWithTag("annotation-手写").performClick()
         compose.onNodeWithTag("annotation-canvas").performTouchInput { swipe(Offset(width * .25f, height * .45f), Offset(width * .75f, height * .45f), 400) }
-        compose.waitUntil(10_000) { !annotations.state.value.busy && annotations.state.value.data?.draft?.size == 1 }
+        compose.waitUntil(10_000) { !annotations.state.value.transitionBlocked && annotations.state.value.data?.draft?.size == 1 }
         compose.onNodeWithTag("annotation-发布当前页").performClick()
-        compose.waitUntil(10_000) { !annotations.state.value.busy && annotations.state.value.data?.shared?.size == 1 }
+        compose.waitUntil(10_000) { !annotations.state.value.transitionBlocked && annotations.state.value.data?.shared?.size == 1 }
         val published = annotations.state.value.data!!.shared
         val score = runBlocking {
             val dao = db!!.libraryDao()
@@ -188,10 +188,10 @@ class AnnotationScreenTest {
             (RoomScoreRepository(db!!).resolveConcert("a", "c") as DomainResult.Success).value.items.single()
         }
         compose.runOnIdle { currentScore.value = score }
-        compose.waitUntil(20_000) { reader.state.value is PdfState.Ready && annotations.state.value.data?.concert == "c" && !annotations.state.value.busy }
+        compose.waitUntil(20_000) { reader.state.value is PdfState.Ready && annotations.state.value.data?.concert == "c" && !annotations.state.value.transitionBlocked }
         compose.onNodeWithTag("annotation-冻结本场共享版本").performClick()
         compose.onNodeWithText("冻结本场", useUnmergedTree = true).performClick()
-        compose.waitUntil(10_000) { !annotations.state.value.busy && annotations.state.value.data?.locked == true }
+        compose.waitUntil(10_000) { !annotations.state.value.transitionBlocked && annotations.state.value.data?.locked == true }
         val libraryScope = annotations.state.value.scope!!.copy(item = null)
         runBlocking {
             val repo = AnnotationRepository(db!!)
@@ -199,7 +199,7 @@ class AnnotationScreenTest {
             repo.publish(libraryScope)
         }
         compose.runOnIdle { annotations.retry() }
-        compose.waitUntil(10_000) { !annotations.state.value.busy && annotations.state.value.data?.locked == true }
+        compose.waitUntil(10_000) { !annotations.state.value.transitionBlocked && annotations.state.value.data?.locked == true }
         assertEquals(published, annotations.state.value.data!!.shared)
         compose.onNodeWithText("共享批注").performClick()
         compose.onNodeWithTag("annotation-手写").assertIsNotEnabled()
@@ -210,13 +210,13 @@ class AnnotationScreenTest {
         compose.onNodeWithText("共享草稿").performClick()
         compose.onNodeWithTag("annotation-手写").performClick()
         compose.onNodeWithTag("annotation-canvas").performTouchInput { swipe(Offset(width * .25f, height * .45f), Offset(width * .75f, height * .45f), 400) }
-        compose.waitUntil(10_000) { !annotations.state.value.busy && annotations.state.value.data?.draft?.size == 1 }
+        compose.waitUntil(10_000) { !annotations.state.value.transitionBlocked && annotations.state.value.data?.draft?.size == 1 }
         runBlocking {
             val member = db!!.resolutionDao().members().single()
             db!!.libraryDao().updateMember(member.copy(role = MemberRole.MEMBER))
         }
         compose.runOnIdle { canManage.value = false }
-        compose.waitUntil(10_000) { !annotations.state.value.busy && annotations.state.value.data?.admin == false }
+        compose.waitUntil(10_000) { !annotations.state.value.transitionBlocked && annotations.state.value.data?.admin == false }
         assertTrue(annotations.state.value.data!!.draft.isEmpty())
         assertTrue(annotations.state.value.data!!.shared.isEmpty())
         compose.onNodeWithText("共享草稿").assertDoesNotExist()
@@ -245,7 +245,7 @@ class AnnotationScreenTest {
         compose.onNodeWithTag("annotation-canvas").performTouchInput {
             swipe(Offset(width * .25f, height * .45f), Offset(width * .75f, height * .45f), 400)
         }
-        compose.waitUntil(10_000) { !annotations.state.value.busy && annotations.state.value.data?.draft?.size == 1 }
+        compose.waitUntil(10_000) { !annotations.state.value.transitionBlocked && annotations.state.value.data?.draft?.size == 1 }
         assertFalse(annotations.state.value.gestureActive)
         assertTrue(annotations.state.value.data!!.shared.isEmpty())
         compose.onNodeWithTag("play-mode").performClick()
@@ -276,7 +276,7 @@ class AnnotationScreenTest {
             (RoomScoreRepository(db!!).resolveConcert("a","c") as DomainResult.Success).value
         }
         compose.runOnIdle { currentConcert.value=concert; currentScore.value=concert.items.single() }
-        compose.waitUntil(20_000) { reader.state.value is PdfState.Ready && annotations.state.value.data?.concert=="c" && !annotations.state.value.busy }
+        compose.waitUntil(20_000) { reader.state.value is PdfState.Ready && annotations.state.value.data?.concert=="c" && !annotations.state.value.transitionBlocked }
         assertEquals(listOf(red),annotations.state.value.data!!.shared)
         runBlocking {
             val repo=AnnotationRepository(db!!); val scope=AnnotationScope("a","p","part","v",1)
@@ -286,7 +286,7 @@ class AnnotationScreenTest {
         assertFalse(annotations.state.value.data!!.locked)
         compose.onNodeWithTag("play-mode").performClick()
         compose.waitUntil(20_000) { reader.playMode.value && reader.state.value is PdfState.Ready &&
-            annotations.state.value.data?.locked==true && !annotations.state.value.busy }
+            annotations.state.value.data?.locked==true && !annotations.state.value.transitionBlocked }
         assertEquals(listOf(blue),annotations.state.value.data!!.shared)
         compose.onNodeWithTag("annotation-手写").assertDoesNotExist()
     }

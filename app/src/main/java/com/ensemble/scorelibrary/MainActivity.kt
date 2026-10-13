@@ -43,7 +43,7 @@ class MainActivity : ComponentActivity() {
             pdfViewModel.anchor.value == envelope.memberId to viewer.score &&
             !getSystemService(android.view.inputmethod.InputMethodManager::class.java).isAcceptingText
         val ink = annotationViewModel.state.value
-        val blocked = ink.busy || ink.gestureActive
+        val blocked = ink.transitionBlocked
         val dispatch = pedalViewModel.handle(event, active, blocked)
         if (dispatch.consumed) {
             if (dispatch.action != com.ensemble.scorelibrary.core.model.PedalAction.NO_OP) pdfViewModel.action(dispatch.action)
