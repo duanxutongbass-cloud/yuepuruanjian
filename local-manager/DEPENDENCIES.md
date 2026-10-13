@@ -1,5 +1,7 @@
 # 本批依赖核对
 
+后续可视复核候选另使用环境中已安装的 `pdftocairo 25.03.0` 作为显式、可替换的本机渲染进程，不下载/打包/再分发二进制，不修改基础 Python 依赖。其来源、GPL 组件许可记录与未决 Windows 分发范围见 [LOCAL_REVIEW.md](LOCAL_REVIEW.md)。下文仍为原离线核心的依赖范围。
+
 运行依赖：Python 标准库（SQLite、ZIP、CSV、JSON、hashlib、subprocess）以及 `pypdf==6.20.1`。
 
 2026-10-13 核对官方来源：

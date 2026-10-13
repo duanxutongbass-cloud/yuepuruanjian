@@ -1,0 +1,9 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>乐谱管理 · 本地复核</title><link rel="stylesheet" href="/style.css"><script src="/ui.js" defer></script></head><body>
+<header><div class="mark">♮</div><div><div class="eyebrow">SCORE LIBRARY / LOCAL WORKBENCH</div><h1>提交前复核</h1></div><span id="state" class="badge">正在连接</span></header>
+<div class="notice"><strong>本地管理员工具</strong> · 成员切换仅为管理员模拟，不是登录或服务端权限边界。不要向成员分享本页面、会话或母库；不提供曲谱配送。</div>
+<div id="message" role="status" aria-live="polite">正在读取本地草稿…</div>
+<main><aside><section><div class="section-title"><span class="step">01</span><h2>待提交变更</h2></div><p class="muted">仅管理员可见 · 查看每一项操作及完整前后差异</p><div id="counts" class="counts">等待选择成员并核验草稿</div><div id="summary"></div></section>
+<section><div class="section-title"><span class="step">03</span><h2>确认保存</h2></div><p class="muted">保存前重新核验文件、数据版本与冻结保护。失败不写入正式资产。</p><label class="ack"><input id="ack" type="checkbox" disabled>我已复核完整变更与当前成员预览</label><button id="save" class="primary" disabled>确认保存到正式库</button><button id="cancel" class="secondary" disabled>取消本草稿</button><button id="recover" class="secondary" hidden>重新核对权威状态</button><p id="receipt" class="mono"></p></section></aside>
+<div class="workspace"><section><div class="section-title"><span class="step">02</span><h2>成员视角 · 只读模拟</h2></div><div class="controls"><label>模拟成员<select id="member" aria-label="模拟成员"></select></label><button id="refresh" class="secondary">重新核验</button></div><p class="muted">查看权限与演奏分配分别展示；默认乐器、管理员角色均不自动授予查看权。</p><div id="parts"></div></section>
+<section class="preview"><div class="preview-head"><div><h2>原 PDF 页预览</h2><p id="page-label" class="muted">选择一个获准声部的源页</p></div><span class="badge quiet">单页 PNG · 只读</span></div><div id="paper"><p class="empty">选中获准页段后显示实际 PDF 渲染结果</p></div></section></div></main>
+<footer>可替换本地原型 · 无联网同步 · 无 PDF 下载入口 · 完整开放包才保留编号、分类与历史保留号</footer></body></html>
