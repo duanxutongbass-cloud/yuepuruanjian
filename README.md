@@ -1,9 +1,13 @@
 # 重奏团曲谱库
 
-Android Kotlin / Jetpack Compose project. Current application baseline: 0.9.6.
+Android Kotlin / Jetpack Compose project, application baseline 0.9.6.
 
-See [project documentation](docs/README.md), [roadmap](docs/PRODUCT_ROADMAP.md), and [current status](docs/PROJECT_STATE.md).
+- [Documentation](docs/README.md)
+- [Roadmap](docs/PRODUCT_ROADMAP.md)
+- [Current status and verification boundaries](docs/PROJECT_STATE.md)
 
-Real-device acceptance remains pending. Phase 10 is planning, not a deployed NAS service.
+Open with Android Studio; use Gradle 8.14.3 and a compatible JDK/Android Studio JBR. Configure your own Android SDK. This snapshot does not include a Gradle wrapper; use a local Gradle installation.
 
-Build using Android Studio and Gradle 8.14.3 with JDK 17 or compatible Android Studio JBR; configure your local Android SDK. Local machine configuration, private scores, signing keys and generated build outputs are not included.
+Private scores, personal backups, signing keys, local configuration and generated build outputs are excluded. Included score.pdf is a generated synthetic test fixture.
+
+Real-device acceptance remains pending; Phase 10 is planning, not a deployed NAS service.
