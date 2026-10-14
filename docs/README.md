@@ -1,6 +1,8 @@
 # 项目文档入口
 
-决策同步日期：2026-10-10。来源：主项目“产品设计方案”最新确认、当前 Work 的已执行构建与测试记录。
+2026-10-14 已按用户要求整合已有分支到本地 main，当前状态以 PROJECT_STATE 顶部合并状态为准。本次实际测试和环境限制见 [LOCAL_MERGE_REVIEW.md](LOCAL_MERGE_REVIEW.md)；下文测试数字及旧阶段状态为历史批次。
+
+决策同步日期：2026-10-13。来源：主项目“产品设计方案”最新确认、当前 Work 的已执行构建与测试记录。
 
 本目录是后续开发的唯一有效项目规范。历史审查报告只证明对应阶段当时的范围和结果，不能覆盖当前规范。新决策须先更新其所属文档，并同步项目状态，不能另建互相矛盾的方案。
 
@@ -23,6 +25,7 @@
 | [PHASE10_0_REQUIREMENTS.md](PHASE10_0_REQUIREMENTS.md) | 新确认、工具盘点和联网细则的待冻结清单 |
 | [TEAM_SYNC_CONTRACT.md](TEAM_SYNC_CONTRACT.md) | 发布、授权分谱、源页和同步接口边界草案 |
 | [PHASE10_0_REVIEW.md](PHASE10_0_REVIEW.md) | 本次实际盘点、设计纠正与未核验项，进行中 |
+| [PHASE10_1_LOCAL_REVIEW.md](PHASE10_1_LOCAL_REVIEW.md) | 获准独立实施的无网络本地核心候选、测试与未验范围；不代表完整 Windows 交付 |
 | [PHASE9_DEVICE_CHECKLIST.md](PHASE9_DEVICE_CHECKLIST.md) | 普通/大 Pad 的实际设备验收记录矩阵 |
 | [INTERACTION_REVIEW.md](INTERACTION_REVIEW.md) | 全流程人机交互审查、证据与限制，不代替阶段通过报告 |
 | [INTERACTION_FIX_REQUIREMENTS.md](INTERACTION_FIX_REQUIREMENTS.md) | 实测八项反馈的 0.9.6 修复范围 |

@@ -1,0 +1,108 @@
+{
+  "passed": true,
+  "cliInvocations": 33,
+  "syntheticOnly": true,
+  "draftLeavesLiveUnchanged": true,
+  "explicitConfirmationRequired": true,
+  "repeatConfirmationIdempotent": true,
+  "cancelLeavesLiveUnchanged": true,
+  "completeAssetDigestEqual": true,
+  "stablePieceId": "ee2967cf-a652-4db6-9fe5-bc02873a7f4b",
+  "stableVersionId": "b68672a1-8eac-4875-b0f9-6a1738277a04",
+  "sourcePages": [
+    1,
+    2
+  ],
+  "numbers": [
+    998,
+    999
+  ],
+  "tableCounts": {
+    "pieces": 2,
+    "movements": 1,
+    "part_definitions": 1,
+    "piece_parts": 2,
+    "score_pdfs": 2,
+    "score_pdf_versions": 3,
+    "part_score_bindings": 2,
+    "members": 2,
+    "member_part_permissions": 1,
+    "member_piece_part_permissions": 1,
+    "piece_part_assignments": 1,
+    "concerts": 1,
+    "concert_items": 1,
+    "annotation_pages": 1,
+    "annotation_revisions": 1,
+    "annotation_concert_snapshots": 1,
+    "local_categories": 1,
+    "local_numbers": 2,
+    "local_number_history": 2
+  },
+  "memberPreview": {
+    "memberId": "legacy-player",
+    "memberName": "Synthetic player",
+    "pieces": [
+      {
+        "pieceId": "ee2967cf-a652-4db6-9fe5-bc02873a7f4b",
+        "title": "Synthetic CLI piece",
+        "visibleParts": [
+          {
+            "partId": "9d6ef62f-22e7-40a0-a613-abfead933536",
+            "name": "User-defined sound",
+            "segments": [
+              {
+                "bindingId": "09aa4281-050e-48bc-a6d8-303d82796c86",
+                "movementId": null,
+                "sourceVersionId": "b68672a1-8eac-4875-b0f9-6a1738277a04",
+                "sourcePages": [
+                  1,
+                  2
+                ]
+              }
+            ]
+          }
+        ],
+        "playing": {
+          "partId": "9d6ef62f-22e7-40a0-a613-abfead933536"
+        },
+        "number": 999,
+        "category": {
+          "id": "9bb9389e-5b37-46e1-8137-1bb1f4951c0d",
+          "code": "73",
+          "name": "Synthetic user category"
+        }
+      },
+      {
+        "pieceId": "legacy-piece",
+        "title": "Synthetic piece",
+        "visibleParts": [
+          {
+            "partId": "legacy-part",
+            "name": "User-defined sound",
+            "segments": [
+              {
+                "bindingId": "legacy-binding",
+                "movementId": "legacy-movement",
+                "sourceVersionId": "legacy-v1",
+                "sourcePages": [
+                  1,
+                  2
+                ]
+              }
+            ]
+          }
+        ],
+        "playing": {
+          "partId": "legacy-part"
+        },
+        "number": 998,
+        "category": null
+      }
+    ],
+    "previewKind": "AUTHORIZED_METADATA_ONLY",
+    "pdfBytesIncluded": false,
+    "distributionImplemented": false
+  },
+  "legacyChildRecoveryScope": "ANDROID_V1_ONLY_NO_NUMBERING_CATEGORIES_HISTORY",
+  "limitations": "Metadata simulation only; no login, PDF rendering/splitting/delivery, native Windows or Android execution"
+}

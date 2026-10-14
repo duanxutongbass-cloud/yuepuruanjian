@@ -2,6 +2,8 @@
 
 Android Kotlin / Jetpack Compose project, application baseline 0.9.6.
 
+2026-10-14: Local main integrates the Android UI, annotation reliability, sync core, isolated HTTP/offline test adapter, and local management workflow/review prototype. See [local merge verification](docs/LOCAL_MERGE_REVIEW.md), [local manager](local-manager/README.md), and [HTTP test service](test-service/README.md).
+
 - [Documentation](docs/README.md)
 - [Roadmap](docs/PRODUCT_ROADMAP.md)
 - [Current status and verification boundaries](docs/PROJECT_STATE.md)

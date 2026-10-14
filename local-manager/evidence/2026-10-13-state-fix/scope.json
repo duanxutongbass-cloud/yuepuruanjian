@@ -1,0 +1,12 @@
+{
+  "base": "967d15435d9c66bb994119ac288d67a6938a8e18",
+  "productionChanges": [
+    "local-manager/score_manager/review_ui/ui.js",
+    "local-manager/score_manager/review_ui/index.html"
+  ],
+  "backendUnchanged": true,
+  "oldUiSha256": "0bd31e243d1970644f46047cea6b2b760d309940a065ce2735ae712c48d46004",
+  "newUiSha256": "5d0caa918ee492890625da2fdc5b2aaf272de08334a09d14424b1c3318e2d387",
+  "reopenAndRepeatedConfirmPreserveAssetsAndSingleReceipt": true,
+  "screenshots": "Before/after and UNKNOWN state images in Library handoff; actual images inspected."
+}
