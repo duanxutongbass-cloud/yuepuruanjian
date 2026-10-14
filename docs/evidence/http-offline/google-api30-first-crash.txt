@@ -1,0 +1,16 @@
+--------- beginning of crash
+10-14 03:12:20.538   745   826 E AndroidRuntime: FATAL EXCEPTION: SysUiBg
+10-14 03:12:20.538   745   826 E AndroidRuntime: Process: com.android.systemui, PID: 745
+10-14 03:12:20.538   745   826 E AndroidRuntime: DeadSystemException: The system died; earlier logs will point to the root cause
+10-14 03:12:20.589  1072  1393 E AndroidRuntime: FATAL EXCEPTION: IpClient.wlan0
+10-14 03:12:20.589  1072  1393 E AndroidRuntime: Process: com.android.networkstack.process, PID: 1072
+10-14 03:12:20.589  1072  1393 E AndroidRuntime: DeadSystemException: The system died; earlier logs will point to the root cause
+10-14 03:12:20.765  1154  1154 E AndroidRuntime: FATAL EXCEPTION: main
+10-14 03:12:20.765  1154  1154 E AndroidRuntime: Process: com.android.phone, PID: 1154
+10-14 03:12:20.765  1154  1154 E AndroidRuntime: DeadSystemException: The system died; earlier logs will point to the root cause
+10-14 03:12:20.898  1635  1635 E AndroidRuntime: FATAL EXCEPTION: main
+10-14 03:12:20.898  1635  1635 E AndroidRuntime: Process: com.google.android.apps.wellbeing, PID: 1635
+10-14 03:12:20.898  1635  1635 E AndroidRuntime: DeadSystemException: The system died; earlier logs will point to the root cause
+10-14 03:12:21.013  1607  1607 E AndroidRuntime: FATAL EXCEPTION: main
+10-14 03:12:21.013  1607  1607 E AndroidRuntime: Process: com.android.bluetooth, PID: 1607
+10-14 03:12:21.013  1607  1607 E AndroidRuntime: DeadSystemException: The system died; earlier logs will point to the root cause

@@ -1,0 +1,150 @@
+{
+  "code_commit": "442a7cf67771db9e65cd0529da9167853ee06d66",
+  "jvm": {
+    "tests": 200,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "classes": [
+    {
+      "name": "com.ensemble.scorelibrary.annotation.AnnotationGestureTest",
+      "tests": 3
+    },
+    {
+      "name": "com.ensemble.scorelibrary.annotation.AnnotationMigrationTest",
+      "tests": 1
+    },
+    {
+      "name": "com.ensemble.scorelibrary.annotation.AnnotationRepositoryTest",
+      "tests": 11
+    },
+    {
+      "name": "com.ensemble.scorelibrary.annotation.AnnotationViewModelTest",
+      "tests": 21
+    },
+    {
+      "name": "com.ensemble.scorelibrary.backup.ArchivePanelTest",
+      "tests": 3
+    },
+    {
+      "name": "com.ensemble.scorelibrary.backup.ArchiveViewModelTest",
+      "tests": 5
+    },
+    {
+      "name": "com.ensemble.scorelibrary.backup.AssetArchiveTest",
+      "tests": 11
+    },
+    {
+      "name": "com.ensemble.scorelibrary.core.database.PresentationRepositoryTest",
+      "tests": 1
+    },
+    {
+      "name": "com.ensemble.scorelibrary.core.database.RepositoryIntegrationTest",
+      "tests": 2
+    },
+    {
+      "name": "com.ensemble.scorelibrary.core.database.ScoreLibraryDatabaseTest",
+      "tests": 5
+    },
+    {
+      "name": "com.ensemble.scorelibrary.core.pedal.PedalTest",
+      "tests": 9
+    },
+    {
+      "name": "com.ensemble.scorelibrary.data.LibraryManagementTest",
+      "tests": 15
+    },
+    {
+      "name": "com.ensemble.scorelibrary.domain.PresentationTest",
+      "tests": 8
+    },
+    {
+      "name": "com.ensemble.scorelibrary.domain.ScoreResolverTest",
+      "tests": 10
+    },
+    {
+      "name": "com.ensemble.scorelibrary.domain.sync.RemoteManifestTest",
+      "tests": 3
+    },
+    {
+      "name": "com.ensemble.scorelibrary.domain.sync.SyncStateCoreTest",
+      "tests": 29
+    },
+    {
+      "name": "com.ensemble.scorelibrary.pdf.ConcertReaderTest",
+      "tests": 7
+    },
+    {
+      "name": "com.ensemble.scorelibrary.pdf.PdfReaderViewModelTest",
+      "tests": 5
+    },
+    {
+      "name": "com.ensemble.scorelibrary.pdf.PerformancePreparationTest",
+      "tests": 9
+    },
+    {
+      "name": "com.ensemble.scorelibrary.pdf.ReaderGeometryTest",
+      "tests": 3
+    },
+    {
+      "name": "com.ensemble.scorelibrary.pdf.ReaderInteractionTest",
+      "tests": 2
+    },
+    {
+      "name": "com.ensemble.scorelibrary.ui.DeviceAvailabilityTest",
+      "tests": 1
+    },
+    {
+      "name": "com.ensemble.scorelibrary.ui.LibraryScreenTest",
+      "tests": 5
+    },
+    {
+      "name": "com.ensemble.scorelibrary.ui.LibraryViewModelTest",
+      "tests": 6
+    },
+    {
+      "name": "com.ensemble.scorelibrary.ui.LibraryWorkspaceTest",
+      "tests": 4
+    },
+    {
+      "name": "com.ensemble.scorelibrary.ui.ManagementViewModelTest",
+      "tests": 4
+    },
+    {
+      "name": "com.ensemble.scorelibrary.ui.NavigationTest",
+      "tests": 7
+    },
+    {
+      "name": "com.ensemble.scorelibrary.ui.PadScreenshotTest",
+      "tests": 2
+    },
+    {
+      "name": "com.ensemble.scorelibrary.ui.PreviewLifecycleTest",
+      "tests": 1
+    },
+    {
+      "name": "com.ensemble.scorelibrary.ui.ScorePreviewViewModelTest",
+      "tests": 7
+    }
+  ],
+  "lint": {
+    "syncTest": {
+      "Error": 0,
+      "Warning": 12,
+      "Hint": 1
+    },
+    "release": {
+      "Error": 0,
+      "Warning": 11,
+      "Hint": 1
+    }
+  },
+  "apk": {
+    "filename": "score-http-test-442a7cf.apk",
+    "sha256": "3c15c8e6b8676e81a25e120f71ed0eebdc2ba1fa7e042705174497db9dd6a4ac",
+    "library_file_id": "libfile_d1f913dc235c8191801328f162a7e977",
+    "file_id": "file_00000000c84881fda875ab37c41d70b0",
+    "library_version": 1
+  }
+}

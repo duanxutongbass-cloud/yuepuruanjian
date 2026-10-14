@@ -1,3 +1,7 @@
+# 2026-10-14 临时 HTTP 集成（原生环境阻塞，未通过）
+
+从 UI PR5 派生独立集成分支，接入真实临时服务与 Android HTTP 下载/本地阅读。200 JVM 与 6 HTTP 测试通过，构建/Lint 通过，API30 系统服务崩溃，原生验收及两张关键截图未完成；不算阶段通过。[实测记录](ANDROID_HTTP_OFFLINE_REVIEW.md)。
+
 # 阶段历史
 
 这是事实索引，不是另一份规划；未来阶段以 PRODUCT_ROADMAP 为准。

@@ -1,0 +1,229 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.13/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+
+> Configure project :app
+Unable to initialize metrics, ensure /home/agent/.android is writable, details: /home/agent/.android/analytics.settings (Read-only file system)
+
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preSyncTestBuild UP-TO-DATE
+> Task :app:mergeSyncTestNativeDebugMetadata NO-SOURCE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:generateSyncTestBuildConfig UP-TO-DATE
+> Task :app:checkSyncTestAarMetadata UP-TO-DATE
+> Task :app:processSyncTestNavigationResources UP-TO-DATE
+> Task :app:compileSyncTestNavigationResources UP-TO-DATE
+> Task :app:generateSyncTestResValues UP-TO-DATE
+> Task :app:mapSyncTestSourceSetPaths UP-TO-DATE
+> Task :app:generateSyncTestResources UP-TO-DATE
+> Task :app:mergeSyncTestResources UP-TO-DATE
+> Task :app:packageSyncTestResources UP-TO-DATE
+> Task :app:parseSyncTestLocalResources UP-TO-DATE
+> Task :app:createSyncTestCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksSyncTest UP-TO-DATE
+> Task :app:processSyncTestMainManifest UP-TO-DATE
+> Task :app:processSyncTestManifest UP-TO-DATE
+> Task :app:processSyncTestManifestForPackage UP-TO-DATE
+> Task :app:processSyncTestResources UP-TO-DATE
+> Task :app:javaPreCompileSyncTest UP-TO-DATE
+> Task :app:mergeSyncTestShaders UP-TO-DATE
+> Task :app:compileSyncTestShaders NO-SOURCE
+> Task :app:generateSyncTestAssets UP-TO-DATE
+> Task :app:mergeSyncTestAssets UP-TO-DATE
+> Task :app:compressSyncTestAssets UP-TO-DATE
+> Task :app:checkSyncTestDuplicateClasses UP-TO-DATE
+> Task :app:desugarSyncTestFileDependencies UP-TO-DATE
+> Task :app:mergeExtDexSyncTest UP-TO-DATE
+> Task :app:mergeLibDexSyncTest UP-TO-DATE
+> Task :app:mergeSyncTestJniLibFolders UP-TO-DATE
+> Task :app:mergeSyncTestNativeLibs UP-TO-DATE
+> Task :app:stripSyncTestDebugSymbols UP-TO-DATE
+> Task :app:validateSigningSyncTest UP-TO-DATE
+> Task :app:writeSyncTestAppMetadata UP-TO-DATE
+> Task :app:writeSyncTestSigningConfigVersions UP-TO-DATE
+> Task :app:preSyncTestAndroidTestBuild SKIPPED
+> Task :app:processSyncTestAndroidTestManifest UP-TO-DATE
+> Task :app:generateSyncTestAndroidTestBuildConfig UP-TO-DATE
+> Task :app:checkSyncTestAndroidTestAarMetadata UP-TO-DATE
+> Task :app:processSyncTestAndroidTestNavigationResources UP-TO-DATE
+> Task :app:compileSyncTestAndroidTestNavigationResources UP-TO-DATE
+> Task :app:generateSyncTestAndroidTestResValues UP-TO-DATE
+> Task :app:mapSyncTestAndroidTestSourceSetPaths UP-TO-DATE
+> Task :app:generateSyncTestAndroidTestResources UP-TO-DATE
+> Task :app:mergeSyncTestAndroidTestResources UP-TO-DATE
+> Task :app:processSyncTestAndroidTestResources UP-TO-DATE
+> Task :app:javaPreCompileSyncTestAndroidTest UP-TO-DATE
+> Task :app:mergeSyncTestAndroidTestShaders UP-TO-DATE
+> Task :app:compileSyncTestAndroidTestShaders NO-SOURCE
+> Task :app:generateSyncTestAndroidTestAssets UP-TO-DATE
+> Task :app:mergeSyncTestAndroidTestAssets UP-TO-DATE
+> Task :app:compressSyncTestAndroidTestAssets UP-TO-DATE
+> Task :app:checkSyncTestAndroidTestDuplicateClasses UP-TO-DATE
+> Task :app:desugarSyncTestAndroidTestFileDependencies UP-TO-DATE
+> Task :app:mergeExtDexSyncTestAndroidTest UP-TO-DATE
+> Task :app:mergeLibDexSyncTestAndroidTest UP-TO-DATE
+> Task :app:mergeSyncTestAndroidTestJniLibFolders UP-TO-DATE
+> Task :app:mergeSyncTestAndroidTestNativeLibs NO-SOURCE
+> Task :app:stripSyncTestAndroidTestDebugSymbols NO-SOURCE
+> Task :app:validateSigningSyncTestAndroidTest UP-TO-DATE
+> Task :app:writeSyncTestAndroidTestSigningConfigVersions UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:generateDebugBuildConfig UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:processDebugNavigationResources UP-TO-DATE
+> Task :app:compileDebugNavigationResources UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:mergeDebugShaders UP-TO-DATE
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:mergeDebugAssets UP-TO-DATE
+> Task :app:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:packageDebugUnitTestForUnitTest UP-TO-DATE
+> Task :app:processDebugUnitTestManifest UP-TO-DATE
+> Task :app:generateDebugUnitTestConfig UP-TO-DATE
+> Task :app:javaPreCompileDebugUnitTest UP-TO-DATE
+> Task :app:extractProguardFiles UP-TO-DATE
+> Task :app:preSyncTestUnitTestBuild UP-TO-DATE
+> Task :app:buildKotlinToolingMetadata UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:generateReleaseBuildConfig UP-TO-DATE
+> Task :app:checkReleaseAarMetadata UP-TO-DATE
+> Task :app:processReleaseNavigationResources UP-TO-DATE
+> Task :app:compileReleaseNavigationResources UP-TO-DATE
+> Task :app:generateReleaseResValues UP-TO-DATE
+> Task :app:mapReleaseSourceSetPaths UP-TO-DATE
+> Task :app:generateReleaseResources UP-TO-DATE
+> Task :app:mergeReleaseResources UP-TO-DATE
+> Task :app:packageReleaseResources UP-TO-DATE
+> Task :app:parseReleaseLocalResources UP-TO-DATE
+> Task :app:createReleaseCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksRelease UP-TO-DATE
+> Task :app:processReleaseMainManifest UP-TO-DATE
+> Task :app:processReleaseManifest UP-TO-DATE
+> Task :app:processReleaseManifestForPackage UP-TO-DATE
+> Task :app:processReleaseResources UP-TO-DATE
+> Task :app:javaPreCompileRelease UP-TO-DATE
+> Task :app:preReleaseUnitTestBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:compressDebugAssets UP-TO-DATE
+> Task :app:desugarDebugFileDependencies UP-TO-DATE
+> Task :app:checkDebugDuplicateClasses UP-TO-DATE
+> Task :app:mergeExtDexDebug UP-TO-DATE
+> Task :app:mergeLibDexDebug UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders UP-TO-DATE
+> Task :app:mergeDebugNativeLibs UP-TO-DATE
+> Task :app:stripDebugDebugSymbols UP-TO-DATE
+> Task :app:validateSigningDebug UP-TO-DATE
+> Task :app:writeDebugAppMetadata UP-TO-DATE
+> Task :app:writeDebugSigningConfigVersions UP-TO-DATE
+> Task :app:kspReleaseKotlin
+> Task :app:kspDebugKotlin
+> Task :app:kspSyncTestKotlin
+
+> Task :app:compileReleaseKotlin
+w: file:///workspace/yuepuruanjian/app/src/main/java/com/ensemble/scorelibrary/sync/HttpSyncStore.kt:22:41 This annotation is currently applied to the value parameter only, but in the future it will also be applied to field.
+- To opt in to applying to both value parameter and field, add '-Xannotation-default-target=param-property' to your compiler arguments.
+- To keep applying to the value parameter only, use the '@param:' annotation target.
+
+See https://youtrack.jetbrains.com/issue/KT-73255 for more details.
+
+> Task :app:compileDebugKotlin
+w: file:///workspace/yuepuruanjian/app/src/main/java/com/ensemble/scorelibrary/sync/HttpSyncStore.kt:22:41 This annotation is currently applied to the value parameter only, but in the future it will also be applied to field.
+- To opt in to applying to both value parameter and field, add '-Xannotation-default-target=param-property' to your compiler arguments.
+- To keep applying to the value parameter only, use the '@param:' annotation target.
+
+See https://youtrack.jetbrains.com/issue/KT-73255 for more details.
+
+> Task :app:compileReleaseJavaWithJavac UP-TO-DATE
+
+> Task :app:compileSyncTestKotlin
+w: file:///workspace/yuepuruanjian/app/src/main/java/com/ensemble/scorelibrary/sync/HttpSyncStore.kt:22:41 This annotation is currently applied to the value parameter only, but in the future it will also be applied to field.
+- To opt in to applying to both value parameter and field, add '-Xannotation-default-target=param-property' to your compiler arguments.
+- To keep applying to the value parameter only, use the '@param:' annotation target.
+
+See https://youtrack.jetbrains.com/issue/KT-73255 for more details.
+
+> Task :app:compileDebugJavaWithJavac UP-TO-DATE
+> Task :app:compileSyncTestJavaWithJavac UP-TO-DATE
+> Task :app:hiltAggregateDepsSyncTest UP-TO-DATE
+> Task :app:hiltJavaCompileSyncTest UP-TO-DATE
+> Task :app:processSyncTestJavaRes UP-TO-DATE
+> Task :app:mergeSyncTestJavaResource UP-TO-DATE
+> Task :app:transformSyncTestClassesWithAsm
+> Task :app:bundleSyncTestClassesToCompileJar
+> Task :app:dexBuilderSyncTest
+> Task :app:mergeSyncTestGlobalSynthetics UP-TO-DATE
+> Task :app:mergeProjectDexSyncTest
+> Task :app:kspSyncTestAndroidTestKotlin UP-TO-DATE
+> Task :app:compileSyncTestAndroidTestKotlin UP-TO-DATE
+> Task :app:compileSyncTestAndroidTestJavaWithJavac UP-TO-DATE
+> Task :app:hiltAggregateDepsSyncTestAndroidTest UP-TO-DATE
+> Task :app:hiltJavaCompileSyncTestAndroidTest NO-SOURCE
+> Task :app:transformSyncTestAndroidTestClassesWithAsm UP-TO-DATE
+> Task :app:dexBuilderSyncTestAndroidTest UP-TO-DATE
+> Task :app:mergeProjectDexSyncTestAndroidTest UP-TO-DATE
+> Task :app:mergeSyncTestAndroidTestGlobalSynthetics UP-TO-DATE
+> Task :app:packageSyncTest
+> Task :app:createSyncTestApkListingFileRedirect UP-TO-DATE
+> Task :app:assembleSyncTest
+> Task :app:processSyncTestAndroidTestJavaRes UP-TO-DATE
+> Task :app:mergeSyncTestAndroidTestJavaResource UP-TO-DATE
+> Task :app:packageSyncTestAndroidTest UP-TO-DATE
+> Task :app:createSyncTestAndroidTestApkListingFileRedirect UP-TO-DATE
+> Task :app:assembleSyncTestAndroidTest UP-TO-DATE
+> Task :app:hiltAggregateDepsDebug UP-TO-DATE
+> Task :app:hiltJavaCompileDebug UP-TO-DATE
+> Task :app:processDebugJavaRes UP-TO-DATE
+> Task :app:transformDebugClassesWithAsm
+> Task :app:bundleDebugClassesToCompileJar
+> Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:generateSyncTestAndroidTestLintModel
+> Task :app:kspDebugUnitTestKotlin UP-TO-DATE
+> Task :app:compileDebugUnitTestKotlin UP-TO-DATE
+> Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :app:hiltAggregateDepsDebugUnitTest UP-TO-DATE
+> Task :app:hiltJavaCompileDebugUnitTest NO-SOURCE
+> Task :app:processDebugUnitTestJavaRes UP-TO-DATE
+> Task :app:transformDebugUnitTestClassesWithAsm UP-TO-DATE
+> Task :app:testDebugUnitTest
+> Task :app:generateSyncTestLintReportModel
+> Task :app:generateSyncTestUnitTestLintModel
+> Task :app:hiltAggregateDepsRelease UP-TO-DATE
+> Task :app:hiltJavaCompileRelease UP-TO-DATE
+> Task :app:generateReleaseLintReportModel
+> Task :app:bundleReleaseClassesToCompileJar
+> Task :app:generateReleaseUnitTestLintModel
+> Task :app:lintAnalyzeSyncTest
+> Task :app:lintAnalyzeSyncTestAndroidTest
+> Task :app:lintAnalyzeSyncTestUnitTest
+> Task :app:lintAnalyzeRelease
+
+> Task :app:lintAnalyzeSyncTestAndroidTest
+Warning: Unable to initialize metrics, ensure /home/agent/.android is writable, details: /home/agent/.android/analytics.settings (Read-only file system)
+
+> Task :app:dexBuilderDebug
+> Task :app:mergeDebugGlobalSynthetics UP-TO-DATE
+> Task :app:mergeDebugJavaResource UP-TO-DATE
+> Task :app:mergeProjectDexDebug
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect UP-TO-DATE
+> Task :app:assembleDebug
+> Task :app:lintAnalyzeReleaseUnitTest
+> Task :app:lintReportRelease UP-TO-DATE
+> Task :app:lintRelease
+> Task :app:lintReportSyncTest UP-TO-DATE
+> Task :app:lintSyncTest
+
+BUILD SUCCESSFUL in 2m 27s
+171 actionable tasks: 31 executed, 140 up-to-date

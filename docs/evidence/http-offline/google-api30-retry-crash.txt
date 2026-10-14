@@ -1,0 +1,9 @@
+--------- beginning of crash
+10-14 03:17:44.412   508   657 E AndroidRuntime: *** FATAL EXCEPTION IN SYSTEM PROCESS: DeviceStorageMonitorService
+10-14 03:17:44.412   508   657 E AndroidRuntime: java.lang.NullPointerException: Attempt to invoke virtual method 'java.util.List android.os.storage.StorageManager.getWritablePrivateVolumes()' on a null object reference
+10-14 03:17:44.412   508   657 E AndroidRuntime: 	at com.android.server.storage.DeviceStorageMonitorService.check(DeviceStorageMonitorService.java:181)
+10-14 03:17:44.412   508   657 E AndroidRuntime: 	at com.android.server.storage.DeviceStorageMonitorService.access$100(DeviceStorageMonitorService.java:72)
+10-14 03:17:44.412   508   657 E AndroidRuntime: 	at com.android.server.storage.DeviceStorageMonitorService$1.handleMessage(DeviceStorageMonitorService.java:257)
+10-14 03:17:44.412   508   657 E AndroidRuntime: 	at android.os.Handler.dispatchMessage(Handler.java:106)
+10-14 03:17:44.412   508   657 E AndroidRuntime: 	at android.os.Looper.loop(Looper.java:223)
+10-14 03:17:44.412   508   657 E AndroidRuntime: 	at android.os.HandlerThread.run(HandlerThread.java:67)

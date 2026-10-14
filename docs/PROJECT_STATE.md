@@ -1,3 +1,7 @@
+# Android 临时 HTTP 集成（原生验收阻塞，未通过）
+
+已完成实际服务/客户端、200 JVM、6 HTTP 服务端测试和 APK/Lint；原生 API30 系统在安装阶段崩溃，真实 App 闭环和两张截图未完成；本轮目标未验收。独立草稿 PR #7，详细结果以 [ANDROID_HTTP_OFFLINE_REVIEW.md](ANDROID_HTTP_OFFLINE_REVIEW.md) 为准。未合并 main；版本/schema 不变。
+
 # 最新 Android UI 精修交付
 
 本轮代码 `81e20f3`，继续草稿 PR #5。冷灰纸面、紧凑离线说明、实际曲名/声部与直达阅读器已实现；最终证据和附件见 [ANDROID_UI_POLISH_REVIEW.md](ANDROID_UI_POLISH_REVIEW.md)。下文为此前阶段记录。

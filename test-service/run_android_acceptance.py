@@ -22,7 +22,8 @@ def adb(*argv, **kwargs):
 
 
 assert adb('shell', 'getprop', 'ro.hardware').strip() in ('ranchu', 'goldfish'), 'Only disposable emulator is supported'
-adb('shell', 'rm', '-f', '/data/local/tmp/http-step', '/data/local/tmp/http-ack')
+adb('shell', 'rm', '-f', '/data/local/tmp/http-step', '/data/local/tmp/http-ack',
+    '/data/local/tmp/http-authorized-download.png', '/data/local/tmp/http-service-stopped-offline-reader.png')
 adb('reverse', 'tcp:8765', 'tcp:8765')
 server = make_server(8765)
 worker = threading.Thread(target=server.serve_forever, daemon=True)

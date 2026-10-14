@@ -1,0 +1,22 @@
+--------- beginning of crash
+10-14 03:33:03.149  1553  2106 E AndroidRuntime: FATAL EXCEPTION: Worker-1
+10-14 03:33:03.149  1553  2106 E AndroidRuntime: Process: android.process.acore, PID: 1553
+10-14 03:33:03.149  1553  2106 E AndroidRuntime: DeadSystemException: The system died; earlier logs will point to the root cause
+10-14 03:33:03.161  1057  1057 E AndroidRuntime: FATAL EXCEPTION: main
+10-14 03:33:03.161  1057  1057 E AndroidRuntime: Process: com.android.phone, PID: 1057
+10-14 03:33:03.161  1057  1057 E AndroidRuntime: DeadSystemException: The system died; earlier logs will point to the root cause
+10-14 03:33:03.180   966   966 E AndroidRuntime: FATAL EXCEPTION: main
+10-14 03:33:03.180   966   966 E AndroidRuntime: Process: com.android.launcher3, PID: 966
+10-14 03:33:03.180   966   966 E AndroidRuntime: DeadSystemException: The system died; earlier logs will point to the root cause
+10-14 03:33:03.397   709   709 E AndroidRuntime: FATAL EXCEPTION: main
+10-14 03:33:03.397   709   709 E AndroidRuntime: Process: com.android.systemui, PID: 709
+10-14 03:33:03.397   709   709 E AndroidRuntime: DeadSystemException: The system died; earlier logs will point to the root cause
+10-14 03:33:03.594  2162  2162 E AndroidRuntime: FATAL EXCEPTION: main
+10-14 03:33:03.594  2162  2162 E AndroidRuntime: PID: 2162
+10-14 03:33:03.594  2162  2162 E AndroidRuntime: DeadSystemException: The system died; earlier logs will point to the root cause
+10-14 03:33:03.609  2184  2184 E AndroidRuntime: FATAL EXCEPTION: main
+10-14 03:33:03.609  2184  2184 E AndroidRuntime: PID: 2184
+10-14 03:33:03.609  2184  2184 E AndroidRuntime: DeadSystemException: The system died; earlier logs will point to the root cause
+10-14 03:33:03.911   986  2159 E AndroidRuntime: FATAL EXCEPTION: Thread-12
+10-14 03:33:03.911   986  2159 E AndroidRuntime: Process: com.android.networkstack.process, PID: 986
+10-14 03:33:03.911   986  2159 E AndroidRuntime: DeadSystemException: The system died; earlier logs will point to the root cause
