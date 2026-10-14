@@ -1,0 +1,95 @@
+INSTRUMENTATION_STATUS: class=com.ensemble.scorelibrary.sync.HttpEndToEndTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=
+com.ensemble.scorelibrary.sync.HttpEndToEndTest:
+INSTRUMENTATION_STATUS: test=loginAuthorizedDownloadAccountIsolationRetryThenServiceStoppedOfflineReader
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.ensemble.scorelibrary.sync.HttpEndToEndTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Failed: assertDoesNotExist.
+Reason: Did not expect any node but found '1' node that satisfies: (TestTag = 'piece-33c77206-e360-58fd-b9c2-00acc63af940')
+Node found:
+Node #521 at (l=120.0, t=447.0, r=334.0, b=495.0)px, Tag: 'piece-33c77206-e360-58fd-b9c2-00acc63af940'
+Focused = 'false'
+Selected = 'false'
+Text = '[合成练习曲 · Violin]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, OnClick, RequestFocus, SetTextSubstitution, ShowTextSubstitution]
+MergeDescendants = 'true'
+Has 1 sibling
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.assertDoesNotExist(SemanticsNodeInteraction.kt:101)
+	at com.ensemble.scorelibrary.sync.HttpEndToEndTest$loginAuthorizedDownloadAccountIsolationRetryThenServiceStoppedOfflineReader$1.invokeSuspend(HttpEndToEndTest.kt:101)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:94)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:70)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source:1)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:48)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source:1)
+	at com.ensemble.scorelibrary.sync.HttpEndToEndTest.loginAuthorizedDownloadAccountIsolationRetryThenServiceStoppedOfflineReader(HttpEndToEndTest.kt:52)
+
+INSTRUMENTATION_STATUS: stream=
+Error in loginAuthorizedDownloadAccountIsolationRetryThenServiceStoppedOfflineReader(com.ensemble.scorelibrary.sync.HttpEndToEndTest):
+java.lang.AssertionError: Failed: assertDoesNotExist.
+Reason: Did not expect any node but found '1' node that satisfies: (TestTag = 'piece-33c77206-e360-58fd-b9c2-00acc63af940')
+Node found:
+Node #521 at (l=120.0, t=447.0, r=334.0, b=495.0)px, Tag: 'piece-33c77206-e360-58fd-b9c2-00acc63af940'
+Focused = 'false'
+Selected = 'false'
+Text = '[合成练习曲 · Violin]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, OnClick, RequestFocus, SetTextSubstitution, ShowTextSubstitution]
+MergeDescendants = 'true'
+Has 1 sibling
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.assertDoesNotExist(SemanticsNodeInteraction.kt:101)
+	at com.ensemble.scorelibrary.sync.HttpEndToEndTest$loginAuthorizedDownloadAccountIsolationRetryThenServiceStoppedOfflineReader$1.invokeSuspend(HttpEndToEndTest.kt:101)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:94)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:70)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source:1)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:48)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source:1)
+	at com.ensemble.scorelibrary.sync.HttpEndToEndTest.loginAuthorizedDownloadAccountIsolationRetryThenServiceStoppedOfflineReader(HttpEndToEndTest.kt:52)
+
+INSTRUMENTATION_STATUS: test=loginAuthorizedDownloadAccountIsolationRetryThenServiceStoppedOfflineReader
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_RESULT: stream=
+
+Time: 111.777
+There was 1 failure:
+1) loginAuthorizedDownloadAccountIsolationRetryThenServiceStoppedOfflineReader(com.ensemble.scorelibrary.sync.HttpEndToEndTest)
+java.lang.AssertionError: Failed: assertDoesNotExist.
+Reason: Did not expect any node but found '1' node that satisfies: (TestTag = 'piece-33c77206-e360-58fd-b9c2-00acc63af940')
+Node found:
+Node #521 at (l=120.0, t=447.0, r=334.0, b=495.0)px, Tag: 'piece-33c77206-e360-58fd-b9c2-00acc63af940'
+Focused = 'false'
+Selected = 'false'
+Text = '[合成练习曲 · Violin]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, OnClick, RequestFocus, SetTextSubstitution, ShowTextSubstitution]
+MergeDescendants = 'true'
+Has 1 sibling
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.assertDoesNotExist(SemanticsNodeInteraction.kt:101)
+	at com.ensemble.scorelibrary.sync.HttpEndToEndTest$loginAuthorizedDownloadAccountIsolationRetryThenServiceStoppedOfflineReader$1.invokeSuspend(HttpEndToEndTest.kt:101)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:94)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:70)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source:1)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:48)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source:1)
+	at com.ensemble.scorelibrary.sync.HttpEndToEndTest.loginAuthorizedDownloadAccountIsolationRetryThenServiceStoppedOfflineReader(HttpEndToEndTest.kt:52)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+
+INSTRUMENTATION_CODE: -1

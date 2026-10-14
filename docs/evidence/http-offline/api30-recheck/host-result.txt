@@ -1,0 +1,32 @@
+Device/host step: corrupt-v2
+Device/host step: truncate-v2
+Device/host step: resume-v2
+Device/host step: revoke
+Device/host step: regrant
+Device/host step: stop-service
+Device/host step: finished
+INSTRUMENTATION_STATUS: class=com.ensemble.scorelibrary.sync.HttpEndToEndTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=
+com.ensemble.scorelibrary.sync.HttpEndToEndTest:
+INSTRUMENTATION_STATUS: test=loginAuthorizedDownloadAccountIsolationRetryThenServiceStoppedOfflineReader
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.ensemble.scorelibrary.sync.HttpEndToEndTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=loginAuthorizedDownloadAccountIsolationRetryThenServiceStoppedOfflineReader
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_RESULT: stream=
+
+Time: 234.548
+
+OK (1 test)
+
+
+INSTRUMENTATION_CODE: -1
+
+PASS: real app, account isolation, corruption, interruption/range retry, old bytes and ink preserved, revocation, service stopped, native offline reader.

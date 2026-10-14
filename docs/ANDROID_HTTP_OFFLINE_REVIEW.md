@@ -1,3 +1,32 @@
+# API30 原生复验：通过（2026-10-14）
+
+从远端 `21bc5fd3907243f67b2c08c23fd5c92f5eded1ad` 独立工作树复验，复用 PR5 已成功的 API30 AOSP x86_64 / 800×1200 / 160dpi 软件模拟器，没有重建环境、清数据或修改系统安全。PR5 工作树未改。
+
+最终代码 `238c2b9a349fa0399217a55962018a7264de1000`，仅三处最小修复：
+- 临时 HTTP 会话的曲库标题按当前成员服务端清单过滤；本地曲库既有目录规则与 Domain 鉴权不变。
+- 会话入口不再因临时 Loading envelope 卸载导航。保留成员绑定检查及按成员重建，旧 envelope 继续由 ScoreLibraryApp 隐藏。修复打开阅读器后退回曲库的问题。
+- 原生测试通过管道写宿主标记，避免 UiAutomation 直接执行命令不解释 shell 重定向导致握手一直等待。
+
+最终原生 **1 用例通过，0 失败/跳过，234.548 秒**。实际 MainActivity + HTTP + Room + 原生 PdfRenderer，覆盖 Alice/Bob 隔离、猜资源拒绝、重复下载、损坏/中断与实际 Range 续传、换版后旧字节和个人笔迹保留、撤权/重新授权、宿主关闭服务、断服后原生阅读器、Activity recreate、断服新登录拒绝。不是生产认证、永久离线凭据或 NAS 验收。
+
+最终完整 JVM **200 项通过，0 失败/错误/跳过**；syncTest 主/测试 APK 构建成功。本轮没有重跑既有 6 项服务端测试、独立 6 项 PDF/归档原生批次或 Lint，不将历史结果计作本轮通过。API34、大窗、物理设备/HID/笔仍未验。
+
+[最终原始测试日志](evidence/http-offline/api30-recheck/instrumentation.txt)、[宿主步骤与通过结果](evidence/http-offline/api30-recheck/host-result.txt)、[HTTP 审计](evidence/http-offline/api30-recheck/http-audit.json)、[服务关闭标记](evidence/http-offline/api30-recheck/service-stopped.txt)。[授权清单与下载](evidence/http-offline/api30-recheck/http-authorized-download.png)和[关服后阅读器](evidence/http-offline/api30-recheck/http-service-stopped-offline-reader.png)是本轮实际全窗口截图，均已查看。
+
+首次实际运行在 Bob 仍见 Alice 曲名处失败（111.777 秒）。中间握手诊断主动停止，因此 Process crashed 记录表示测试进程被停止，不是系统崩溃；初步怀疑加载界面时曾试验导航修复，未将该尝试计作通过。修复握手后，原导航明确在等待 pdf-page 第159行超时（362.532 秒），并有退回曲库截图；据此保留导航生命周期修复后完整重跑通过。失败和中间窗口保留在 api30-recheck 目录，不替代最终证据。
+
+独立 Library 附件：
+- [APK](https://chatgpt.com/api/library/files/libfile_79444fb8606c8191b32139fbf928c108/download)，SHA-256 `bdcdcaa2481f87dc64d004ba425b0f24c82777829192cc81a1a2823d30ba054f`。
+- [授权下载截图](https://chatgpt.com/api/library/files/libfile_49414f3f9e948191b627c20dd47e07cf/download)。
+- [关服后阅读截图](https://chatgpt.com/api/library/files/libfile_5e9b7c2971608191a8913176a589421f/download)。
+- [测试日志包](https://chatgpt.com/api/library/files/libfile_74ce7d61bfa08191aa3aca848dc87cdc/download)。
+
+包名 `com.ensemble.scorelibrary.httptest` 与原 App 并存；没有卸载或覆盖原 App 数据。旧测试包签名兼容性未面向其他设备验证，不建议卸载绕过冲突。临时服务已关闭，adb reverse 已移除；没有保存登录码或会话令牌。版本/schema、入库产品规则、Windows 工具与生产网络安全未改，不合并 main。
+
+---
+
+## 以下为首次环境的历史记录（0 原生执行，不代表本次复验）
+
 # Android 临时 HTTP 与离线闭环验收
 
 状态：未通过本轮端到端验收；代码与构建交付完成，真实 App 闭环被模拟器系统故障阻塞。2026-10-14。
