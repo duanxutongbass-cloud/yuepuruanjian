@@ -17,6 +17,7 @@ class MainActivity : ComponentActivity() {
     private val pdfViewModel: com.ensemble.scorelibrary.pdf.PdfReaderViewModel by viewModels()
     private val previewViewModel: com.ensemble.scorelibrary.ui.ScorePreviewViewModel by viewModels()
     private val libraryViewModel: com.ensemble.scorelibrary.ui.LibraryViewModel by viewModels()
+    private val httpViewModel: com.ensemble.scorelibrary.sync.HttpSyncViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -26,7 +27,11 @@ class MainActivity : ComponentActivity() {
                     com.ensemble.scorelibrary.core.pedal.LocalPedal provides pedalViewModel,
                     com.ensemble.scorelibrary.annotation.LocalAnnotations provides annotationViewModel,
                     com.ensemble.scorelibrary.backup.LocalArchive provides archiveViewModel) {
-                    ScoreLibraryApp(libraryViewModel, pdfViewModel, administrationViewModel, previewViewModel)
+                    if (BuildConfig.HTTP_TEST) {
+                        com.ensemble.scorelibrary.sync.HttpSessionGate(httpViewModel, libraryViewModel) {
+                            ScoreLibraryApp(libraryViewModel, pdfViewModel, null, previewViewModel)
+                        }
+                    } else ScoreLibraryApp(libraryViewModel, pdfViewModel, administrationViewModel, previewViewModel)
                 }
             }
         }

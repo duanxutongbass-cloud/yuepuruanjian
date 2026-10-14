@@ -204,9 +204,10 @@ fun ScoreLibraryApp(vm: LibraryViewModel, pdf: com.ensemble.scorelibrary.pdf.Pdf
 private fun RouteScreen(request: ScreenRequest, root: RootPage, envelope: ScreenState,
     vm: LibraryViewModel, nav: NavHostController) {
     LaunchedEffect(request) { vm.show(request) }
+    val networkSession = com.ensemble.scorelibrary.sync.LocalHttpSession.current
     LibraryScreen(if (request == envelope.request) envelope.state else UiState.Loading, root,
         vm::retry, onMember = { id ->
-            vm.selectMember(id)
+            if (networkSession != null) { if (id == null) networkSession.logout() } else vm.selectMember(id)
             if (id == null) nav.openRoot(RootPage.Profile)
         },
         onPiece = { nav.navigate(Routes.piece(it)) { launchSingleTop = true } },
@@ -323,6 +324,7 @@ private fun HomePage(root: RootPage, dashboard: Dashboard, layout: PadLayout,
     onMember: (String?) -> Unit, onPiece: (String) -> Unit, onConcert: (String) -> Unit,
     onPart: (String, String) -> Unit, onManage: (Int, String?, Boolean) -> Unit) {
     val administration = LocalAdministrationViewModel.current
+    val networkSession = com.ensemble.scorelibrary.sync.LocalHttpSession.current
     if (root == RootPage.Admin && administration != null) {
         AdministrationScreen(dashboard, administration)
         return
@@ -334,7 +336,7 @@ private fun HomePage(root: RootPage, dashboard: Dashboard, layout: PadLayout,
                 item { ListItem(headlineContent = { Text(profile.name) }, supportingContent = { Text(profile.defaultPartName ?: "默认声部暂不可用") }, leadingContent = { Icon(Icons.Outlined.Person, null) }) }
                 item { TextButton(onClick = { onMember(null) }) { Icon(Icons.AutoMirrored.Outlined.Logout, null); Text("退出当前成员") } }
             }
-            item { MemberPicker(dashboard, onMember) }
+            if (networkSession == null) item { MemberPicker(dashboard, onMember) }
             if (administration != null && (dashboard.profile?.canManage == true || dashboard.members.isEmpty())) {
                 item { TextButton(onClick = { onManage(0, null, false) }, modifier = Modifier.testTag("profile-management")) { Icon(Icons.Outlined.Settings, null); Text(if (dashboard.members.isEmpty()) "创建管理员" else "管理中心") } }
                 if (dashboard.profile?.canManage == true) item { TextButton(onClick = { onManage(2, null, false) }, modifier = Modifier.testTag("profile-part-grants")) { Icon(Icons.Outlined.AdminPanelSettings, null); Text("成员与声部授权") } }
@@ -346,7 +348,7 @@ private fun HomePage(root: RootPage, dashboard: Dashboard, layout: PadLayout,
     }
     if (dashboard.profile == null) {
         StatusPanel("选择当前成员", if (dashboard.members.isEmpty()) "请到「我的」创建首位本地管理员" else "本地测试身份，不是在线登录", Icons.Outlined.Person) {
-            MemberPicker(dashboard, onMember)
+            if (networkSession == null) MemberPicker(dashboard, onMember)
         }
         return
     }
