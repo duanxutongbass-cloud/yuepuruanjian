@@ -37,3 +37,8 @@
 同日 R2 独立复审修正：复现恢复/刷新鉴权前公开旧笔画的窗口（新增 4 项修复前全部失败），改为公开 data 先清空、私有队列保留、鉴权成功后再恢复；Reader 不绘制无 data 的批注层。最终 152 JVM 全通过、APK/测试 APK 构建成功、Lint 0 错误/10 警告/1 提示。交完整及 R1→R2 增量补丁，旧 R1 被替代；模拟器/真机/NAS 未验，等待独立复审。
 
 同日 R2 经产品经理复审接受后，用户新授权每批更新保存到 GitHub 的独立分支和草稿 PR。核对远端 main 仍为 32b702e，无需适配；推送 R2 代码提交 7557788939bf9bd07e37f4e1839188d1718c5fb9 至 `feat/annotation-reliability-phase10-r2`，创建[草稿 PR #1](https://github.com/duanxutongbass-cloud/yuepuruanjian/pull/1)。仅代码、测试及文档入库，精简证据单列 validation/ANNOTATION_R2_20261013.json；未上传 SDK、APK、日志大包、凭据或私人曲谱。main 未改、未合并发布部署；无已配置远端 Actions，本地通过不代称远端 CI 通过。
+
+
+## 2026-10-14 Android 纸面工作区切片
+
+基于批注 R2 继续 Android 原生界面结构，停止 Windows 整理工具推进。没有新版本号、schema 或联网阶段。附件像素未能取得，因此精确第三版还原待验；本轮构建、JVM、模拟器及物理设备证据分别见 [ANDROID_PAPER_UI_REVIEW](ANDROID_PAPER_UI_REVIEW.md)。不覆盖历史验收。

@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.material3.MaterialTheme
 import com.ensemble.scorelibrary.ui.ScoreLibraryApp
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -20,7 +19,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MaterialTheme {
+            com.ensemble.scorelibrary.ui.ScoreTheme {
                 androidx.compose.runtime.CompositionLocalProvider(
                     com.ensemble.scorelibrary.ui.LocalManagement provides managementViewModel,
                     com.ensemble.scorelibrary.core.pedal.LocalPedal provides pedalViewModel,

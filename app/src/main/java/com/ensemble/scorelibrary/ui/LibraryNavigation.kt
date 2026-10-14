@@ -7,9 +7,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
@@ -134,9 +131,18 @@ fun ScoreLibraryApp(vm: LibraryViewModel, pdf: com.ensemble.scorelibrary.pdf.Pdf
     }
     CompositionLocalProvider(com.ensemble.scorelibrary.pdf.LocalPdfReader provides pdf,
         LocalAdministrationViewModel provides administration) {
-    Scaffold(topBar = {
+    BoxWithConstraints(Modifier.fillMaxSize()) {
+    val sideNavigation = maxWidth >= 600.dp
+    val expandedNavigation = maxWidth >= 1200.dp
+    Row(Modifier.fillMaxSize()) {
+    if (!reader && sideNavigation) WorkspaceNavigation(Routes.root(route), expandedNavigation) { nav.openRoot(it) }
+    Scaffold(modifier = Modifier.weight(1f), containerColor = ScorePalette.Workspace, topBar = {
         if (!reader || !fullscreen) {
-        TopAppBar(title = { Text(if (reader) readerTitle else "重奏团曲谱库", maxLines = 1,
+        TopAppBar(colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = if (reader) ScorePalette.Navigation else ScorePalette.Workspace,
+            titleContentColor = if (reader) androidx.compose.ui.graphics.Color.White else ScorePalette.Ink,
+            navigationIconContentColor = if (reader) androidx.compose.ui.graphics.Color.White else ScorePalette.Ink,
+            actionIconContentColor = if (reader) androidx.compose.ui.graphics.Color.White else ScorePalette.Ink), title = { Text(if (reader) readerTitle else "重奏团曲谱库", maxLines = 1,
             overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis) },
             navigationIcon = {
                 if (reader || route == Routes.PIECE || route == Routes.CONCERT) IconButton(
@@ -146,7 +152,7 @@ fun ScoreLibraryApp(vm: LibraryViewModel, pdf: com.ensemble.scorelibrary.pdf.Pdf
             }, actions = { IconButton(onClick = vm::retry, enabled = !reader || !playing && !preparing && inkState?.transitionBlocked != true) { Icon(Icons.Outlined.Refresh, "刷新") } })
         }
     }, bottomBar = {
-        if (!reader) NavigationBar(Modifier.testTag("bottom-navigation")) {
+        if (!reader && !sideNavigation) NavigationBar(Modifier.testTag("bottom-navigation")) {
             RootPage.entries.filterNot { it == RootPage.Admin }.forEach { page -> NavigationBarItem(
                 modifier = Modifier.testTag("nav-${page.route}"),
                 selected = Routes.root(route) == page || page == RootPage.Profile && route == "admin", onClick = { nav.openRoot(page) },
@@ -171,6 +177,8 @@ fun ScoreLibraryApp(vm: LibraryViewModel, pdf: com.ensemble.scorelibrary.pdf.Pdf
                     RootPage.Library, current, vm, nav)
             }
         }
+    }
+    }
     }
     }
 }
@@ -253,6 +261,12 @@ fun LibraryScreen(state: UiState, root: RootPage, onRetry: () -> Unit = {},
                                 }
                                 is ScreenContent.Concert -> DetailColumns(layout, page.concert.title, "个人演出谱 · ${page.concert.items.size} 首") {
                                     Column {
+                                    page.concert.items.firstOrNull()?.let { first ->
+                                        Button(onClick = { onConcertScore(page.concert.id, first) },
+                                            modifier = Modifier.padding(vertical = 12.dp).testTag("open-concert-reader")) {
+                                            Icon(Icons.Outlined.PlayArrow, null); Text("打开演出谱")
+                                        }
+                                    }
                                     if (dashboard?.profile?.canManage == true && administration != null) TextButton(onClick = {
                                         managedId = page.concert.id; create = false; managementTab = 4
                                     }, modifier = Modifier.testTag("edit-concert-here")) { Icon(Icons.Outlined.Edit, null); Text("编辑节目单") }
@@ -300,29 +314,21 @@ private fun HomePage(root: RootPage, dashboard: Dashboard, layout: PadLayout,
         return
     }
     if (dashboard.profile == null) {
-        StatusPanel("选择当前成员", if (dashboard.members.isEmpty()) "尚无成员记录" else "", Icons.Outlined.Person) {
+        StatusPanel("选择当前成员", if (dashboard.members.isEmpty()) "请到「我的」创建首位本地管理员" else "本地测试身份，不是在线登录", Icons.Outlined.Person) {
             MemberPicker(dashboard, onMember)
         }
         return
     }
     when (root) {
         RootPage.Library -> {
-            Heading("曲库", "${dashboard.pieces.size} 首曲目")
+            Heading("曲谱库", "选择曲目，打开已授权声部")
             if (dashboard.profile.canManage && administration != null) TextButton(onClick = { onManage(0, null, false) }, modifier = Modifier.testTag("library-import")) { Icon(Icons.Outlined.FileOpen, null); Text("导入曲谱") }
-            if (dashboard.pieces.isEmpty()) StatusPanel("曲库为空", "尚无曲目记录", Icons.Outlined.LibraryMusic)
-            else LazyVerticalGrid(columns = if (layout == PadLayout.Compact || layout == PadLayout.Medium) GridCells.Fixed(1) else GridCells.Adaptive(360.dp),
-                horizontalArrangement = Arrangement.spacedBy(24.dp), contentPadding = PaddingValues(bottom = 24.dp)) {
-                items(dashboard.pieces, key = { it.id }) { piece -> Entry(piece.title, piece.composer.orEmpty(),
-                    Icons.Outlined.MusicNote, "piece-${piece.id}") { onPiece(piece.id) } }
-            }
+            PieceWorkspace(dashboard.pieces, dashboard.profile.id, onPiece)
         }
         RootPage.Concerts -> {
             Heading("节目单", "${dashboard.concerts.size} 场演出")
             if (dashboard.profile.canManage && administration != null) TextButton(onClick = { onManage(4, null, true) }, modifier = Modifier.testTag("concert-create")) { Icon(Icons.Outlined.Add, null); Text("新建节目单") }
-            if (dashboard.concerts.isEmpty()) StatusPanel("暂无节目单", "尚无演出记录", Icons.Outlined.Event)
-            else LazyColumn { items(dashboard.concerts, key = { it.id }) { concert ->
-                Entry(concert.title, "", Icons.Outlined.Event, "concert-${concert.id}") { onConcert(concert.id) }
-            } }
+            ConcertWorkspace(dashboard.concerts, dashboard.profile.id, onConcert)
         }
         RootPage.Admin -> {
             Heading("管理", dashboard.profile.name)

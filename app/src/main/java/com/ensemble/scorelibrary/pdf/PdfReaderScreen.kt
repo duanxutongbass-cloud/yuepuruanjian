@@ -1,6 +1,9 @@
 package com.ensemble.scorelibrary.pdf
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.calculateZoom
@@ -130,7 +133,8 @@ fun PdfReaderScreen(member: String, score: ResolvedConcertItem, model: PdfReader
                 model.itemNumber()?.let { it.first < it.second } == true),
                 modifier = Modifier.testTag("next-page")) { Icon(Icons.AutoMirrored.Outlined.NavigateNext, "下一页") }
         }
-        Row(Modifier.fillMaxWidth().padding(horizontal = 8.dp), horizontalArrangement = Arrangement.Center) {
+        Row(Modifier.fillMaxWidth().padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(Modifier.weight(1f).horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically) {
             SingleChoiceSegmentedButtonRow {
                 FitMode.entries.forEachIndexed { index, mode ->
                     SegmentedButton(selected = (state as? PdfState.Ready)?.mode == mode,
@@ -147,10 +151,12 @@ fun PdfReaderScreen(member: String, score: ResolvedConcertItem, model: PdfReader
                 modifier = Modifier.testTag("reader-zoom-in")) { Icon(Icons.Outlined.ZoomIn, "放大") }
             IconButton(onClick = model::resetView, enabled = state is PdfState.Ready && !preparing && scopedAnnotation?.transitionBlocked != true,
                 modifier = Modifier.testTag("reader-zoom-reset")) { Icon(Icons.Outlined.ZoomOut, "恢复页面大小") }
-            IconButton(onClick = { model.action(PedalAction.TOGGLE_PLAY_MODE) },
+            }
+            TextButton(onClick = { model.action(PedalAction.TOGGLE_PLAY_MODE) },
                 enabled = !preparing && state is PdfState.Ready && scopedAnnotation?.transitionBlocked != true,
                 modifier = Modifier.testTag("play-mode")) {
-                Icon(if (playMode) Icons.Outlined.Stop else Icons.Outlined.PlayArrow, if (playMode) "退出正式演出" else "准备正式演出")
+                Icon(if (playMode) Icons.Outlined.Stop else Icons.Outlined.PlayArrow, null)
+                Text(if (playMode) "退出演出" else if (concert == null) "单曲专注" else "准备演出")
             }
         }
         Text(if (offline) "离线阅读" else "本地阅读", Modifier.padding(horizontal = 16.dp), style = MaterialTheme.typography.labelSmall)
@@ -169,7 +175,7 @@ fun PdfReaderScreen(member: String, score: ResolvedConcertItem, model: PdfReader
             annotationState ?: scopedAnnotation?.copy(busy = true)
                 ?: com.ensemble.scorelibrary.annotation.AnnotationState(busy = true), annotations)
         }
-        Box(Modifier.weight(1f).fillMaxWidth().onSizeChanged { viewportSize = it; model.viewport(it.width, it.height) }, contentAlignment = Alignment.Center) {
+        Box(Modifier.weight(1f).fillMaxWidth().background(com.ensemble.scorelibrary.ui.ScorePalette.Workspace).onSizeChanged { viewportSize = it; model.viewport(it.width, it.height) }, contentAlignment = Alignment.Center) {
             when (val page = state) {
                 PdfState.Loading -> CircularProgressIndicator(Modifier.testTag("pdf-loading"))
                 is PdfState.Failure -> Column(horizontalAlignment = Alignment.CenterHorizontally,
