@@ -22,6 +22,7 @@ class NavigationTest {
     private val store = ViewModelStore()
     private lateinit var restoration: StateRestorationTester
     @After fun close() { store.clear() }
+    private var preview: ScorePreviewViewModel? = null
     private var ink: com.ensemble.scorelibrary.annotation.AnnotationViewModel? = null
     private fun open(withReader: Boolean = false, withInk: Boolean = false) {
         val part = VisiblePart("part", "d", "Violin I")
@@ -33,6 +34,7 @@ class NavigationTest {
         val repository = object : PresentationRepository {
             override fun observe(memberId: String?, request: ScreenRequest) = flowOf(DomainResult.Success(
                 Presentation(dashboard, DomainResult.Success(when (request) {
+                    is ScreenRequest.Preview -> ScreenContent.Viewer(item)
                     ScreenRequest.Home -> ScreenContent.Home
                     is ScreenRequest.Piece -> ScreenContent.Piece("piece", "Music", listOf(part))
                     is ScreenRequest.Concert -> ScreenContent.Concert(ResolvedConcert("concert", "Concert", listOf(item)))
@@ -53,6 +55,7 @@ class NavigationTest {
                     android.graphics.Bitmap.createBitmap(width, height, android.graphics.Bitmap.Config.ARGB_8888),
                     com.ensemble.scorelibrary.pdf.PdfPageTransform.fit(com.ensemble.scorelibrary.pdf.PageSize(600, 900), width, height, mode, scroll))
             }
+            preview = ScorePreviewViewModel(repository, engine).also { store.put("preview", it) }
             com.ensemble.scorelibrary.pdf.PdfReaderViewModel(engine, SavedStateHandle(),
                 com.ensemble.scorelibrary.pdf.PerformancePreparation(engine,
                     com.ensemble.scorelibrary.pdf.TestPerformanceAnnotations())).also { store.put("pdf", it) }
@@ -67,11 +70,12 @@ class NavigationTest {
         }).also { store.put("ink", it) }
         restoration = StateRestorationTester(compose)
         restoration.setContent { androidx.compose.runtime.CompositionLocalProvider(
-            com.ensemble.scorelibrary.annotation.LocalAnnotations provides ink) { MaterialTheme { ScoreLibraryApp(vm, pdf) } } }
+            com.ensemble.scorelibrary.annotation.LocalAnnotations provides ink) { MaterialTheme { ScoreLibraryApp(vm, pdf, preview = preview) } } }
     }
     @Test fun pendingInkBlocksReaderTransitionsAndBackOffersMemoryOnlyExit() {
         open(withReader = true, withInk = true)
         compose.onNodeWithTag("piece-piece").performClick()
+        compose.onNodeWithTag("preview-parts").performClick()
         compose.onNodeWithTag("part-part").performClick()
         compose.waitUntil { ink!!.state.value.data != null }
         compose.runOnIdle {
@@ -97,11 +101,12 @@ class NavigationTest {
     @Test fun libraryDetailReaderBackAndSingleTopTabsWork() {
         open()
         compose.onNodeWithTag("piece-piece").performClick()
+        compose.onNodeWithTag("preview-parts").performClick()
         compose.onNodeWithTag("part-part").performClick()
-        compose.onNodeWithTag("bottom-navigation").assertDoesNotExist()
+        compose.onNodeWithTag("side-navigation").assertDoesNotExist()
         compose.onNodeWithContentDescription("返回").performClick()
         compose.onNodeWithTag("part-part").assertExists()
-        compose.onNodeWithTag("bottom-navigation").assertExists()
+        compose.onNodeWithTag("side-navigation").assertExists()
         compose.onNodeWithContentDescription("返回").performClick()
         compose.onNodeWithTag("piece-piece").assertExists()
         compose.onNodeWithTag("nav-profile").performClick()
@@ -116,7 +121,7 @@ class NavigationTest {
         compose.onNodeWithTag("nav-concerts").performClick()
         compose.onNodeWithTag("concert-concert").performClick()
         compose.onNodeWithTag("concert-item-item").performClick()
-        compose.onNodeWithTag("bottom-navigation").assertDoesNotExist()
+        compose.onNodeWithTag("side-navigation").assertDoesNotExist()
         compose.onNodeWithContentDescription("返回").performClick()
         compose.onNodeWithTag("concert-item-item").assertExists()
         compose.onNodeWithTag("nav-admin").assertDoesNotExist()
@@ -127,9 +132,10 @@ class NavigationTest {
     @Test fun savedNavigationRestoresReaderAndItsBackStack() {
         open()
         compose.onNodeWithTag("piece-piece").performClick()
+        compose.onNodeWithTag("preview-parts").performClick()
         compose.onNodeWithTag("part-part").performClick()
         restoration.emulateSavedInstanceStateRestore()
-        compose.onNodeWithTag("bottom-navigation").assertDoesNotExist()
+        compose.onNodeWithTag("side-navigation").assertDoesNotExist()
         compose.onNodeWithContentDescription("返回").performClick()
         compose.onNodeWithTag("part-part").assertExists()
         compose.onNodeWithContentDescription("返回").performClick()
@@ -138,10 +144,11 @@ class NavigationTest {
     @Test fun fullscreenHidesAppChromeAndRestoresWithItsReaderRoute() {
         open(withReader = true)
         compose.onNodeWithTag("piece-piece").performClick()
+        compose.onNodeWithTag("preview-parts").performClick()
         compose.onNodeWithTag("part-part").performClick()
         compose.onNodeWithTag("reader-fullscreen").performClick()
         compose.onNodeWithTag("back").assertDoesNotExist()
-        compose.onNodeWithTag("bottom-navigation").assertDoesNotExist()
+        compose.onNodeWithTag("side-navigation").assertDoesNotExist()
         compose.onNodeWithTag("reader-page-number").assertDoesNotExist()
         restoration.emulateSavedInstanceStateRestore()
         compose.onNodeWithTag("back").assertDoesNotExist()
@@ -151,4 +158,40 @@ class NavigationTest {
         compose.onNodeWithTag("back").performClick()
         compose.onNodeWithTag("part-part").assertExists()
     }
+    @Test @Config(qualifiers = "w400dp-h800dp-mdpi")
+    fun compactWindowKeepsBottomNavigationAndReaderUsesFullWidth() {
+        open()
+        compose.onNodeWithTag("bottom-navigation").assertExists()
+        compose.onNodeWithTag("side-navigation").assertDoesNotExist()
+        compose.onNodeWithTag("piece-piece").performClick()
+        compose.onNodeWithTag("preview-parts").performClick()
+        compose.onNodeWithTag("part-part").performClick()
+        compose.onNodeWithTag("bottom-navigation").assertDoesNotExist()
+        compose.onNodeWithTag("back").performClick()
+        compose.onNodeWithTag("bottom-navigation").assertExists()
+    }
+
+    @Test fun selectedPreviewOpensSamePartAndReturnsWithQueryAcrossLoadingAndRestore() {
+        open(withReader = true)
+        compose.onNodeWithTag("library-search").performTextInput("Music")
+        compose.onNodeWithTag("piece-piece").performClick()
+        compose.waitUntil { preview!!.state.value is ScorePreviewState.Ready }
+        compose.onNodeWithTag("preview-page").assertExists()
+        compose.onNodeWithTag("preview-open-reader").performClick()
+        compose.onNodeWithTag("reader-part-name").assertTextEquals("Violin I")
+        compose.runOnIdle { org.junit.Assert.assertEquals(ScorePreviewState.Empty, preview!!.state.value) }
+        compose.onNodeWithTag("back").performClick()
+        compose.waitUntil { preview!!.state.value is ScorePreviewState.Ready }
+        compose.onNodeWithTag("library-search").assertTextContains("Music")
+        compose.onNodeWithTag("piece-piece").assertIsSelected()
+        restoration.emulateSavedInstanceStateRestore()
+        compose.onNodeWithTag("piece-piece").assertIsSelected()
+        compose.onNodeWithTag("library-search").assertTextContains("Music")
+        compose.onNodeWithTag("nav-profile").performClick()
+        compose.runOnIdle { org.junit.Assert.assertEquals(ScorePreviewState.Empty, preview!!.state.value) }
+        compose.onNodeWithTag("nav-library").performClick()
+        compose.waitUntil { preview!!.state.value is ScorePreviewState.Ready }
+        compose.onNodeWithTag("piece-piece").assertIsSelected()
+    }
+
 }

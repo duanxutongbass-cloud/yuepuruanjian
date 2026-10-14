@@ -96,4 +96,26 @@ class LibraryViewModelTest {
         assertEquals("restored" to ScreenRequest.Concert("c"), calls.last())
         assertEquals(ScreenRequest.Concert("c"), model.state.value.request)
     }
+    @Test fun routeChangeIgnoresLateOldResultAndDuplicateRequestDoesNotReload() = runTest(dispatcher) {
+        val old = MutableSharedFlow<DomainResult<Presentation>>(replay = 1)
+        val next = MutableSharedFlow<DomainResult<Presentation>>(replay = 1)
+        var calls = 0
+        val model = vm(object : PresentationRepository {
+            override fun observe(memberId: String?, request: ScreenRequest): Flow<DomainResult<Presentation>> {
+                calls++
+                return if (request == ScreenRequest.Home) old else next
+            }
+        })
+        runCurrent(); old.emit(home()); runCurrent()
+        val route = ScreenRequest.Concert("new")
+        model.show(route); runCurrent()
+        old.emit(DomainResult.Failure(DomainError(ErrorCode.UNAUTHORIZED, "old"))); runCurrent()
+        assertEquals(route, model.state.value.request)
+        assertEquals(UiState.Loading, model.state.value.state)
+        model.show(route); runCurrent()
+        assertEquals(2, calls)
+        next.emit(home()); runCurrent()
+        assertTrue(model.state.value.state is UiState.Ready)
+    }
+
 }

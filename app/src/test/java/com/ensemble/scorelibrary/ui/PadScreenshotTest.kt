@@ -7,7 +7,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModelStore
+import kotlinx.coroutines.flow.flowOf
 import com.ensemble.scorelibrary.domain.*
 import org.junit.Assert.*
 import org.junit.Rule
@@ -23,12 +27,23 @@ import java.io.File
 class PadScreenshotTest {
     @get:Rule val compose = createAndroidComposeRule<ComponentActivity>()
     private fun screenshot(name: String) {
-        val profile = Profile("m", "当前成员", "小提琴 I", false)
-        val content = ScreenContent.Piece("piece", "天空之城", listOf(
-            VisiblePart("part", "violin", "小提琴 I"), VisiblePart("part2", "violin2", "小提琴 II")))
-        compose.setContent { MaterialTheme { Surface(Modifier.fillMaxSize()) {
-            LibraryScreen(UiState.Ready(Presentation(Dashboard(emptyList(), profile), DomainResult.Success(content)), false), RootPage.Library)
-        } } }
+        val profile = Profile("m", "合成测试成员", "小提琴 I", false)
+        val dashboard = Dashboard(listOf(MemberChoice("m", profile.name)), profile,
+            (1..8).map { PieceSummary("p$it", "合成练习曲 $it", "测试作曲 $it") },
+            listOf(ConcertSummary("c", "合成排练节目单")))
+        val repository = object : PresentationRepository {
+            override fun observe(memberId: String?, request: ScreenRequest) = flowOf(DomainResult.Success(
+                Presentation(dashboard, DomainResult.Success(ScreenContent.Home))))
+        }
+        val device = object : DeviceAvailability {
+            override val online = flowOf(false)
+            override suspend fun filesAvailable(segments: List<ResolvedScoreSegment>) = true
+        }
+        val store = ViewModelStore()
+        val vm = LibraryViewModel(repository, SavedStateHandle(mapOf("memberId" to "m")), device)
+        store.put("vm", vm)
+        compose.setContent { ScoreTheme { ScoreLibraryApp(vm) } }
+        compose.onNodeWithTag("piece-p1").assertExists()
         compose.waitForIdle()
         lateinit var bitmap: Bitmap
         compose.runOnUiThread {
@@ -42,6 +57,7 @@ class PadScreenshotTest {
         assertTrue("Rendered image must contain text and background", colors.size > 3)
         val folder = File("build/reports/screenshots").also { it.mkdirs() }
         File(folder, "$name.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+        compose.runOnIdle { store.clear() }
     }
     @Test @Config(qualifiers = "w800dp-h1200dp-mdpi") fun standardPad() { screenshot("standard-pad") }
     @Test @Config(qualifiers = "w1280dp-h1800dp-mdpi") fun largePortraitPad() { screenshot("large-portrait-pad") }

@@ -1,0 +1,37 @@
+{
+  "codeCommit": "471f8e9523eb31e8373e581bede5e5534b2205b5",
+  "baseline": "3198524149c4f0a0139c1487e18e1477556474d3",
+  "versionName": "0.9.6",
+  "versionCode": 8,
+  "roomSchema": 3,
+  "jvm": {
+    "tests": 168,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lint": {
+    "errors": 0,
+    "warnings": 10,
+    "hints": 1
+  },
+  "androidAppUi": {
+    "tests": 1,
+    "failures": 0,
+    "skipped": 0,
+    "seconds": 183.694
+  },
+  "androidNativeRegression": {
+    "tests": 6,
+    "failures": 0,
+    "skipped": 0,
+    "seconds": 77.464
+  },
+  "emulator": "Android 11 API30 x86_64, TCG, SwiftShader, 800x1200/160dpi",
+  "notValidated": [
+    "API34 full UI blocked by system ANR",
+    "physical Pad/stylus/HID",
+    "exact reference pixels unavailable: proxy 403"
+  ],
+  "appApkSha256": "0f82595c6bb6fe53aa6c4366116dc5d7f8c1e90af54466ab8c3d4ee568b02020"
+}

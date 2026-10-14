@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.material3.MaterialTheme
 import com.ensemble.scorelibrary.ui.ScoreLibraryApp
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -16,17 +15,18 @@ class MainActivity : ComponentActivity() {
     private val annotationViewModel: com.ensemble.scorelibrary.annotation.AnnotationViewModel by viewModels()
     private val administrationViewModel: com.ensemble.scorelibrary.ui.AdministrationViewModel by viewModels()
     private val pdfViewModel: com.ensemble.scorelibrary.pdf.PdfReaderViewModel by viewModels()
+    private val previewViewModel: com.ensemble.scorelibrary.ui.ScorePreviewViewModel by viewModels()
     private val libraryViewModel: com.ensemble.scorelibrary.ui.LibraryViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MaterialTheme {
+            com.ensemble.scorelibrary.ui.ScoreTheme {
                 androidx.compose.runtime.CompositionLocalProvider(
                     com.ensemble.scorelibrary.ui.LocalManagement provides managementViewModel,
                     com.ensemble.scorelibrary.core.pedal.LocalPedal provides pedalViewModel,
                     com.ensemble.scorelibrary.annotation.LocalAnnotations provides annotationViewModel,
                     com.ensemble.scorelibrary.backup.LocalArchive provides archiveViewModel) {
-                    ScoreLibraryApp(libraryViewModel, pdfViewModel, administrationViewModel)
+                    ScoreLibraryApp(libraryViewModel, pdfViewModel, administrationViewModel, previewViewModel)
                 }
             }
         }
