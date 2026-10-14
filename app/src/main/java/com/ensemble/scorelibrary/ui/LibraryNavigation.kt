@@ -355,7 +355,15 @@ private fun HomePage(root: RootPage, dashboard: Dashboard, layout: PadLayout,
     when (root) {
         RootPage.Library -> {
             if (dashboard.profile.canManage && administration != null) TextButton(onClick = { onManage(0, null, false) }, modifier = Modifier.testTag("library-import")) { Icon(Icons.Outlined.FileOpen, null); Text("导入曲谱") }
-            PieceWorkspace(dashboard.pieces, dashboard.profile.id, onPart = onPart, onPiece = onPiece)
+            // Local catalog titles are shared by design; the isolated HTTP session shows only its manifest.
+            // This is a display filter, not a substitute for the resolver's permission checks.
+            val httpState = networkSession?.state?.collectAsStateWithLifecycle()?.value
+            val pieces = if (networkSession == null) dashboard.pieces else {
+                val allowed = httpState?.takeIf { it.member == dashboard.profile.id }
+                    ?.manifest?.scores?.map { it.piece }?.toSet().orEmpty()
+                dashboard.pieces.filter { it.id in allowed }
+            }
+            PieceWorkspace(pieces, dashboard.profile.id, onPart = onPart, onPiece = onPiece)
         }
         RootPage.Concerts -> {
             Heading("节目单", "${dashboard.concerts.size} 场演出")

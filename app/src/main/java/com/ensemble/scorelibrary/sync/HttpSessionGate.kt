@@ -58,8 +58,10 @@ fun HttpSessionGate(vm: HttpSyncViewModel, library: LibraryViewModel, content: @
                 }
             }
             Box(Modifier.weight(1f)) {
-                // Never render one old-account frame while the library ViewModel is rebinding.
-                if (boundMember == state.member && screen.memberId == state.member) key(state.member) { content() }
+                // Preserve navigation through Loading envelopes. ScoreLibraryApp hides mismatched
+                // envelopes itself; unmounting it here resets an in-flight reader navigation.
+                // The bound-member check and key still replace the tree when accounts change.
+                if (boundMember == state.member) key(state.member) { content() }
             }
         }
     }

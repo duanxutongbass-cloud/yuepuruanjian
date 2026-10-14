@@ -32,7 +32,10 @@ class HttpEndToEndTest {
     private fun shell(command: String): String = android.os.ParcelFileDescriptor.AutoCloseInputStream(
         instrumentation.uiAutomation.executeShellCommand(command)).bufferedReader().use { it.readText() }
     private fun step(name: String) {
-        shell("echo $name > /data/local/tmp/http-step")
+        // UiAutomation executes argv directly: shell redirection is not interpreted.
+        val pipes = instrumentation.uiAutomation.executeShellCommandRw("dd of=/data/local/tmp/http-step")
+        android.os.ParcelFileDescriptor.AutoCloseOutputStream(pipes[1]).use { it.write((name + "\n").toByteArray()) }
+        android.os.ParcelFileDescriptor.AutoCloseInputStream(pipes[0]).use { it.readBytes() }
         val until = System.currentTimeMillis() + 120_000
         while (System.currentTimeMillis() < until) {
             if (shell("cat /data/local/tmp/http-ack").trim() == name) return
