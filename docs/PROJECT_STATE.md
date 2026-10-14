@@ -8,7 +8,7 @@
 
 第三版 PNG/ZIP 已确认存在，执行环境按原 ID/materialize 及本地目的地有限重试，下载被网络代理 `403 Forbidden` 拒绝，尚未实际查看像素。用户视觉审核已明确退回首版浅色工作区/白卡网格：目标是深色整体工作台、窄导航、左列表、右侧真实授权 PDF 白纸预览与顶部成员/搜索。不能将首版称作第三版完成。
 
-当前准备了通过 Domain 解析个人声部、校验真实 PDF、成员/权限变化清屏及拒绝旧异步结果的预览数据层；原图本地可读后才能按要求继续视觉集成。最新完整软件结果与模拟器状态独立维护于 [ANDROID_PAPER_UI_REVIEW](ANDROID_PAPER_UI_REVIEW.md)。版本仍 0.9.6 / code 8 / schema 3，不累加旧批次数字。
+当前准备了通过 Domain 解析个人声部、校验真实 PDF、成员/权限变化清屏及拒绝旧异步结果的预览数据层；原图本地可读后才能按要求继续视觉集成。完整 JVM 163 项通过、Lint 0 错误/10 警告/1 提示；Android 14 AOSP 原生预览边界 1 项通过，UI 用例受 System UI ANR 干扰中止，物理设备未验。结果独立维护于 [ANDROID_PAPER_UI_REVIEW](ANDROID_PAPER_UI_REVIEW.md)。版本仍 0.9.6 / code 8 / schema 3，不累加旧批次数字。
 
 ## 当前批次
 

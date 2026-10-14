@@ -40,10 +40,10 @@
 | Lint | 0 错误 / 10 警告 / 1 提示 |
 | JVM 界面截图 | 800×1200、1280×1800；已查看；记录的是被退回的初始 UI |
 | Android 14 软件模拟器 UI | 两项计划用例中一项已开始、取得普通平板曲库截图；System UI ANR 干扰后中止，无完成通过的 UI 用例 |
-| 原生 PDF 预览边界测试 | 执行中，尚未计为通过 |
+| 原生 PDF 预览边界测试 | 1 项通过，0 失败；Android 14 AOSP 软件模拟器，86.744 秒 |
 | 物理 Pad / 笔 / HID | 没有连接，未执行 |
 
-163 是最终完整 JVM 批次，不与旧 130+40、批注 152 或中途 158/定向 11 项相加。新增测试覆盖查询恢复、成员隔离、排序、旧路由结果、重复请求、窄屏导航，以及实际个人声部解析、未授权拒绝、首个源页、位图边界、撤权隐藏、缺文件和不可取消旧渲染返回。原生 `ScorePreviewNativeTest` 使用真实 Room/Domain/PdfRenderer 与合成 PDF，单独核验文件缺失/重试/撤权；完成状态另记，不用 JVM 假图冒充它。
+163 是最终完整 JVM 批次，不与旧 130+40、批注 152 或中途 158/定向 11 项相加。新增测试覆盖查询恢复、成员隔离、排序、旧路由结果、重复请求、窄屏导航，以及实际个人声部解析、未授权拒绝、首个源页、位图边界、撤权隐藏、缺文件和不可取消旧渲染返回。原生 `ScorePreviewNativeTest` 使用真实 Room/Domain/PdfRenderer 与合成 PDF，单独核验文件缺失/重试/撤权；已实际完成并取回真实渲染像素，不用 JVM 假图冒充它。
 
 工具环境：Linux、Gradle 8.13、完整 Temurin JDK 21、compile SDK 36 / Build Tools 35.0.0。无 `/dev/kvm`；模拟器只能 TCG 软件执行。Google APIs 镜像首次启动优化耗时后，改用 Android 14 AOSP 镜像；出现 System UI ANR，点击等待后仍未得到完整 UI 结果，故中止并保留证据。不是物理设备验证，也不是断言 App 崩溃。
 
@@ -52,6 +52,7 @@
 ## 证据与复现
 
 - [JVM 普通平板](evidence/android-paper-ui/jvm-library-800.png)、[JVM 大屏竖屏](evidence/android-paper-ui/jvm-library-1280.png)：初始 UI，视觉未验收。
+- [Android 原生授权第 2 页渲染](evidence/android-paper-ui/native-authorized-page.png)、[原生边界测试记录](evidence/android-paper-ui/native-preview-test.txt)：对应当前代码的真实 Room/Domain/PdfRenderer，属于预览数据层证据，不是首页视觉闭环截图。
 - APK：`app/build/outputs/apk/debug/app-debug.apk`；测试 APK：`app/build/outputs/apk/androidTest/debug/`。
 - JVM：`app/build/reports/tests/testDebugUnitTest/`；Lint：`app/build/reports/lint-results-debug.html`。
 - 构建/回归：`gradle assembleDebug testDebugUnitTest lintDebug assembleDebugAndroidTest`，SDK36 Robolectric 需要 JDK21。本环境另为测试 JVM 定向了可写缓存与代理，普通可写环境不需要复制这些环境路径。
