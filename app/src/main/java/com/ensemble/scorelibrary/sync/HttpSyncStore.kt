@@ -183,10 +183,10 @@ class HttpSyncStore @Inject constructor(@ApplicationContext private val context:
             else require(old.bindings.single { it.piecePartId == s.part }.let { it.scorePdfId == s.pdf && it.endPage == a.pageCount })
             dao.updateScorePdf(pdf.copy(activeVersionId = a.sourceVersionId))
             val permission = old.extraPermissions.find { it.memberId == identity.member && it.piecePartId == s.part }
-            if (permission == null) dao.insertExtraPermission(MemberPiecePartPermissionEntity(id = identity.member + s.part, memberId = identity.member, piecePartId = s.part))
+            if (permission == null) dao.insertExtraPermission(MemberPiecePartPermissionEntity(id = UUID.nameUUIDFromBytes((identity.member + "/" + s.part).toByteArray()).toString(), memberId = identity.member, piecePartId = s.part))
             else dao.updateExtraPermission(permission.copy(isArchived = false))
             if (old.caches.none { it.memberId == identity.member && it.scorePdfVersionId == a.sourceVersionId })
-                dao.insertCache(ScoreCacheEntryEntity(id = identity.member + a.sourceVersionId, scorePdfVersionId = a.sourceVersionId, memberId = identity.member,
+                dao.insertCache(ScoreCacheEntryEntity(id = UUID.nameUUIDFromBytes((identity.member + "/" + a.sourceVersionId).toByteArray()).toString(), scorePdfVersionId = a.sourceVersionId, memberId = identity.member,
                     status = CacheStatus.CACHED, cachedFilePath = existing?.managedFilePath ?: files.getValue(a.artifactId).path, cachedAtEpochMillis = System.currentTimeMillis()))
         }
         manifest.scores.firstOrNull()?.let { score ->

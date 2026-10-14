@@ -88,7 +88,7 @@ class HttpEndToEndTest {
             db.annotationDao().insertPage(AnnotationPageEntity(versionId = old.id, pageIndex = 0, ownerKey = alice, payload = marks))
             await("piece-${first.piece}")
             compose.onNodeWithTag("piece-${first.piece}").performClick()
-            await("preview-open-reader")
+            await("preview-page")
             capture("http-authorized-download")
             download() // duplicate must not create duplicate rows
             assertEquals(1, db.resolutionDao().versions().count { it.scorePdfId == first.pdf })
@@ -151,7 +151,7 @@ class HttpEndToEndTest {
             assertNotNull(vm.state.value.member)
             await("piece-${first.piece}")
             compose.onNodeWithTag("piece-${first.piece}").performClick()
-            await("preview-open-reader")
+            await("preview-page")
             compose.onNodeWithTag("preview-open-reader").performClick()
             await("pdf-page")
             compose.onNodeWithTag("reader-part-name").assertTextContains("Violin", substring = true)
