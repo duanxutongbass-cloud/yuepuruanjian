@@ -17,7 +17,9 @@ data class PreviewTarget(val member: String, val piece: String, val width: Int, 
 sealed interface ScorePreviewState {
     data object Empty : ScorePreviewState
     data class Loading(val target: PreviewTarget) : ScorePreviewState
-    data class Ready(val target: PreviewTarget, val score: ResolvedConcertItem, val frame: PdfFrame) : ScorePreviewState
+    data class Ready(val target: PreviewTarget, val score: ResolvedConcertItem, val image: PreviewImage) : ScorePreviewState {
+        val frame get() = image.frame
+    }
     data class Failure(val target: PreviewTarget, val message: String) : ScorePreviewState
 }
 
@@ -31,6 +33,7 @@ class ScorePreviewViewModel @Inject constructor(
     val state = mutable.asStateFlow()
     private var target: PreviewTarget? = null
     private var generation = 0L
+    private var bindingId = 0L
     private var job: Job? = null
 
     fun bind(member: String?, piece: String?, width: Int, height: Int) {
@@ -38,19 +41,23 @@ class ScorePreviewViewModel @Inject constructor(
             else PreviewTarget(member, piece, width.coerceAtMost(1200), height.coerceAtMost(1800))
         if (next == target) return
         generation++
+        val binding = ++bindingId
         job?.cancel()
         target = next
-        mutable.value = next?.let { ScorePreviewState.Loading(it) } ?: ScorePreviewState.Empty
+        replace(next?.let { ScorePreviewState.Loading(it) } ?: ScorePreviewState.Empty)
         if (next == null) return
         job = viewModelScope.launch {
             try {
                 repository.observe(next.member, ScreenRequest.Preview(next.piece))
                     .map { result ->
+                        currentCoroutineContext().ensureActive()
+                        if (bindingId != binding) throw CancellationException("Preview binding changed")
                         // Revoke the displayed bitmap before waiting for cancelled native work to finish.
                         val revision = ++generation
-                        if (target == next) mutable.value = ScorePreviewState.Loading(next)
+                        if (target == next) replace(ScorePreviewState.Loading(next))
                         revision to result
                     }.collectLatest { (revision, result) ->
+                        var pendingImage: PreviewImage? = null
                         try {
                             val presentation = when (result) {
                                 is DomainResult.Success -> result.value
@@ -76,23 +83,36 @@ class ScorePreviewViewModel @Inject constructor(
                             engine.inspect(listOf(segment))
                             val frame = engine.render(PdfPageRef(segment, segment.startPage - 1),
                                 next.width, next.height, FitMode.PAGE, 0f)
+                            val image = PreviewImage(frame)
+                            pendingImage = image
                             currentCoroutineContext().ensureActive()
-                            publish(next, revision, ScorePreviewState.Ready(next, score, frame))
+                            if (publish(next, revision, ScorePreviewState.Ready(next, score, image))) pendingImage = null
                         } catch (cancelled: CancellationException) { throw cancelled }
                         catch (error: PdfFailure) {
                             publish(next, revision, ScorePreviewState.Failure(next, readerErrorText(error.reason)))
                         } catch (_: Exception) {
                             publish(next, revision, ScorePreviewState.Failure(next, "预览暂时无法读取，请重试"))
-                        }
+                        } finally { pendingImage?.releaseOwner() }
                     }
             } catch (cancelled: CancellationException) { throw cancelled }
             catch (_: Exception) {
-                if (target == next) mutable.value = ScorePreviewState.Failure(next, "预览暂时无法读取，请重试")
+                if (target == next && bindingId == binding) replace(ScorePreviewState.Failure(next, "预览暂时无法读取，请重试"))
             }
         }
     }
-    private fun publish(expected: PreviewTarget, revision: Long, value: ScorePreviewState) {
-        if (target == expected && generation == revision) mutable.value = value
+    private fun publish(expected: PreviewTarget, revision: Long, value: ScorePreviewState): Boolean {
+        if (target != expected || generation != revision) return false
+        replace(value)
+        return true
+    }
+    private fun replace(value: ScorePreviewState) {
+        val previous = (mutable.value as? ScorePreviewState.Ready)?.image
+        mutable.value = value
+        if (previous !== (value as? ScorePreviewState.Ready)?.image) previous?.releaseOwner()
+    }
+    override fun onCleared() {
+        clear()
+        super.onCleared()
     }
     fun clear() = bind(null, null, 0, 0)
     fun retry() {

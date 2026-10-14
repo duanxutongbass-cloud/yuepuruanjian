@@ -2,99 +2,150 @@ package com.ensemble.scorelibrary.ui
 
 import android.content.Context
 import android.graphics.Bitmap
-import androidx.activity.ComponentActivity
-import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.*
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModelStore
+import androidx.compose.ui.test.junit4.createEmptyComposeRule
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.ensemble.scorelibrary.domain.*
-import com.ensemble.scorelibrary.pdf.*
-import kotlinx.coroutines.flow.flowOf
+import com.ensemble.scorelibrary.MainActivity
+import com.ensemble.scorelibrary.core.database.entity.*
+import com.ensemble.scorelibrary.di.AcceptanceDependencies
+import com.ensemble.scorelibrary.pdf.PdfFixture
+import dagger.hilt.android.EntryPointAccessors
+import kotlinx.coroutines.runBlocking
 import org.junit.*
+import org.junit.Assert.*
 import org.junit.runner.RunWith
 import java.io.File
+import java.util.UUID
 
-/** Synthetic projection + real PdfRenderer. No production identity or user content. */
+/** Real MainActivity + Hilt singleton Room + Domain + native PDF. Disposable synthetic AVD only. */
 @RunWith(AndroidJUnit4::class)
 class PaperWorkspaceAcceptanceTest {
-    @get:Rule val compose = createAndroidComposeRule<ComponentActivity>()
-    private val store = ViewModelStore()
-    private var fixture: File? = null
-    @After fun close() { store.clear(); fixture?.delete() }
+    @get:Rule val compose = createEmptyComposeRule()
+    private val instrumentation = InstrumentationRegistry.getInstrumentation()
+    private fun await(tag: String) = compose.waitUntil(180_000) {
+        compose.onAllNodesWithTag(tag).fetchSemanticsNodes().isNotEmpty()
+    }
     private fun capture(name: String) {
         compose.waitForIdle()
-        val bitmap = compose.onRoot().captureToImage().asAndroidBitmap()
-        val file = File(compose.activity.filesDir, "$name.png")
-        file.outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
-        val pipes = InstrumentationRegistry.getInstrumentation().uiAutomation.executeShellCommandRw("dd of=/data/local/tmp/$name.png")
+        val bitmap = checkNotNull(instrumentation.uiAutomation.takeScreenshot())
+        val pipes = instrumentation.uiAutomation.executeShellCommandRw("dd of=/data/local/tmp/$name.png")
         android.os.ParcelFileDescriptor.AutoCloseOutputStream(pipes[1]).use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
         android.os.ParcelFileDescriptor.AutoCloseInputStream(pipes[0]).use { it.readBytes() }
+        bitmap.recycle()
     }
-    private fun runSlice(width: Int, height: Int) {
-        val automation = InstrumentationRegistry.getInstrumentation().uiAutomation
-        listOf("wm size ${width}x${height}", "wm density 160").forEach { cmd ->
-            android.os.ParcelFileDescriptor.AutoCloseInputStream(automation.executeShellCommand(cmd)).use { it.readBytes() }
-        }
-        compose.activityRule.scenario.recreate()
+    @Test fun actualAppAuthorizedPreviewReaderReturnAndRevocation() = runBlocking {
+        Assume.assumeTrue("Never seed a personal installation", InstrumentationRegistry.getArguments().getString("isolatedTestDevice") == "true")
+        Assume.assumeTrue(android.os.Build.FINGERPRINT.startsWith("Android/sdk") && android.os.Build.HARDWARE in setOf("ranchu", "goldfish"))
         val context = ApplicationProvider.getApplicationContext<Context>()
-        val file = File(context.filesDir, "paper-synthetic.pdf").also { fixture = it }
+        val db = EntryPointAccessors.fromApplication(context, AcceptanceDependencies::class.java).database()
+        val dao = db.libraryDao()
+        val id = "ui-${UUID.randomUUID()}"
+        val label = id.takeLast(6)
+        val file = File(context.filesDir, "$id.pdf")
         val hash = PdfFixture.write(file)
-        val part = VisiblePart("part", "d", "合成声部 I")
-        val item = ResolvedConcertItem("item", "p1", "合成练习曲 1", part, listOf(PdfFixture.segment(file, hash)))
-        val concert = ResolvedConcert("c", "合成排练节目单", listOf(item))
-        val dashboard = Dashboard(listOf(MemberChoice("m", "合成成员")), Profile("m", "合成成员", part.name, false),
-            (1..8).map { PieceSummary("p$it", "合成练习曲 $it", "测试作曲 $it") }, listOf(ConcertSummary("c", concert.title)))
-        val repository = object : PresentationRepository {
-            override fun observe(memberId: String?, request: ScreenRequest) = flowOf(DomainResult.Success(Presentation(dashboard,
-                DomainResult.Success(when (request) {
-                    is ScreenRequest.Preview -> ScreenContent.Viewer(item)
-                    ScreenRequest.Home -> ScreenContent.Home
-                    is ScreenRequest.Piece -> ScreenContent.Piece("p1", item.title, listOf(part))
-                    is ScreenRequest.Concert -> ScreenContent.Concert(concert)
-                    is ScreenRequest.Viewer -> ScreenContent.Viewer(item, if (request.concertId == null) null else concert)
-                }))))
+        val piece = PieceEntity(id = "$id-p", title = "合成练习曲 · UI", composer = "Synthetic Composer")
+        val definition = PartDefinitionEntity(id = "$id-d", name = "合成声部 I · $label")
+        val member = MemberEntity(id = "$id-m", displayName = "UI 合成成员 A · $label", defaultPartDefinitionId = definition.id)
+        val other = MemberEntity(id = "$id-n", displayName = "UI 合成成员 B · $label", defaultPartDefinitionId = definition.id)
+        val permission = MemberPartPermissionEntity(memberId = member.id, partDefinitionId = definition.id)
+        dao.insertPiece(piece); dao.insertPartDefinition(definition)
+        dao.insertPiecePart(PiecePartEntity(id = "$id-part", pieceId = piece.id, partDefinitionId = definition.id))
+        dao.insertMember(member); dao.insertMember(other); dao.insertPermission(permission)
+        val pdf = ScorePdfEntity(id = "$id-pdf", title = "Synthetic UI PDF")
+        dao.insertScorePdf(pdf)
+        dao.insertScorePdfVersion(ScorePdfVersionEntity(id = "$id-v", scorePdfId = pdf.id, versionNumber = 1,
+            managedFilePath = file.path, originalUri = "content://synthetic-ui", fileHash = hash,
+            fileSizeBytes = file.length(), pageCount = 4))
+        dao.insertPartScoreBinding(PartScoreBindingEntity(piecePartId = "$id-part", scorePdfId = pdf.id, startPage = 2, endPage = 3))
+        dao.updateScorePdf(pdf.copy(activeVersionId = "$id-v"))
+        val concert = ConcertEntity(id = "$id-c", title = "合成排练节目单")
+        dao.insertConcert(concert)
+        dao.insertConcertItem(ConcertItemEntity(id = "$id-item", concertId = concert.id, pieceId = piece.id, sortOrder = 0))
+        val scenario = ActivityScenario.launch(MainActivity::class.java)
+        lateinit var preview: ScorePreviewViewModel
+        scenario.onActivity { preview = ViewModelProvider(it)[ScorePreviewViewModel::class.java] }
+        fun choose(name: String) {
+            compose.onNodeWithTag("nav-profile").performClick()
+            compose.onNodeWithText("选择成员").performClick()
+            compose.onNodeWithText(name).performClick()
+            compose.onNodeWithTag("nav-library").performClick()
+            await("piece-${piece.id}")
         }
-        val device = object : DeviceAvailability {
-            override val online = flowOf(false)
-            override suspend fun filesAvailable(segments: List<ResolvedScoreSegment>) = true
+        try {
+            await("nav-profile")
+            choose(member.displayName)
+            compose.onNodeWithTag("library-search").performTextInput("Synthetic Composer")
+            compose.onNodeWithTag("piece-${piece.id}").performClick()
+            await("preview-page")
+            val initial = preview.state.value as ScorePreviewState.Ready
+            assertEquals("$id-part", initial.score.part.id)
+            assertEquals(2, initial.score.segments.first().startPage)
+            capture("app-home-preview")
+            compose.onNodeWithTag("preview-open-reader").performClick()
+            await("pdf-page")
+            assertEquals(ScorePreviewState.Empty, preview.state.value)
+            compose.onNodeWithTag("reader-part-name").assertTextEquals(definition.name)
+            compose.onNodeWithTag("side-navigation").assertDoesNotExist()
+            compose.onNodeWithTag("play-mode").assertExists()
+            capture("app-reader")
+            compose.onNodeWithTag("back").performClick()
+            await("preview-page")
+            compose.onNodeWithTag("piece-${piece.id}").assertIsSelected()
+            compose.onNodeWithTag("library-search").assertTextContains("Synthetic Composer")
+            capture("app-return-selection")
+            // Pause hides the live page immediately; resume reauthorizes and renders afresh.
+            scenario.moveToState(Lifecycle.State.CREATED)
+            assertEquals(ScorePreviewState.Empty, preview.state.value)
+            scenario.moveToState(Lifecycle.State.RESUMED)
+            await("preview-page")
+            // A real Room invalidation, not a mocked result, removes the displayed page.
+            dao.updatePermission(permission.copy(isArchived = true))
+            await("preview-error")
+            compose.onNodeWithTag("preview-page").assertDoesNotExist()
+            compose.onNodeWithTag("preview-open-reader").assertIsNotEnabled()
+            capture("app-revoked")
+            dao.updatePermission(permission)
+            await("preview-page")
+            // Moving away and returning must not reuse a now-missing local file.
+            compose.onNodeWithTag("nav-profile").performClick()
+            assertEquals(ScorePreviewState.Empty, preview.state.value)
+            assertTrue(file.delete())
+            compose.onNodeWithTag("nav-library").performClick()
+            await("preview-error")
+            compose.onNodeWithTag("preview-error").assertTextEquals("本地曲谱文件缺失")
+            PdfFixture.write(file)
+            compose.onNodeWithTag("preview-retry").performClick()
+            await("preview-page")
+            compose.onNodeWithTag("nav-concerts").performClick()
+            compose.onNodeWithTag("nav-concerts").performClick()
+            await("concert-${concert.id}")
+            capture("app-concerts")
+            compose.onNodeWithTag("concert-${concert.id}").performClick()
+            await("concert-item-$id-item")
+            compose.onNodeWithTag("concert-item-$id-item").performClick()
+            await("pdf-page")
+            compose.onNodeWithTag("reader-page-number").assertTextContains("曲目 1 / 1", substring = true)
+            compose.onNodeWithTag("play-mode").assertExists()
+            capture("app-concert-reader")
+            compose.onNodeWithTag("back").performClick()
+            choose(other.displayName)
+            compose.onNodeWithTag("preview-page").assertDoesNotExist()
+            compose.onNodeWithTag("piece-${piece.id}").performClick()
+            await("preview-error")
+            compose.onNodeWithTag("preview-open-reader").assertIsNotEnabled()
+            capture("app-member-without-grant")
+        } finally {
+            scenario.close()
+            dao.updateMember(member.copy(isArchived = true)); dao.updateMember(other.copy(isArchived = true))
+            dao.updatePartDefinition(definition.copy(isArchived = true))
+            dao.updateConcert(concert.copy(isArchived = true))
+            dao.updatePiece(piece.copy(isArchived = true)); dao.updatePermission(permission.copy(isArchived = true))
+            file.delete()
         }
-        val vm = LibraryViewModel(repository, SavedStateHandle(mapOf("memberId" to "m")), device).also { store.put("library", it) }
-        val engine = NativePdfEngine(context)
-        val pdf = PdfReaderViewModel(engine, SavedStateHandle(), PerformancePreparation(engine, UnusedPreparationAnnotations())).also { store.put("pdf", it) }
-        compose.setContent { ScoreTheme { ScoreLibraryApp(vm, pdf) } }
-        compose.waitUntil(60_000) { compose.onAllNodesWithTag("piece-p1").fetchSemanticsNodes().isNotEmpty() }
-        capture("paper-library-$width")
-        compose.onNodeWithTag("library-search").performTextInput("练习曲 1")
-        compose.onNodeWithTag("piece-p2").assertDoesNotExist()
-        compose.onNodeWithTag("piece-p1").performClick()
-        compose.onNodeWithTag("part-part").performClick()
-        compose.waitUntil(60_000) { pdf.state.value is PdfState.Ready || pdf.state.value is PdfState.Failure }
-        Assert.assertTrue(pdf.state.value is PdfState.Ready)
-        compose.onNodeWithTag("side-navigation").assertDoesNotExist()
-        capture("paper-reader-$width")
-        compose.onNodeWithTag("reader-fullscreen").performClick()
-        compose.onNodeWithTag("back").assertDoesNotExist()
-        compose.waitUntil(60_000) {
-            (pdf.state.value as? PdfState.Ready)?.frame?.transform?.viewportHeight?.let { it > height - 100 } == true
-        }
-        compose.onNodeWithTag("pdf-page").performTouchInput { click() }
-        compose.waitUntil(60_000) { !pdf.fullscreen.value && pdf.state.value is PdfState.Ready }
-        compose.onNodeWithTag("back").performClick()
-        compose.onNodeWithTag("part-part").assertExists()
-        compose.onNodeWithTag("back").performClick()
-        compose.onNodeWithTag("nav-concerts").performClick()
-        compose.onNodeWithTag("nav-concerts").performClick()
-        compose.onNodeWithTag("concert-c").assertExists()
-        capture("paper-concerts-$width")
-        compose.onNodeWithTag("concert-c").performClick()
-        compose.onNodeWithTag("concert-item-item").performClick()
-        compose.waitUntil(60_000) { pdf.state.value is PdfState.Ready && pdf.itemNumber()?.second == 1 }
-        compose.onNodeWithTag("play-mode").assertIsDisplayed()
     }
-    @Test fun portraitTablet() = runSlice(800, 1200)
-    @Test fun largePortraitTablet() = runSlice(1280, 1800)
 }

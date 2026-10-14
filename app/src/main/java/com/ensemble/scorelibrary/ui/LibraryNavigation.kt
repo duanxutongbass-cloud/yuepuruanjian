@@ -70,7 +70,7 @@ private fun NavHostController.openRoot(page: RootPage) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScoreLibraryApp(vm: LibraryViewModel, pdf: com.ensemble.scorelibrary.pdf.PdfReaderViewModel? = null,
-    administration: AdministrationViewModel? = null) {
+    administration: AdministrationViewModel? = null, preview: ScorePreviewViewModel? = null) {
     val archive = com.ensemble.scorelibrary.backup.LocalArchive.current
     val archiveState = archive?.state?.collectAsStateWithLifecycle()?.value
     LaunchedEffect(archiveState?.revision) { if ((archiveState?.revision ?: 0) > 0) vm.retry() }
@@ -88,9 +88,13 @@ fun ScoreLibraryApp(vm: LibraryViewModel, pdf: com.ensemble.scorelibrary.pdf.Pdf
     val route = entry?.destination?.route
     val envelope by vm.state.collectAsStateWithLifecycle()
     val memberId by vm.selectedMember.collectAsStateWithLifecycle()
+    val librarySelection = rememberSaveable(memberId, saver = LibrarySelection.Saver) { LibrarySelection() }
     val fullscreen = pdf?.fullscreen?.collectAsStateWithLifecycle()?.value == true
     val current = if (memberId == envelope.memberId) envelope else envelope.copy(state = UiState.Loading)
     val reader = Routes.isViewer(route)
+    LaunchedEffect(route, memberId, current.state) {
+        if (route != "library" || current.state !is UiState.Ready) preview?.clear()
+    }
     val ink = com.ensemble.scorelibrary.annotation.LocalAnnotations.current
     val inkState = ink?.state?.collectAsStateWithLifecycle()?.value
     var confirmLeave by remember { mutableStateOf(false) }
@@ -130,12 +134,12 @@ fun ScoreLibraryApp(vm: LibraryViewModel, pdf: com.ensemble.scorelibrary.pdf.Pdf
         onDispose { controller?.show(androidx.core.view.WindowInsetsCompat.Type.systemBars()) }
     }
     CompositionLocalProvider(com.ensemble.scorelibrary.pdf.LocalPdfReader provides pdf,
-        LocalAdministrationViewModel provides administration) {
+        LocalAdministrationViewModel provides administration, LocalScorePreview provides preview,
+        LocalLibrarySelection provides librarySelection) {
     BoxWithConstraints(Modifier.fillMaxSize()) {
     val sideNavigation = maxWidth >= 600.dp
-    val expandedNavigation = maxWidth >= 1200.dp
     Row(Modifier.fillMaxSize()) {
-    if (!reader && sideNavigation) WorkspaceNavigation(Routes.root(route), expandedNavigation) { nav.openRoot(it) }
+    if (!reader && sideNavigation) WorkspaceNavigation(Routes.root(route)) { nav.openRoot(it) }
     Scaffold(modifier = Modifier.weight(1f), containerColor = ScorePalette.Workspace, topBar = {
         if (!reader || !fullscreen) {
         TopAppBar(colors = TopAppBarDefaults.topAppBarColors(
@@ -250,7 +254,7 @@ fun LibraryScreen(state: UiState, root: RootPage, onRetry: () -> Unit = {},
                                 Button(onClick = onRetry) { Text("重试") }
                             }
                             is DomainResult.Success -> when (val page = content.value) {
-                                ScreenContent.Home -> HomePage(root, state.presentation.dashboard, layout, onMember, onPiece, onConcert) { tab, id, new ->
+                                ScreenContent.Home -> HomePage(root, state.presentation.dashboard, layout, onMember, onPiece, onConcert, onPart) { tab, id, new ->
                                     managedId = id; create = new; managementTab = tab
                                 }
                                 is ScreenContent.Piece -> DetailColumns(layout, page.title, "可见声部 · ${page.parts.size}") {
@@ -290,7 +294,7 @@ fun LibraryScreen(state: UiState, root: RootPage, onRetry: () -> Unit = {},
 @Composable
 private fun HomePage(root: RootPage, dashboard: Dashboard, layout: PadLayout,
     onMember: (String?) -> Unit, onPiece: (String) -> Unit, onConcert: (String) -> Unit,
-    onManage: (Int, String?, Boolean) -> Unit) {
+    onPart: (String, String) -> Unit, onManage: (Int, String?, Boolean) -> Unit) {
     val administration = LocalAdministrationViewModel.current
     if (root == RootPage.Admin && administration != null) {
         AdministrationScreen(dashboard, administration)
@@ -321,9 +325,9 @@ private fun HomePage(root: RootPage, dashboard: Dashboard, layout: PadLayout,
     }
     when (root) {
         RootPage.Library -> {
-            Heading("曲谱库", "选择曲目，打开已授权声部")
+            Heading("曲谱库", "当前成员 · ${dashboard.profile.name}")
             if (dashboard.profile.canManage && administration != null) TextButton(onClick = { onManage(0, null, false) }, modifier = Modifier.testTag("library-import")) { Icon(Icons.Outlined.FileOpen, null); Text("导入曲谱") }
-            PieceWorkspace(dashboard.pieces, dashboard.profile.id, onPiece)
+            PieceWorkspace(dashboard.pieces, dashboard.profile.id, onPart = onPart, onPiece = onPiece)
         }
         RootPage.Concerts -> {
             Heading("节目单", "${dashboard.concerts.size} 场演出")

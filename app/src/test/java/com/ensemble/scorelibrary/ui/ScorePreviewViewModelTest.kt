@@ -22,6 +22,7 @@ class ScorePreviewViewModelTest {
     private var gate: CompletableDeferred<Unit>? = null
     private var failure = false
     private var renderedPage = -1
+    private val bitmaps = mutableListOf<Bitmap>()
     private val repository = object : PresentationRepository {
         override fun observe(memberId: String?, request: ScreenRequest) = results
     }
@@ -34,7 +35,7 @@ class ScorePreviewViewModelTest {
             val wait = gate
             if (wait != null) withContext(NonCancellable) { wait.await() }
             renderedPage = page.pageIndex
-            return PdfFrame(Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888),
+            return PdfFrame(Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888).also { bitmaps += it },
                 PdfPageTransform.fit(PageSize(600, 900), width, height, mode, scroll))
         }
     }
@@ -59,6 +60,7 @@ class ScorePreviewViewModelTest {
         assertTrue(vm.state.value is ScorePreviewState.Loading)
         runCurrent(); wait.complete(Unit); runCurrent()
         assertTrue(vm.state.value is ScorePreviewState.Failure)
+        assertTrue(bitmaps.single().isRecycled)
         vm.clear(); assertEquals(ScorePreviewState.Empty, vm.state.value)
     }
     @Test fun revocationRemovesVisibleBitmapAndMissingFileNeverShowsReady() = runTest(dispatcher) {
@@ -76,6 +78,38 @@ class ScorePreviewViewModelTest {
         assertTrue(vm.state.value is ScorePreviewState.Loading)
         wait.complete(Unit); runCurrent()
         assertTrue(vm.state.value is ScorePreviewState.Failure)
+    }
+
+    @Test fun clearRetiresImageButDetachesViewBeforeRecycling() = runTest(dispatcher) {
+        results.emit(ready()); val vm = model(); vm.bind("m", "p", 100, 150); runCurrent()
+        val state = vm.state.value as ScorePreviewState.Ready
+        val view = PreviewImageView(androidx.test.core.app.ApplicationProvider.getApplicationContext())
+        view.show(state.image)
+        vm.clear()
+        assertEquals(ScorePreviewState.Empty, vm.state.value)
+        assertNull(state.image.acquire())
+        assertFalse(state.frame.bitmap.isRecycled)
+        view.clearPreview()
+        assertNull(view.drawable)
+        assertTrue(state.frame.bitmap.isRecycled)
+        view.clearPreview() // Repeated disposal is harmless.
+    }
+    @Test fun viewModelDisposalReleasesUnattachedFrame() = runTest(dispatcher) {
+        results.emit(ready()); val vm = model(); vm.bind("m", "p", 100, 150); runCurrent()
+        val image = (vm.state.value as ScorePreviewState.Ready).image
+        store.clear()
+        assertTrue(image.frame.bitmap.isRecycled)
+        assertNull(image.acquire())
+    }
+    @Test fun retryReplacesFailedFrameAndReleasesPreviousOwner() = runTest(dispatcher) {
+        results.emit(ready()); val vm = model(); vm.bind("m", "p", 100, 150); runCurrent()
+        val old = (vm.state.value as ScorePreviewState.Ready).frame.bitmap
+        failure = true; vm.retry(); runCurrent()
+        assertTrue(old.isRecycled)
+        assertTrue(vm.state.value is ScorePreviewState.Failure)
+        failure = false; vm.retry(); runCurrent()
+        assertTrue(vm.state.value is ScorePreviewState.Ready)
+        assertNotSame(old, (vm.state.value as ScorePreviewState.Ready).frame.bitmap)
     }
 
 }

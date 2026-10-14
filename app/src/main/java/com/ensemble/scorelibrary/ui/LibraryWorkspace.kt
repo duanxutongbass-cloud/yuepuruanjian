@@ -1,16 +1,11 @@
 package com.ensemble.scorelibrary.ui
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ViewList
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -24,23 +19,19 @@ import androidx.compose.ui.unit.dp
 import com.ensemble.scorelibrary.domain.PieceSummary
 
 @Composable
-internal fun WorkspaceNavigation(selected: RootPage, expanded: Boolean, onSelect: (RootPage) -> Unit) {
+internal fun WorkspaceNavigation(selected: RootPage, onSelect: (RootPage) -> Unit) {
     Surface(color = ScorePalette.Navigation, contentColor = Color.White,
-        modifier = Modifier.width(if (expanded) 184.dp else 88.dp).fillMaxHeight().testTag("side-navigation")) {
+        modifier = Modifier.width(88.dp).fillMaxHeight().testTag("side-navigation")) {
         Column(Modifier.padding(horizontal = 12.dp, vertical = 24.dp).verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Icon(Icons.Outlined.LibraryMusic, null, Modifier.align(Alignment.CenterHorizontally).size(28.dp))
-            if (expanded) Text("重奏团曲谱库", Modifier.padding(vertical = 16.dp), style = MaterialTheme.typography.titleMedium)
             RootPage.entries.filterNot { it == RootPage.Admin }.forEach { page ->
                 val active = selected == page || selected == RootPage.Admin && page == RootPage.Profile
                 Surface(onClick = { onSelect(page) }, color = if (active) ScorePalette.NavigationSelected else Color.Transparent,
                     contentColor = if (active) Color.White else Color(0xFFC4CEC6),
                     shape = MaterialTheme.shapes.medium, modifier = Modifier.fillMaxWidth().testTag("nav-${page.route}"),
                     selected = active) {
-                    if (expanded) Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        Icon(page.icon, null); Text(page.label)
-                    } else Column(Modifier.padding(vertical = 14.dp), horizontalAlignment = Alignment.CenterHorizontally,
+                    Column(Modifier.padding(vertical = 14.dp), horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(6.dp)) {
                         Icon(page.icon, null); Text(page.label, style = MaterialTheme.typography.labelMedium)
                     }
@@ -49,6 +40,19 @@ internal fun WorkspaceNavigation(selected: RootPage, expanded: Boolean, onSelect
         }
     }
 }
+
+/** Metadata-only selection lives above transient loading and navigation destinations. */
+internal class LibrarySelection(query: String = "", selected: String? = null, descending: Boolean = false) {
+    val query = mutableStateOf(query)
+    val selected = mutableStateOf(selected)
+    val descending = mutableStateOf(descending)
+    companion object {
+        val Saver = androidx.compose.runtime.saveable.listSaver<LibrarySelection, String>(
+            save = { listOf(it.query.value, it.selected.value.orEmpty(), it.descending.value.toString()) },
+            restore = { LibrarySelection(it[0], it[1].ifEmpty { null }, it[2].toBoolean()) })
+    }
+}
+internal val LocalLibrarySelection = staticCompositionLocalOf<LibrarySelection?> { null }
 
 /** Searches the existing Domain catalog; opening parts/PDFs still requires Domain authorization. */
 internal fun filterPieces(pieces: List<PieceSummary>, query: String, descending: Boolean): List<PieceSummary> {
@@ -59,60 +63,58 @@ internal fun filterPieces(pieces: List<PieceSummary>, query: String, descending:
 }
 
 @Composable
-internal fun PieceWorkspace(pieces: List<PieceSummary>, memberId: String, onPiece: (String) -> Unit) {
-    var query by rememberSaveable(memberId) { mutableStateOf("") }
-    var grid by rememberSaveable(memberId) { mutableStateOf(true) }
-    var descending by rememberSaveable(memberId) { mutableStateOf(false) }
+internal fun PieceWorkspace(pieces: List<PieceSummary>, memberId: String,
+    onPart: (String, String) -> Unit = { _, _ -> }, onPiece: (String) -> Unit) {
+    val selection = LocalLibrarySelection.current ?: rememberSaveable(memberId, saver = LibrarySelection.Saver) { LibrarySelection() }
+    var query by selection.query
+    var selectedId by selection.selected
+    var descending by selection.descending
     val matches = remember(pieces, query, descending) { filterPieces(pieces, query, descending) }
+    val selected = selectedId?.takeIf { id -> matches.any { it.id == id } }
+    val focus = androidx.compose.ui.platform.LocalFocusManager.current
+    val preview = LocalScorePreview.current
     Column(Modifier.fillMaxSize()) {
-    OutlinedTextField(value = query, onValueChange = { query = it }, singleLine = true,
-        label = { Text("搜索曲名或作曲") }, leadingIcon = { Icon(Icons.Outlined.Search, null) },
-        trailingIcon = { if (query.isNotEmpty()) IconButton(onClick = { query = "" }) { Icon(Icons.Outlined.Close, "清除搜索") } },
-        modifier = Modifier.fillMaxWidth().testTag("library-search"), shape = MaterialTheme.shapes.medium)
-    Row(Modifier.fillMaxWidth().padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-        Text("${matches.size} 首曲目", Modifier.weight(1f), style = MaterialTheme.typography.labelLarge)
-        TextButton(onClick = { descending = !descending }, modifier = Modifier.testTag("library-sort")) {
-            Text(if (descending) "曲名 ↓" else "曲名 ↑")
+        OutlinedTextField(value = query, onValueChange = { query = it }, singleLine = true,
+            label = { Text("搜索曲名或作曲") }, leadingIcon = { Icon(Icons.Outlined.Search, null) },
+            trailingIcon = { if (query.isNotEmpty()) IconButton(onClick = { query = "" }) { Icon(Icons.Outlined.Close, "清除搜索") } },
+            modifier = Modifier.fillMaxWidth().testTag("library-search"), shape = MaterialTheme.shapes.medium)
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text("${matches.size} 首曲目", Modifier.weight(1f), style = MaterialTheme.typography.labelLarge)
+            TextButton(onClick = { descending = !descending }, modifier = Modifier.testTag("library-sort")) {
+                Text(if (descending) "曲名 ↓" else "曲名 ↑")
+            }
         }
-        IconToggleButton(checked = grid, onCheckedChange = { grid = it }, modifier = Modifier.testTag("library-layout")) {
-            Icon(if (grid) Icons.AutoMirrored.Outlined.ViewList else Icons.Outlined.GridView, if (grid) "切换列表" else "切换网格")
+        BoxWithConstraints(Modifier.weight(1f).fillMaxWidth()) {
+            val split = maxWidth >= 600.dp
+            val list: @Composable (Modifier) -> Unit = { modifier ->
+                if (matches.isEmpty()) Column(modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text(if (pieces.isEmpty()) "曲库为空" else "没有匹配的曲目")
+                    if (query.isNotEmpty()) TextButton(onClick = { query = "" }) { Text("清除搜索") }
+                } else LazyColumn(modifier.testTag("library-list"), verticalArrangement = Arrangement.spacedBy(6.dp),
+                    contentPadding = PaddingValues(bottom = 12.dp)) {
+                    items(matches, key = { it.id }) { piece ->
+                        Surface(selected = selected == piece.id, onClick = { focus.clearFocus(); selectedId = piece.id },
+                            modifier = Modifier.fillMaxWidth().testTag("piece-${piece.id}"),
+                            color = if (selected == piece.id) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
+                            shape = MaterialTheme.shapes.small) {
+                            Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                                Text(piece.title, style = MaterialTheme.typography.titleSmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                                if (!piece.composer.isNullOrBlank()) Text(piece.composer, style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            }
+                        }
+                    }
+                }
+            }
+            val details: () -> Unit = { selected?.let(onPiece) }
+            if (split) Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.spacedBy(20.dp)) {
+                list(Modifier.weight(.34f).fillMaxHeight())
+                ScorePreviewPane(memberId, selected, preview, onPart, details, Modifier.weight(.66f))
+            } else Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                list(Modifier.fillMaxWidth().heightIn(max = 168.dp).weight(.32f))
+                ScorePreviewPane(memberId, selected, preview, onPart, details, Modifier.weight(.68f))
+            }
         }
-    }
-    if (matches.isEmpty()) {
-        Column(Modifier.fillMaxWidth().padding(32.dp), horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text(if (pieces.isEmpty()) "曲库为空" else "没有匹配的曲目", style = MaterialTheme.typography.titleMedium)
-            Text(if (pieces.isEmpty()) "尚无曲目记录" else "试试曲名或作曲中的其他文字")
-            if (query.isNotEmpty()) TextButton(onClick = { query = "" }) { Text("清除搜索") }
-        }
-    } else if (grid) {
-        LazyVerticalGrid(columns = GridCells.Adaptive(232.dp), modifier = Modifier.testTag("library-grid"),
-            contentPadding = PaddingValues(bottom = 24.dp), horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            items(matches, key = { it.id }) { PieceCard(it, true, onPiece) }
-        }
-    } else LazyColumn(modifier = Modifier.testTag("library-list"), contentPadding = PaddingValues(bottom = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        items(matches, key = { it.id }) { PieceCard(it, false, onPiece) }
-    }
-    }
-}
-
-@Composable
-private fun PieceCard(piece: PieceSummary, grid: Boolean, onPiece: (String) -> Unit) {
-    OutlinedCard(onClick = { onPiece(piece.id) }, modifier = Modifier.fillMaxWidth().testTag("piece-${piece.id}"),
-        colors = CardDefaults.outlinedCardColors(containerColor = ScorePalette.Paper),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)) {
-        if (grid) Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Icon(Icons.Outlined.Description, null, Modifier.size(32.dp), tint = ScorePalette.Accent)
-            Text(piece.title, style = MaterialTheme.typography.titleMedium, maxLines = 3, overflow = TextOverflow.Ellipsis)
-            Text(piece.composer?.takeIf { it.isNotBlank() } ?: "未填写作曲", style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2, overflow = TextOverflow.Ellipsis)
-            HorizontalDivider()
-            Text("查看声部", color = ScorePalette.Accent, style = MaterialTheme.typography.labelLarge)
-        } else ListItem(headlineContent = { Text(piece.title, maxLines = 2, overflow = TextOverflow.Ellipsis) },
-            supportingContent = { Text(piece.composer.orEmpty(), maxLines = 1, overflow = TextOverflow.Ellipsis) },
-            leadingContent = { Icon(Icons.Outlined.Description, null) }, trailingContent = { Icon(Icons.Outlined.ChevronRight, null) })
     }
 }
 
@@ -128,7 +130,7 @@ internal fun ConcertWorkspace(concerts: List<com.ensemble.scorelibrary.domain.Co
     else LazyColumn(contentPadding = PaddingValues(bottom = 24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         items(matches, key = { it.id }) { concert ->
             OutlinedCard(onClick = { onConcert(concert.id) }, modifier = Modifier.fillMaxWidth().testTag("concert-${concert.id}"),
-                colors = CardDefaults.outlinedCardColors(containerColor = ScorePalette.Paper)) {
+                colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surface)) {
                 ListItem(headlineContent = { Text(concert.title, style = MaterialTheme.typography.titleMedium) },
                     supportingContent = { Text("查看个人演出谱与曲目顺序") }, leadingContent = { Icon(Icons.Outlined.Event, null) },
                     trailingContent = { Icon(Icons.Outlined.ChevronRight, null) })

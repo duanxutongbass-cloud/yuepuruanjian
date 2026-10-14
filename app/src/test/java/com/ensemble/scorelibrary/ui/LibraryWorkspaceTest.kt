@@ -17,14 +17,17 @@ import org.robolectric.annotation.Config
 class LibraryWorkspaceTest {
     @get:Rule val compose = createComposeRule()
     private val pieces = listOf(PieceSummary("a", "合成练习 A", "Alpha"), PieceSummary("b", "合成练习 B", "Beta"))
-    @Test fun searchComposerClearAndLayoutRetainSelection() {
+    @Test fun searchComposerSelectThenOpenDetails() {
         var opened = ""
         compose.setContent { ScoreTheme { PieceWorkspace(pieces, "m") { opened = it } } }
         compose.onNodeWithTag("library-search").performTextInput(" beta ")
         compose.onNodeWithTag("piece-a").assertDoesNotExist()
         compose.onNodeWithTag("piece-b").performClick()
+        assertEquals("", opened)
+        compose.onNodeWithTag("piece-b").assertIsSelected()
+        compose.onNodeWithTag("preview-open-reader").assertIsNotEnabled()
+        compose.onNodeWithTag("preview-parts").performClick()
         assertEquals("b", opened)
-        compose.onNodeWithTag("library-layout").performClick()
         compose.onNodeWithTag("library-list").assertExists()
         compose.onNodeWithContentDescription("清除搜索").performClick()
         compose.onNodeWithTag("piece-a").assertExists()
