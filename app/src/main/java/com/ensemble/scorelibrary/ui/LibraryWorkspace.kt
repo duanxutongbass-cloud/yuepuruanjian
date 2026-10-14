@@ -72,6 +72,7 @@ internal fun PieceWorkspace(pieces: List<PieceSummary>, memberId: String,
     val matches = remember(pieces, query, descending) { filterPieces(pieces, query, descending) }
     val selected = selectedId?.takeIf { id -> matches.any { it.id == id } }
     val focus = androidx.compose.ui.platform.LocalFocusManager.current
+    val keyboard = androidx.compose.ui.platform.LocalSoftwareKeyboardController.current
     val preview = LocalScorePreview.current
     Column(Modifier.fillMaxSize()) {
         OutlinedTextField(value = query, onValueChange = { query = it }, singleLine = true,
@@ -93,7 +94,7 @@ internal fun PieceWorkspace(pieces: List<PieceSummary>, memberId: String,
                 } else LazyColumn(modifier.testTag("library-list"), verticalArrangement = Arrangement.spacedBy(6.dp),
                     contentPadding = PaddingValues(bottom = 12.dp)) {
                     items(matches, key = { it.id }) { piece ->
-                        Surface(selected = selected == piece.id, onClick = { focus.clearFocus(); selectedId = piece.id },
+                        Surface(selected = selected == piece.id, onClick = { keyboard?.hide(); focus.clearFocus(force = true); selectedId = piece.id },
                             modifier = Modifier.fillMaxWidth().testTag("piece-${piece.id}"),
                             color = if (selected == piece.id) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
                             shape = MaterialTheme.shapes.small) {

@@ -88,6 +88,7 @@ class ScorePreviewViewModelTest {
         vm.clear()
         assertEquals(ScorePreviewState.Empty, vm.state.value)
         assertNull(state.image.acquire())
+        assertFalse(state.image.canDisplay())
         assertFalse(state.frame.bitmap.isRecycled)
         view.clearPreview()
         assertNull(view.drawable)

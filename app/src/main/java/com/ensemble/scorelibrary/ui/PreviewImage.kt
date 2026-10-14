@@ -9,6 +9,7 @@ import java.io.Closeable
 class PreviewImage(val frame: PdfFrame) {
     private var owner = true
     private var references = 1
+    @Synchronized fun canDisplay(): Boolean = owner && !frame.bitmap.isRecycled
     @Synchronized fun acquire(): Lease? {
         if (!owner || frame.bitmap.isRecycled) return null
         references++

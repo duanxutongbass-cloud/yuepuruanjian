@@ -129,7 +129,7 @@ fun ScoreLibraryApp(vm: LibraryViewModel, pdf: com.ensemble.scorelibrary.pdf.Pdf
         val controller = activity?.let { androidx.core.view.WindowCompat.getInsetsController(it.window, view) }
         if (reader) {
             controller?.systemBarsBehavior = androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-            controller?.hide(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+            controller?.hide(androidx.core.view.WindowInsetsCompat.Type.systemBars() or androidx.core.view.WindowInsetsCompat.Type.ime())
         } else controller?.show(androidx.core.view.WindowInsetsCompat.Type.systemBars())
         onDispose { controller?.show(androidx.core.view.WindowInsetsCompat.Type.systemBars()) }
     }

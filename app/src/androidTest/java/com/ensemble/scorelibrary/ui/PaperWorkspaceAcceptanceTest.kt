@@ -32,6 +32,7 @@ class PaperWorkspaceAcceptanceTest {
     }
     private fun capture(name: String) {
         compose.waitForIdle()
+        instrumentation.uiAutomation.waitForIdle(500, 10_000)
         val bitmap = checkNotNull(instrumentation.uiAutomation.takeScreenshot())
         val pipes = instrumentation.uiAutomation.executeShellCommandRw("dd of=/data/local/tmp/$name.png")
         android.os.ParcelFileDescriptor.AutoCloseOutputStream(pipes[1]).use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
@@ -71,6 +72,7 @@ class PaperWorkspaceAcceptanceTest {
         scenario.onActivity { preview = ViewModelProvider(it)[ScorePreviewViewModel::class.java] }
         fun choose(name: String) {
             compose.onNodeWithTag("nav-profile").performClick()
+            compose.waitUntil(180_000) { compose.onAllNodesWithText("选择成员").fetchSemanticsNodes().isNotEmpty() }
             compose.onNodeWithText("选择成员").performClick()
             compose.onNodeWithText(name).performClick()
             compose.onNodeWithTag("nav-library").performClick()
@@ -81,7 +83,14 @@ class PaperWorkspaceAcceptanceTest {
             choose(member.displayName)
             compose.onNodeWithTag("library-search").performTextInput("Synthetic Composer")
             compose.onNodeWithTag("piece-${piece.id}").performClick()
+            compose.waitUntil(180_000) {
+                var hidden = false
+                scenario.onActivity { hidden = androidx.core.view.ViewCompat.getRootWindowInsets(it.window.decorView)
+                    ?.isVisible(androidx.core.view.WindowInsetsCompat.Type.ime()) == false }
+                hidden
+            }
             await("preview-page")
+            compose.onNodeWithTag("preview-open-reader").assertIsDisplayed()
             val initial = preview.state.value as ScorePreviewState.Ready
             assertEquals("$id-part", initial.score.part.id)
             assertEquals(2, initial.score.segments.first().startPage)
@@ -93,6 +102,13 @@ class PaperWorkspaceAcceptanceTest {
             compose.onNodeWithTag("side-navigation").assertDoesNotExist()
             compose.onNodeWithTag("play-mode").assertExists()
             capture("app-reader")
+            compose.onNodeWithTag("reader-fullscreen").performClick()
+            await("pdf-page")
+            compose.onNodeWithTag("back").assertDoesNotExist()
+            capture("app-reader-fullscreen")
+            compose.onNodeWithTag("pdf-page").performTouchInput { click() }
+            await("back")
+            await("pdf-page")
             compose.onNodeWithTag("back").performClick()
             await("preview-page")
             compose.onNodeWithTag("piece-${piece.id}").assertIsSelected()

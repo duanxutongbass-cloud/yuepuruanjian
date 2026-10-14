@@ -25,21 +25,24 @@ internal fun ScorePreviewPane(member: String, piece: String?, model: ScorePrevie
     var size by remember { mutableStateOf(IntSize.Zero) }
     val owner = LocalLifecycleOwner.current
     var resumed by remember(owner) { mutableStateOf(owner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) }
+    // A pause/resume pair can occur while composition is suspended; a boolean alone loses that event.
+    var resumeGeneration by remember(owner) { mutableLongStateOf(0L) }
     DisposableEffect(owner, model) {
         val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) resumed = true
+            if (event == Lifecycle.Event.ON_RESUME) { resumed = true; resumeGeneration++ }
             if (event == Lifecycle.Event.ON_PAUSE) { resumed = false; model?.clear() }
         }
         owner.lifecycle.addObserver(observer)
         onDispose { owner.lifecycle.removeObserver(observer); model?.clear() }
     }
-    LaunchedEffect(member, piece, size, model, resumed) {
+    LaunchedEffect(member, piece, size, model, resumed, resumeGeneration) {
         if (resumed) model?.bind(member, piece, size.width, size.height) else model?.clear()
     }
     val raw = model?.state?.collectAsStateWithLifecycle()?.value
     // Reject old frames in this composition too, before the bind effect has run.
+    // Lifecycle collection may retain a pre-pause value; retired images must never reappear.
     val state = if (resumed) when (raw) {
-        is ScorePreviewState.Ready -> raw.takeIf { it.target.member == member && it.target.piece == piece }
+        is ScorePreviewState.Ready -> raw.takeIf { it.target.member == member && it.target.piece == piece && it.image.canDisplay() }
         is ScorePreviewState.Failure -> raw.takeIf { it.target.member == member && it.target.piece == piece }
         else -> null
     } else null
