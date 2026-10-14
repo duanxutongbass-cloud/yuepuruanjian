@@ -1,3 +1,5 @@
+> 后续冷灰 UI 精修及最新 APK/截图见 [ANDROID_UI_POLISH_REVIEW.md](ANDROID_UI_POLISH_REVIEW.md)。本文保留上一轮验收。
+
 # Android 授权预览与阅读器闭环验收（2026-10-14）
 
 ## 当前范围

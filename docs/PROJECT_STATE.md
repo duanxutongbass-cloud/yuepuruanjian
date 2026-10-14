@@ -1,3 +1,7 @@
+# 最新 Android UI 精修交付
+
+本轮代码 `81e20f3`，继续草稿 PR #5。冷灰纸面、紧凑离线说明、实际曲名/声部与直达阅读器已实现；最终证据和附件见 [ANDROID_UI_POLISH_REVIEW.md](ANDROID_UI_POLISH_REVIEW.md)。下文为此前阶段记录。
+
 # 项目当前状态
 
 更新：2026-10-14。项目：重奏团曲谱库 Android V1。
