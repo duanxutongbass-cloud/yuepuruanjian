@@ -7,22 +7,24 @@ import androidx.compose.ui.graphics.Color
 
 /** Local-only paper workspace. Never applies a dark filter to PDF or annotation pixels. */
 object ScorePalette {
-    val Navigation = Color(0xFF202824)
-    val NavigationSelected = Color(0xFF39493E)
+    val Navigation = Color(0xFF1D222A)
+    val NavigationSelected = Color(0xFF3B4C65)
+    val Preview = Color(0xFF2C3440)
+    val Search = Color(0xFF303844)
     val Paper = Color.White
-    val Workspace = Color(0xFF232825)
-    val Accent = Color(0xFF365A42)
-    val Ink = Color(0xFFE9EEE9)
+    val Workspace = Color(0xFF232831)
+    val Accent = Color(0xFFADC9F0)
+    val Ink = Color(0xFFE8EDF5)
 }
 
 @Composable
 fun ScoreTheme(content: @Composable () -> Unit) {
     MaterialTheme(colorScheme = darkColorScheme(
-        primary = Color(0xFFBDD1BC), onPrimary = Color(0xFF233724),
-        primaryContainer = Color(0xFF3D5141), onPrimaryContainer = ScorePalette.Ink,
-        secondary = Color(0xFFBBC9BB), background = ScorePalette.Workspace,
-        surface = Color(0xFF2D332F), onSurface = ScorePalette.Ink,
-        surfaceVariant = Color(0xFF3D463F), onSurfaceVariant = Color(0xFFC1CAC2),
-        outline = Color(0xFF778078), outlineVariant = Color(0xFF465048)
+        primary = Color(0xFFADC9F0), onPrimary = Color(0xFF182C46),
+        primaryContainer = Color(0xFF3B4C65), onPrimaryContainer = ScorePalette.Ink,
+        secondary = Color(0xFFC1CCDD), background = ScorePalette.Workspace,
+        surface = Color(0xFF2C3440), onSurface = ScorePalette.Ink,
+        surfaceVariant = Color(0xFF303844), onSurfaceVariant = Color(0xFFC4CDDA),
+        outline = Color(0xFF8794A8), outlineVariant = Color(0xFF4B586C)
     ), content = content)
 }

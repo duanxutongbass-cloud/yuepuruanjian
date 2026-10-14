@@ -27,7 +27,7 @@ class PreviewLifecycleTest {
             val registry = LifecycleRegistry(this)
             override val lifecycle: Lifecycle get() = registry
         }
-        val score = ResolvedConcertItem("", "p", "Synthetic", VisiblePart("part", "d", "I"), listOf(
+        val score = ResolvedConcertItem("", "p", "Synthetic title repeated to exercise a long wrapped heading", VisiblePart("part", "d", "A very long synthetic authorized part heading for stable viewport sizing"), listOf(
             ResolvedScoreSegment("b", null, "pdf", "v", "fixture", "hash", 2, 3, CacheStatus.NOT_CACHED)))
         var requests = 0
         val repository = object : PresentationRepository {
@@ -47,6 +47,11 @@ class PreviewLifecycleTest {
             ScoreTheme { ScorePreviewPane("m", "p", vm, { _, _ -> }, {}) }
         } }
         compose.waitUntil { vm.state.value is ScorePreviewState.Ready }
+        compose.waitForIdle()
+        val stableRequests = requests
+        compose.mainClock.advanceTimeBy(1_000)
+        compose.waitForIdle()
+        assertEquals("Ready metadata must not cause another viewport bind", stableRequests, requests)
         val old = vm.state.value
         val before = requests
         compose.runOnUiThread {

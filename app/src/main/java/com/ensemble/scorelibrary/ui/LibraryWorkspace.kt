@@ -78,7 +78,9 @@ internal fun PieceWorkspace(pieces: List<PieceSummary>, memberId: String,
         OutlinedTextField(value = query, onValueChange = { query = it }, singleLine = true,
             label = { Text("搜索曲名或作曲") }, leadingIcon = { Icon(Icons.Outlined.Search, null) },
             trailingIcon = { if (query.isNotEmpty()) IconButton(onClick = { query = "" }) { Icon(Icons.Outlined.Close, "清除搜索") } },
-            modifier = Modifier.fillMaxWidth().testTag("library-search"), shape = MaterialTheme.shapes.medium)
+            modifier = Modifier.fillMaxWidth().testTag("library-search"), shape = MaterialTheme.shapes.medium,
+            colors = OutlinedTextFieldDefaults.colors(focusedContainerColor = ScorePalette.Search,
+                unfocusedContainerColor = ScorePalette.Search))
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Text("${matches.size} 首曲目", Modifier.weight(1f), style = MaterialTheme.typography.labelLarge)
             TextButton(onClick = { descending = !descending }, modifier = Modifier.testTag("library-sort")) {
@@ -110,10 +112,10 @@ internal fun PieceWorkspace(pieces: List<PieceSummary>, memberId: String,
             val details: () -> Unit = { selected?.let(onPiece) }
             if (split) Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.spacedBy(20.dp)) {
                 list(Modifier.weight(.34f).fillMaxHeight())
-                ScorePreviewPane(memberId, selected, preview, onPart, details, Modifier.weight(.66f))
+                ScorePreviewPane(memberId, selected, preview, onPart, details, Modifier.weight(.66f), pieceTitle = pieces.firstOrNull { it.id == selected }?.title)
             } else Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 list(Modifier.fillMaxWidth().heightIn(max = 168.dp).weight(.32f))
-                ScorePreviewPane(memberId, selected, preview, onPart, details, Modifier.weight(.68f))
+                ScorePreviewPane(memberId, selected, preview, onPart, details, Modifier.weight(.68f), pieceTitle = pieces.firstOrNull { it.id == selected }?.title)
             }
         }
     }

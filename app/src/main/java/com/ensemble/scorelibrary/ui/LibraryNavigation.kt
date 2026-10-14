@@ -92,6 +92,11 @@ fun ScoreLibraryApp(vm: LibraryViewModel, pdf: com.ensemble.scorelibrary.pdf.Pdf
     val fullscreen = pdf?.fullscreen?.collectAsStateWithLifecycle()?.value == true
     val current = if (memberId == envelope.memberId) envelope else envelope.copy(state = UiState.Loading)
     val reader = Routes.isViewer(route)
+    val headerDashboard = (current.state as? UiState.Ready)?.presentation?.dashboard
+    val headerPreview = preview?.state?.collectAsStateWithLifecycle()?.value as? ScorePreviewState.Ready
+    val headerPart = headerPreview?.takeIf { route == "library" && it.target.member == memberId &&
+        it.target.piece == librarySelection.selected.value && it.image.canDisplay() }?.score?.part?.name
+
     LaunchedEffect(route, memberId, current.state) {
         if (route != "library" || current.state !is UiState.Ready) preview?.clear()
     }
@@ -146,8 +151,17 @@ fun ScoreLibraryApp(vm: LibraryViewModel, pdf: com.ensemble.scorelibrary.pdf.Pdf
             containerColor = if (reader) ScorePalette.Navigation else ScorePalette.Workspace,
             titleContentColor = if (reader) androidx.compose.ui.graphics.Color.White else ScorePalette.Ink,
             navigationIconContentColor = if (reader) androidx.compose.ui.graphics.Color.White else ScorePalette.Ink,
-            actionIconContentColor = if (reader) androidx.compose.ui.graphics.Color.White else ScorePalette.Ink), title = { Text(if (reader) readerTitle else "重奏团曲谱库", maxLines = 1,
-            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis) },
+            actionIconContentColor = if (reader) androidx.compose.ui.graphics.Color.White else ScorePalette.Ink), title = {
+                Column {
+                    Text(if (reader) readerTitle else if (route == "library") "重奏团 · 曲谱库" else "重奏团曲谱库", maxLines = 1,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                    if (route == "library") headerDashboard?.profile?.let { profile ->
+                        Text("${profile.name} · ${headerPart ?: "请选择曲目"}", Modifier.testTag("library-member-part"),
+                            style = MaterialTheme.typography.bodySmall, maxLines = 1,
+                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                    }
+                }
+            },
             navigationIcon = {
                 if (reader || route == Routes.PIECE || route == Routes.CONCERT) IconButton(
                     onClick = leaveReader, modifier = Modifier.testTag("back")) {
@@ -246,9 +260,7 @@ fun LibraryScreen(state: UiState, root: RootPage, onRetry: () -> Unit = {},
                         TextButton(onClick = { onMember(null) }) { Text("重新选择成员") }
                     }
                     is UiState.Ready -> {
-                        if (state.offline) ListItem(headlineContent = { Text("当前离线") },
-                            supportingContent = { Text("本地曲库仍可查看") }, leadingContent = { Icon(Icons.Outlined.CloudOff, null) },
-                            modifier = Modifier.testTag("offline"))
+                        if (state.offline) OfflineStatus()
                         when (val content = state.presentation.content) {
                             is DomainResult.Failure -> StatusPanel("暂时无法打开", errorText(content.error.code), Icons.Outlined.ErrorOutline) {
                                 Button(onClick = onRetry) { Text("重试") }
@@ -292,6 +304,21 @@ fun LibraryScreen(state: UiState, root: RootPage, onRetry: () -> Unit = {},
 }
 
 @Composable
+internal fun OfflineStatus() {
+    var showExplanation by remember { mutableStateOf(false) }
+    TextButton(onClick = { showExplanation = true }, modifier = Modifier.testTag("offline"),
+        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)) {
+        Icon(Icons.Outlined.CloudOff, null, Modifier.size(16.dp))
+        Spacer(Modifier.width(6.dp))
+        Text("离线 · 说明", style = MaterialTheme.typography.labelMedium)
+    }
+    if (showExplanation) AlertDialog(onDismissRequest = { showExplanation = false },
+        modifier = Modifier.testTag("offline-explanation"), title = { Text("当前离线") },
+        text = { Text("本地曲库仍可查看。已有本地 PDF 和批注可离线使用；能否打开具体声部仍取决于当前成员授权和文件是否完整。缺失文件与权限错误会在谱页区域显示。本应用尚未实现 NAS 同步。") },
+        confirmButton = { TextButton(onClick = { showExplanation = false }, modifier = Modifier.testTag("offline-close")) { Text("知道了") } })
+}
+
+@Composable
 private fun HomePage(root: RootPage, dashboard: Dashboard, layout: PadLayout,
     onMember: (String?) -> Unit, onPiece: (String) -> Unit, onConcert: (String) -> Unit,
     onPart: (String, String) -> Unit, onManage: (Int, String?, Boolean) -> Unit) {
@@ -325,7 +352,6 @@ private fun HomePage(root: RootPage, dashboard: Dashboard, layout: PadLayout,
     }
     when (root) {
         RootPage.Library -> {
-            Heading("曲谱库", "当前成员 · ${dashboard.profile.name}")
             if (dashboard.profile.canManage && administration != null) TextButton(onClick = { onManage(0, null, false) }, modifier = Modifier.testTag("library-import")) { Icon(Icons.Outlined.FileOpen, null); Text("导入曲谱") }
             PieceWorkspace(dashboard.pieces, dashboard.profile.id, onPart = onPart, onPiece = onPiece)
         }

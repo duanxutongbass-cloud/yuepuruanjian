@@ -1,6 +1,7 @@
 package com.ensemble.scorelibrary.ui
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
@@ -21,7 +22,7 @@ val LocalScorePreview = staticCompositionLocalOf<ScorePreviewViewModel?> { null 
 
 @Composable
 internal fun ScorePreviewPane(member: String, piece: String?, model: ScorePreviewViewModel?,
-    onPart: (String, String) -> Unit, onDetails: () -> Unit, modifier: Modifier = Modifier) {
+    onPart: (String, String) -> Unit, onDetails: () -> Unit, modifier: Modifier = Modifier, pieceTitle: String? = null) {
     var size by remember { mutableStateOf(IntSize.Zero) }
     val owner = LocalLifecycleOwner.current
     var resumed by remember(owner) { mutableStateOf(owner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) }
@@ -46,14 +47,26 @@ internal fun ScorePreviewPane(member: String, piece: String?, model: ScorePrevie
         is ScorePreviewState.Failure -> raw.takeIf { it.target.member == member && it.target.piece == piece }
         else -> null
     } else null
-    Column(modifier.fillMaxSize().testTag("score-preview"), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(modifier.fillMaxSize().background(ScorePalette.Preview, MaterialTheme.shapes.medium).padding(12.dp).testTag("score-preview"), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        val ready = state as? ScorePreviewState.Ready
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
-                Text("个人演奏谱预览", style = MaterialTheme.typography.titleMedium)
-                Text((state as? ScorePreviewState.Ready)?.score?.part?.name ?: "当前成员的实际声部",
-                    style = MaterialTheme.typography.bodySmall)
+                Text(ready?.score?.title ?: pieceTitle ?: "选择曲目", Modifier.testTag("preview-title"),
+                    style = MaterialTheme.typography.titleMedium, minLines = 2, maxLines = 2,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                // Reserve the same height before/after rendering so metadata cannot resize and rebind the PDF.
+                Text(ready?.score?.part?.name.orEmpty(), Modifier.testTag("preview-part"),
+                    style = MaterialTheme.typography.bodySmall, minLines = 2, maxLines = 2,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
             }
-            if (piece != null) TextButton(onClick = onDetails, modifier = Modifier.testTag("preview-parts")) { Text("声部详情") }
+            Spacer(Modifier.width(8.dp))
+            Button(enabled = ready != null, onClick = {
+                if (ready != null && model?.state?.value === ready) onPart(ready.score.pieceId, ready.score.part.id)
+            }, modifier = Modifier.testTag("preview-open-reader")) { Text("打开阅读器") }
+        }
+        if (piece != null) Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text("原谱 · 批注见阅读器", Modifier.weight(1f), style = MaterialTheme.typography.labelSmall)
+            TextButton(onClick = onDetails, modifier = Modifier.testTag("preview-parts")) { Text("声部详情") }
         }
         Box(Modifier.weight(1f).fillMaxWidth().onSizeChanged { size = it }, contentAlignment = Alignment.Center) {
             when {
@@ -72,14 +85,6 @@ internal fun ScorePreviewPane(member: String, piece: String?, model: ScorePrevie
                 }
                 else -> CircularProgressIndicator(Modifier.testTag("preview-loading"))
             }
-        }
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text("原谱预览 · 批注请在阅读器查看", Modifier.weight(1f), style = MaterialTheme.typography.labelSmall)
-            val ready = state as? ScorePreviewState.Ready
-            Button(enabled = ready != null, onClick = {
-                // An invalidation can arrive after composition: recheck the exact live frame on click.
-                if (ready != null && model?.state?.value === ready) onPart(ready.score.pieceId, ready.score.part.id)
-            }, modifier = Modifier.testTag("preview-open-reader")) { Text("打开阅读器") }
         }
     }
 }
