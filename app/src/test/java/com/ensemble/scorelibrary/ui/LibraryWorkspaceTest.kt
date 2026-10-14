@@ -49,4 +49,11 @@ class LibraryWorkspaceTest {
         compose.onNodeWithTag("piece-a").assertExists()
         assertEquals(listOf("a", "b"), pieces.map { it.id })
     }
+    @Test fun titleSortHasTwoDistinctStableOrdersWithoutMutatingCatalog() {
+        assertEquals(listOf("a", "b"), filterPieces(pieces.reversed(), "", false).map { it.id })
+        assertEquals(listOf("b", "a"), filterPieces(pieces, "", true).map { it.id })
+        assertEquals(listOf("b"), filterPieces(pieces, "BETA", true).map { it.id })
+        assertEquals(listOf("a", "b"), pieces.map { it.id })
+    }
+
 }

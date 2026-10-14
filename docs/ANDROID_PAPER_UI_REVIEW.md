@@ -1,52 +1,64 @@
 # Android 纸面工作区切片验收（2026-10-14）
 
-## 结论与范围
+## 当前结论：第三版视觉未完成、未通过
 
-原生曲谱库结构切片已实现，APK / 测试 APK 可构建，157 项 JVM 全部通过。精确第三版视觉与模拟器验收尚未完成，不能宣称整轮通过。只推进 Android；不修改 local-manager，不依赖 Windows/NAS，不发布/部署/合并。
+用户视觉审核已退回首个浅色工作区/白色卡片切片。第三版实际目标是**整体低饱和深色工作台、窄侧导航、左侧曲目列表及选中态、右侧大型白色真实授权谱页、顶部搜索及当前成员**。白纸指 PDF 乐谱纸面，不是曲目卡。当前 APK 仍包含被退回的初始 UI，只能作为中间验证包，不能称为第三版交付。
 
-本轮从远端 `feat/annotation-reliability-phase10-r2` 的 `6e39372e185e4238ae243726d16d4f56fc55ba81` 派生 `feat/android-paper-library-v3`；远端 main 核验 `32b702e6019b4a8f4471634163d3844b28f03d65`。不是整理工具 PR2/3/4 的衍生。0.9.6 / versionCode 8 / Room schema 3 不变，无迁移。
+本轮已完成可构建的 Android 结构和真实 PDF 预览数据层准备。按用户“先在本环境实际读图，再实现”的要求，视觉集成及“列表选择→原生 PDF 预览→打开阅读器”的 UI 闭环仍等待原图本地可读；预览 ViewModel 尚未接入首页。没有拿网页原型代替 Android，也没有把收到的文字审核当作自己已看过像素。
 
-## 参考读取边界
+## 基线与边界
 
-Library 解析到 `libfile_3f9535d6b6508191b43943af019336bd`（direction-03.png）与 `libfile_5488e080ed1c8191a985d70c4d5b1d04`（yuepu-three-homepages.zip）。按已解析 ID 走 materialize，当前 helper 下载失败，明确工作区目的地重试仍失败。image_file 读取只返回图片指针和不可用的 OCR，没有可见像素。没有成功物化 PNG/ZIP，未声称查看参考或读取源码。
+分支 `feat/android-paper-library-v3` 从审核后的 `6e39372e185e4238ae243726d16d4f56fc55ba81` 派生；main 核验 `32b702e6019b4a8f4471634163d3844b28f03d65`。草稿 [PR #5](https://github.com/duanxutongbass-cloud/yuepuruanjian/pull/5) 以批注 R2 分支为 base，隔离 UI diff。不使用整理工具 PR2/3/4，不修改 local-manager，不合并/发布/部署。
 
-因此这里只落实用户文字明确的深色侧导航、浅色工作区和白色卡片，以及不依赖附件的原生结构/交互；精确版式、字体、比例、谱面预览等视觉匹配待附件解阻。白色卡片没有伪造 PDF 缩略图。不是网页原型。
+版本 0.9.6 / code 8 / Room schema 3 不变，无迁移。批注存储、串行提交、失败重试、重新鉴权前内存草稿隐藏、编辑锁/演出冻结语义未改。没有增加联网依赖、生产登录或 NAS 同步声明。
 
-仓库及 checkout `.agents/skills` 未发现 AGENTS.md 或相关本地技能；已读取 DEVELOPMENT_RULES、ARCHITECTURE、PRODUCT_DESIGN、INTERACTION_REVIEW、INTERACTION_FIX_REQUIREMENTS 与批注 R2 实现。
+仓库与 checkout `.agents/skills` 没有发现 AGENTS.md 或相关本地技能；已读取 DEVELOPMENT_RULES、ARCHITECTURE、PRODUCT_DESIGN、INTERACTION_REVIEW、INTERACTION_FIX_REQUIREMENTS 和现有实现。
 
-## 实际变更
+## 参考文件读取阻塞（源文件未丢失）
 
-- `ScoreTheme` 提供本地视觉令牌；不染色真实 PDF 像素或批注。
-- 窗口 <600dp 底部导航、600–1199dp 紧凑侧导航、>=1200dp 宽侧导航；阅读与全屏均移除普通导航。
-- 曲谱库原生卡片/列表、曲名及作曲检索、清除、默认/曲名排序；查询与布局按成员隔离并支持状态恢复。
-- 搜索仅消费既有 Domain 目录。基线允许显示未归档曲目/节目单标题，不能把这称作新的权限过滤；声部、PDF、批注访问仍由 Domain/仓储重新验证。
-- 节目单原生检索及卡片，详情提供“打开演出谱”；真正入场仍走原有准备与冻结检查。
-- 阅读器深色标题栏；可横滚的适配/缩放工具与固定可见的演出/专注入口。PDF 不受普通内容最大宽度限制，全屏最大化保留。
-- 未修改 AnnotationViewModel/仓储与 Domain；保留串行保存、失败重试、重新鉴权前内存草稿隐藏、编辑锁与演出冻结区别。没有新增云服务、生产登录或 NAS 同步声明。
+- PNG：`libfile_3f9535d6b6508191b43943af019336bd`，direction-03.png，175900 字节。
+- ZIP：`libfile_5488e080ed1c8191a985d70c4d5b1d04`，yuepu-three-homepages.zip，598349 字节。
+- 审核方给出的 PNG 预期 SHA-256：`126c936213fca75ba796e277339c368a9c51b3e74868de80512f37f3702d3567`。本环境没有成功下载，因此**未在本地复核此 hash 或像素**。
+- 使用原 ID、原始文件名/版本身份、明确自身 `/workspace/design-reference` 与 `/workspace/design-reference-v3` 目的地，按支持的 materialize/helper 路线有限重试。结果是网络代理 `Tunnel connection failed: 403 Forbidden`。未使用另一环境路径或绕过代理拒绝。
+- image_file 读取只提供资产指针与不可用 OCR，没有可检查的像素。已请求另一个可读取的原图链接。只有这个读取前置条件满足后，才能按要求继续视觉实现。
+
+## 已完成的软件准备
+
+- 初始自适应导航、曲名/作曲检索、清除、曲名正序/倒序、列表/网格切换及成员隔离；这些初始布局**不符合第三版视觉**，后续需替换。
+- 节目单检索、打开演出谱入口；阅读器横滚工具与固定演出入口，普通导航在阅读/全屏时隐藏。
+- 新增 `ScreenRequest.Preview`，复用 `ScoreResolver.resolvePiece` 决定当前个人声部，不在 UI 重写默认/分配/权限，也不在失败时猜测另一个声部。
+- `ScorePreviewViewModel` 观察 Room/Domain 变更，调用真实 PdfEngine 校验文件/hash/页段并渲染首个授权源页；单张位图上限 1200×1800，不创建虚构缩略图、页数或可用标记。
+- 成员/曲目切换立即清空旧帧；撤权/版本等投影更新先隐藏旧帧，再等待旧渲染取消；generation 与 target 双重检查拒绝迟到的异步结果。缺文件、权限/配置错误和一般失败分别提供真实状态与重试。
+- 目录仍沿用基线的未归档标题可见规则；声部、PDF 和批注需要 Domain/仓储授权，搜索不是安全边界。
 
 ## 本轮验证（独立计数）
 
 | 验证 | 结果 |
 | --- | --- |
-| Debug APK / AndroidTest APK | 构建成功 |
-| JVM / Robolectric | 157 项；0 失败 / 0 错误 / 0 跳过 |
+| Debug APK / 测试 APK | 构建成功 |
+| 完整 JVM / Robolectric | 163 项；0 失败 / 0 错误 / 0 跳过 |
 | Lint | 0 错误 / 10 警告 / 1 提示 |
-| JVM 原生截图 | 800×1200、1280×1800；已查看，中文清晰、导航和卡片未重叠 |
-| Android 模拟器 | 执行中，尚未计为通过 |
-| 物理 Pad / 笔 / HID | 未执行；没有连接物理设备 |
+| JVM 界面截图 | 800×1200、1280×1800；已查看；记录的是被退回的初始 UI |
+| Android 14 软件模拟器 UI | 两项计划用例中一项已开始、取得普通平板曲库截图；System UI ANR 干扰后中止，无完成通过的 UI 用例 |
+| 原生 PDF 预览边界测试 | 执行中，尚未计为通过 |
+| 物理 Pad / 笔 / HID | 没有连接，未执行 |
 
-使用 Linux、Gradle 8.13、完整 Temurin JDK 21、Android compile SDK 36、Build Tools 35.0.0。Java 17 的首轮 Robolectric 因 SDK36 要求 JDK21 失败；只读 home 引发下载锁失败也已修复，最终 157 项不包含这些失败启动计数。工具链代理/缓存配置仅在工作区，不进入应用或仓库。不要累加旧 130+40 或批注 152。
+163 是最终完整 JVM 批次，不与旧 130+40、批注 152 或中途 158/定向 11 项相加。新增测试覆盖查询恢复、成员隔离、排序、旧路由结果、重复请求、窄屏导航，以及实际个人声部解析、未授权拒绝、首个源页、位图边界、撤权隐藏、缺文件和不可取消旧渲染返回。原生 `ScorePreviewNativeTest` 使用真实 Room/Domain/PdfRenderer 与合成 PDF，单独核验文件缺失/重试/撤权；完成状态另记，不用 JVM 假图冒充它。
 
-新增覆盖搜索/清除、网格切换、查询恢复、成员切换移除旧行、路由变化后的旧异步结果、重复请求、窄屏导航。既有完整 JVM 套件覆盖批注串行与失败恢复、权限、HID 门禁、Room、节目单及备份恢复；JVM 通过不替代物理笔/无线输入验收。原生模拟器新增 `PaperWorkspaceAcceptanceTest` 使用合成投影与真实 `PdfRenderer`，覆盖两种竖屏、搜索→声部→PDF、全屏退出、返回、节目单重复点击与入口。
+工具环境：Linux、Gradle 8.13、完整 Temurin JDK 21、compile SDK 36 / Build Tools 35.0.0。无 `/dev/kvm`；模拟器只能 TCG 软件执行。Google APIs 镜像首次启动优化耗时后，改用 Android 14 AOSP 镜像；出现 System UI ANR，点击等待后仍未得到完整 UI 结果，故中止并保留证据。不是物理设备验证，也不是断言 App 崩溃。
 
-## 证据
+已诊断并解决 Java 17 无法运行 SDK36 Robolectric、JVM home 下载锁只读及 Compose 作用域编译问题。环境代理/缓存与安装工具均在工作区，不进入仓库或应用。
 
-- [JVM 普通平板截图](evidence/android-paper-ui/jvm-library-800.png)
-- [JVM 大屏竖屏截图](evidence/android-paper-ui/jvm-library-1280.png)
-- 构建产物：`app/build/outputs/apk/debug/app-debug.apk`；测试 APK 在 `app/build/outputs/apk/androidTest/debug/`。
+## 证据与复现
+
+- [JVM 普通平板](evidence/android-paper-ui/jvm-library-800.png)、[JVM 大屏竖屏](evidence/android-paper-ui/jvm-library-1280.png)：初始 UI，视觉未验收。
+- APK：`app/build/outputs/apk/debug/app-debug.apk`；测试 APK：`app/build/outputs/apk/androidTest/debug/`。
 - JVM：`app/build/reports/tests/testDebugUnitTest/`；Lint：`app/build/reports/lint-results-debug.html`。
-- 交付包将包含最终提交身份、APK SHA-256、截图与测试证据；没有私谱、秘密、签名私钥或构建缓存。
+- 构建/回归：`gradle assembleDebug testDebugUnitTest lintDebug assembleDebugAndroidTest`，SDK36 Robolectric 需要 JDK21。本环境另为测试 JVM 定向了可写缓存与代理，普通可写环境不需要复制这些环境路径。
+- 中间交付包包含最终提交身份、APK 校验值、软件报告、模拟器原始记录与截图，不包含私谱、秘密、签名私钥或构建缓存。
 
-## 尚未完成
+## 安装与剩余验收
 
-第三版 PNG/ZIP 本地读取与像素对照；模拟器运行结果；实际物理 Pad、触控笔/手掌、无线 HID、OEM/长期排练。Debug 签名为本环境生成，未验证与已有装机签名相同；不要通过卸载有用户数据的旧包来绕过签名不匹配，应先验证并导出资产。
+**禁止通过卸载已有 App 绕过 Debug 签名冲突。** 本环境生成的 Debug 证书未证明匹配旧 APK，已有本地曲谱和批注必须保留；需先确认签名并验证导出备份。仅在本轮隔离模拟器使用合成数据安装测试。
+
+剩余：可读原图及本地 hash/像素核验；第三版原生整体深色列表/真实谱页预览 UI 集成与返回/取消/重复点击/旧结果场景；节目单/阅读器视觉复核；完整模拟器回归；物理 Pad、笔/手掌、无线 HID、OEM/长期排练。当前结论不能写“第三版已完成”或“全部验收通过”。

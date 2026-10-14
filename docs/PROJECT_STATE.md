@@ -1,12 +1,14 @@
 # 项目当前状态
 
-更新：2026-10-13。项目：重奏团曲谱库 Android V1。
+更新：2026-10-14。项目：重奏团曲谱库 Android V1。
 
 ## 2026-10-14 Android 界面切片（进行中）
 
 用户最新指令：只推进 Android，停止配套 Windows 整理工具开发。Windows/NAS 信息不是本轮阻塞。新分支 `feat/android-paper-library-v3` 从已审核批注补丁 `6e39372e185e4238ae243726d16d4f56fc55ba81` 派生，远端 main 核验仍为 `32b702e6019b4a8f4471634163d3844b28f03d65`。不使用整理工具 PR 作为基线，不合并、不推 main、不发布。
 
-第三版 Library PNG 与 ZIP 已解析，但本环境下载失败，未查看像素/源码。当前按用户文字方向推进原生可复用结构与曲谱库垂直切片，不能宣称第三版视觉验收通过。版本仍为 0.9.6 / code 8 / schema 3；本轮验证单列 [ANDROID_PAPER_UI_REVIEW](ANDROID_PAPER_UI_REVIEW.md)，不累加历史数字。
+第三版 PNG/ZIP 已确认存在，执行环境按原 ID/materialize 及本地目的地有限重试，下载被网络代理 `403 Forbidden` 拒绝，尚未实际查看像素。用户视觉审核已明确退回首版浅色工作区/白卡网格：目标是深色整体工作台、窄导航、左列表、右侧真实授权 PDF 白纸预览与顶部成员/搜索。不能将首版称作第三版完成。
+
+当前准备了通过 Domain 解析个人声部、校验真实 PDF、成员/权限变化清屏及拒绝旧异步结果的预览数据层；原图本地可读后才能按要求继续视觉集成。最新完整软件结果与模拟器状态独立维护于 [ANDROID_PAPER_UI_REVIEW](ANDROID_PAPER_UI_REVIEW.md)。版本仍 0.9.6 / code 8 / schema 3，不累加旧批次数字。
 
 ## 当前批次
 

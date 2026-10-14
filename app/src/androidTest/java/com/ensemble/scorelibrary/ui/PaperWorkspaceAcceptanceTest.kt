@@ -51,6 +51,7 @@ class PaperWorkspaceAcceptanceTest {
         val repository = object : PresentationRepository {
             override fun observe(memberId: String?, request: ScreenRequest) = flowOf(DomainResult.Success(Presentation(dashboard,
                 DomainResult.Success(when (request) {
+                    is ScreenRequest.Preview -> ScreenContent.Viewer(item)
                     ScreenRequest.Home -> ScreenContent.Home
                     is ScreenRequest.Piece -> ScreenContent.Piece("p1", item.title, listOf(part))
                     is ScreenRequest.Concert -> ScreenContent.Concert(concert)
@@ -77,7 +78,11 @@ class PaperWorkspaceAcceptanceTest {
         capture("paper-reader-$width")
         compose.onNodeWithTag("reader-fullscreen").performClick()
         compose.onNodeWithTag("back").assertDoesNotExist()
+        compose.waitUntil(60_000) {
+            (pdf.state.value as? PdfState.Ready)?.frame?.transform?.viewportHeight?.let { it > height - 100 } == true
+        }
         compose.onNodeWithTag("pdf-page").performTouchInput { click() }
+        compose.waitUntil(60_000) { !pdf.fullscreen.value && pdf.state.value is PdfState.Ready }
         compose.onNodeWithTag("back").performClick()
         compose.onNodeWithTag("part-part").assertExists()
         compose.onNodeWithTag("back").performClick()
@@ -87,7 +92,7 @@ class PaperWorkspaceAcceptanceTest {
         capture("paper-concerts-$width")
         compose.onNodeWithTag("concert-c").performClick()
         compose.onNodeWithTag("concert-item-item").performClick()
-        compose.waitUntil(60_000) { pdf.state.value is PdfState.Ready }
+        compose.waitUntil(60_000) { pdf.state.value is PdfState.Ready && pdf.itemNumber()?.second == 1 }
         compose.onNodeWithTag("play-mode").assertIsDisplayed()
     }
     @Test fun portraitTablet() = runSlice(800, 1200)

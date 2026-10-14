@@ -33,6 +33,7 @@ class NavigationTest {
         val repository = object : PresentationRepository {
             override fun observe(memberId: String?, request: ScreenRequest) = flowOf(DomainResult.Success(
                 Presentation(dashboard, DomainResult.Success(when (request) {
+                    is ScreenRequest.Preview -> ScreenContent.Viewer(item)
                     ScreenRequest.Home -> ScreenContent.Home
                     is ScreenRequest.Piece -> ScreenContent.Piece("piece", "Music", listOf(part))
                     is ScreenRequest.Concert -> ScreenContent.Concert(ResolvedConcert("concert", "Concert", listOf(item)))

@@ -51,18 +51,19 @@ internal fun WorkspaceNavigation(selected: RootPage, expanded: Boolean, onSelect
 }
 
 /** Searches the existing Domain catalog; opening parts/PDFs still requires Domain authorization. */
-internal fun filterPieces(pieces: List<PieceSummary>, query: String, alphabetical: Boolean): List<PieceSummary> {
+internal fun filterPieces(pieces: List<PieceSummary>, query: String, descending: Boolean): List<PieceSummary> {
     val needle = query.trim()
     val matches = pieces.filter { it.title.contains(needle, ignoreCase = true) || it.composer.orEmpty().contains(needle, ignoreCase = true) }
-    return if (alphabetical) matches.sortedWith(compareBy<PieceSummary> { it.title }.thenBy { it.id }) else matches
+    val sorted = matches.sortedWith(compareBy<PieceSummary> { it.title }.thenBy { it.id })
+    return if (descending) sorted.reversed() else sorted
 }
 
 @Composable
 internal fun PieceWorkspace(pieces: List<PieceSummary>, memberId: String, onPiece: (String) -> Unit) {
     var query by rememberSaveable(memberId) { mutableStateOf("") }
     var grid by rememberSaveable(memberId) { mutableStateOf(true) }
-    var alphabetical by rememberSaveable(memberId) { mutableStateOf(false) }
-    val matches = remember(pieces, query, alphabetical) { filterPieces(pieces, query, alphabetical) }
+    var descending by rememberSaveable(memberId) { mutableStateOf(false) }
+    val matches = remember(pieces, query, descending) { filterPieces(pieces, query, descending) }
     Column(Modifier.fillMaxSize()) {
     OutlinedTextField(value = query, onValueChange = { query = it }, singleLine = true,
         label = { Text("搜索曲名或作曲") }, leadingIcon = { Icon(Icons.Outlined.Search, null) },
@@ -70,8 +71,8 @@ internal fun PieceWorkspace(pieces: List<PieceSummary>, memberId: String, onPiec
         modifier = Modifier.fillMaxWidth().testTag("library-search"), shape = MaterialTheme.shapes.medium)
     Row(Modifier.fillMaxWidth().padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
         Text("${matches.size} 首曲目", Modifier.weight(1f), style = MaterialTheme.typography.labelLarge)
-        TextButton(onClick = { alphabetical = !alphabetical }, modifier = Modifier.testTag("library-sort")) {
-            Text(if (alphabetical) "曲名排序" else "默认顺序")
+        TextButton(onClick = { descending = !descending }, modifier = Modifier.testTag("library-sort")) {
+            Text(if (descending) "曲名 ↓" else "曲名 ↑")
         }
         IconToggleButton(checked = grid, onCheckedChange = { grid = it }, modifier = Modifier.testTag("library-layout")) {
             Icon(if (grid) Icons.AutoMirrored.Outlined.ViewList else Icons.Outlined.GridView, if (grid) "切换列表" else "切换网格")
