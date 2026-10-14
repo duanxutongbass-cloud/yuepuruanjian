@@ -1,6 +1,8 @@
 # 重奏团曲谱库
 
-Android Kotlin / Jetpack Compose project, application baseline 0.9.6.
+Android Kotlin / Jetpack Compose project, application version 0.9.7 (baseline 0.9.6, database schema 3).
+
+0.9.7 separates PDF selection from import confirmation and suggests the title from the selected filename. See [PDF import entry fix](docs/PDF_IMPORT_ENTRY_REVIEW.md). Organizer-specific instrument/category recognition is awaiting the actual naming rules.
 
 2026-10-14: Local main integrates the Android UI, annotation reliability, sync core, isolated HTTP/offline test adapter, and local management workflow/review prototype. See [local merge verification](docs/LOCAL_MERGE_REVIEW.md), [local manager](local-manager/README.md), and [HTTP test service](test-service/README.md).
 

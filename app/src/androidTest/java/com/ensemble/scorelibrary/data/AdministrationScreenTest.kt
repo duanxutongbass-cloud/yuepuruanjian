@@ -34,12 +34,14 @@ class AdministrationScreenTest {
                 AdministrationScreen(Dashboard(listOf(com.ensemble.scorelibrary.domain.MemberChoice("a", "Admin")),
                     Profile("a", "Admin", null, true)), vm)
             } } }
-            compose.onNodeWithText("选择 PDF 并导入").performScrollTo().assertIsNotEnabled()
+            compose.onNodeWithText("选择 PDF").performScrollTo().assertIsEnabled()
+            compose.onNodeWithText("确认导入").performScrollTo().assertIsNotEnabled()
             compose.onNodeWithText("新曲目名称").performScrollTo().performTextInput("Test score")
             compose.onNodeWithText("声部名称").performScrollTo().performTextInput("Violin I")
-            compose.onNodeWithText("选择 PDF 并导入").performScrollTo().assertIsEnabled()
+            compose.onNodeWithText("选择 PDF").performScrollTo().assertIsEnabled()
             compose.onNodeWithText("结束页（空为末页）").performScrollTo().performTextInput("invalid")
-            compose.onNodeWithText("选择 PDF 并导入").performScrollTo().assertIsNotEnabled()
+            compose.onNodeWithText("选择 PDF").performScrollTo().assertIsEnabled()
+            compose.onNodeWithText("确认导入").performScrollTo().assertIsNotEnabled()
         } finally { store.clear(); db.close() }
     }
     @Test fun freshInstallationCanCreateAdministratorThroughForm() {
@@ -67,7 +69,7 @@ class AdministrationScreenTest {
             compose.setContent { MaterialTheme { AdministrationScreen(Dashboard(
                 listOf(com.ensemble.scorelibrary.domain.MemberChoice("m", "Member")),
                 Profile("m", "Member", null, false), emptyList()), vm) } }
-            compose.onNodeWithText("选择 PDF 并导入").assertDoesNotExist()
+            compose.onNodeWithText("选择 PDF").assertDoesNotExist()
             compose.onNodeWithText("添加成员").assertDoesNotExist()
             compose.onNodeWithText("请在“我的”中选择管理员").assertExists()
         } finally { store.clear(); db.close() }
