@@ -341,4 +341,116 @@ class SyncStateCoreTest {
         assertNull(h.core.view()!!.readiness)
     }
 
+    private fun rebindBeforeCommit(phase: SyncPhase) {
+        val h = Harness(); val m = manifest(); h.receive(m)
+        val old = if (phase != SyncPhase.MANIFEST_RECEIVED) h.core.next()!! else null
+        if (phase == SyncPhase.VERIFIED) h.core.verified(old!!.token, m.artifacts)
+        if (phase == SyncPhase.VERIFICATION_FAILED) h.core.failed(old!!.token)
+        assertEquals(phase, h.core.view()!!.phase)
+        h.core.switchSession(a.copy(accountId = "b"), "session")
+        val again = h.core.switchSession(a, "session")
+        assertEquals(SyncDecision.STALE, h.core.receive(h.session, m))
+        assertEquals(SyncDecision.CONFLICT, h.core.receive(again, m.copy(artifacts = emptyList())))
+        assertEquals(SyncDecision.STALE, h.core.receive(again, m.copy(operationId = "other")))
+        assertNull(h.core.next())
+        assertEquals(phase.name, SyncDecision.ACCEPTED, h.core.receive(again, m))
+        assertEquals(SyncPhase.MANIFEST_RECEIVED, h.core.view()!!.phase)
+        assertEquals(SyncDecision.DUPLICATE, h.core.receive(again, m))
+        val fresh = h.core.next()!!
+        assertEquals(SyncAction.VERIFY_RESOURCES, fresh.token.action)
+        assertEquals(m, fresh.manifest)
+        assertEquals(again, fresh.token.session)
+        assertTrue(fresh.token.session.sessionEpoch > h.session.sessionEpoch)
+        if (old != null) {
+            assertTrue(fresh.token.requestNumber > old.token.requestNumber)
+            assertFalse(h.core.mayExecute(old.token))
+            assertEquals(SyncDecision.STALE, h.core.verified(old.token, m.artifacts))
+        }
+        assertTrue(h.core.mayExecute(fresh.token))
+        h.core.verified(fresh.token, m.artifacts)
+        val commit = h.core.next()!!
+        h.core.committed(commit.token, h.store.commit(commit))
+        h.confirm()
+        assertEquals(SyncPhase.SERVICE_CONFIRMED, h.core.view()!!.phase)
+        assertEquals(1, h.store.replacements)
+    }
+
+    @Test fun rebindManifestReceivedAfterAToBToA() = rebindBeforeCommit(SyncPhase.MANIFEST_RECEIVED)
+    @Test fun rebindVerifyingAfterAToBToA() = rebindBeforeCommit(SyncPhase.VERIFYING)
+    @Test fun rebindVerifiedAfterAToBToA() = rebindBeforeCommit(SyncPhase.VERIFIED)
+    @Test fun rebindVerificationFailedAfterAToBToA() = rebindBeforeCommit(SyncPhase.VERIFICATION_FAILED)
+
+    @Test fun rebindNeverClearsConsentQuarantine() {
+        val h = Harness(); val m = manifest().copy(containsPersonalPayload = true)
+        h.receive(m)
+        h.core.switchSession(a.copy(accountId = "b"), "b")
+        val again = h.core.switchSession(a, "a")
+        assertEquals(SyncDecision.STALE, h.core.receive(again, m))
+        assertNull(h.core.view()); assertNull(h.core.next())
+        assertEquals(SyncDecision.ACCEPTED, h.core.receive(again, m.copy(revision = 2, operationId = "personal-2")))
+        assertEquals(SyncPhase.CONSENT_REQUIRED, h.core.view()!!.phase)
+        assertNull(h.core.next())
+    }
+
+    @Test fun rebindIsBlockedByStickyPermissionOrDeviceRevocation() {
+        for (device in listOf(false, true)) {
+            val h = Harness(); h.receive(manifest()); h.verify()
+            h.core.revoke(a, device)
+            h.core.switchSession(a.copy(accountId = "b"), "b")
+            val again = h.core.switchSession(a, "a")
+            assertEquals(SyncDecision.BLOCKED, h.core.receive(again, manifest()))
+            assertNull(h.core.view()); assertNull(h.core.next())
+        }
+    }
+
+    @Test fun rebindIsDeviceScopedAndDoesNotReuseAnotherDevicesEvidence() {
+        val h = Harness(); val m = manifest(); h.receive(m)
+        val old = h.verify()
+        val other = h.core.switchSession(a.copy(deviceId = "device-2"), "same")
+        val otherManifest = m.copy(artifacts = listOf(artifact("device-2-only")))
+        assertEquals(SyncDecision.ACCEPTED, h.core.receive(other, otherManifest))
+        val otherCommand = h.core.next()!!
+        val again = h.core.switchSession(a, "same")
+        assertEquals(SyncDecision.ACCEPTED, h.core.receive(again, m))
+        val fresh = h.core.next()!!
+        assertEquals(m, fresh.manifest)
+        assertEquals(SyncDecision.STALE, h.core.verified(old.token, m.artifacts))
+        assertEquals(SyncDecision.STALE, h.core.verified(otherCommand.token, otherManifest.artifacts))
+        assertEquals(SyncPhase.VERIFYING, h.core.view()!!.phase)
+    }
+
+    @Test fun rebindCannotResurrectSupersededRevision() {
+        val h = Harness(); h.receive(manifest()); h.verify()
+        h.receive(manifest(2))
+        val again = h.core.switchSession(a, "again")
+        assertEquals(SyncDecision.STALE, h.core.receive(again, manifest()))
+        assertNull(h.core.next())
+        assertEquals(SyncDecision.ACCEPTED, h.core.receive(again, manifest(2)))
+    }
+
+    @Test fun rebindCannotCrossAnyPreviouslyIssuedCommitBoundary() {
+        for (phase in listOf(SyncPhase.COMMITTING, SyncPhase.COMMIT_FAILED, SyncPhase.COMMIT_UNKNOWN,
+            SyncPhase.QUERYING_COMMIT, SyncPhase.RECEIPT_PENDING, SyncPhase.CONFIRMING, SyncPhase.SERVICE_CONFIRMED)) {
+            val h = Harness(); val m = manifest(); h.receive(m); h.verify()
+            val c = h.core.next()!!
+            when (phase) {
+                SyncPhase.COMMIT_FAILED -> h.core.committed(c.token, SyncCommitResult.NotCommitted)
+                SyncPhase.COMMIT_UNKNOWN, SyncPhase.QUERYING_COMMIT -> h.core.failed(c.token)
+                SyncPhase.RECEIPT_PENDING, SyncPhase.CONFIRMING, SyncPhase.SERVICE_CONFIRMED ->
+                    h.core.committed(c.token, h.store.commit(c))
+                else -> Unit
+            }
+            if (phase == SyncPhase.QUERYING_COMMIT || phase == SyncPhase.CONFIRMING) h.core.next()
+            if (phase == SyncPhase.SERVICE_CONFIRMED) h.confirm()
+            assertEquals(phase, h.core.view()!!.phase)
+            h.core.switchSession(a.copy(accountId = "b"), "b")
+            val again = h.core.switchSession(a, "again")
+            assertEquals(phase.name, SyncDecision.STALE, h.core.receive(again, m))
+            assertEquals(SyncDecision.CONFLICT, h.core.receive(again, m.copy(artifacts = emptyList())))
+            assertNull(h.core.view()); assertNull(h.core.next())
+            assertFalse(h.core.mayExecute(c.token))
+            assertEquals(SyncDecision.STALE, h.core.committed(c.token, SyncCommitResult.NotCommitted))
+        }
+    }
+
 }

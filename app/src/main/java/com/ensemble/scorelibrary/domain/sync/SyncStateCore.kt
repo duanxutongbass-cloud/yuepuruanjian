@@ -57,7 +57,16 @@ class SyncStateCore {
         val key = Operation(expectedSession.identity, manifest.operationId)
         operations[key]?.let {
             if (it.manifest != manifest) return SyncDecision.CONFLICT
-            return if (it === active) SyncDecision.DUPLICATE else SyncDecision.STALE
+            if (it === active) return SyncDecision.DUPLICATE
+            // Only an explicitly re-received, latest pre-commit operation may bind to a new epoch.
+            // Never carry verification evidence or pending requests across sessions.
+            if (it.session == expectedSession || manifest.revision != revisions[expectedSession.identity] ||
+                it.phase !in setOf(SyncPhase.MANIFEST_RECEIVED, SyncPhase.VERIFYING,
+                    SyncPhase.VERIFIED, SyncPhase.VERIFICATION_FAILED)) return SyncDecision.STALE
+            val rebound = Transaction(expectedSession, manifest, SyncPhase.MANIFEST_RECEIVED)
+            operations[key] = rebound
+            active = rebound
+            return SyncDecision.ACCEPTED
         }
         if (manifest.protocolVersion != 1) return SyncDecision.UNSUPPORTED_PROTOCOL
         if (manifest.operationId.isBlank() || manifest.revision < 0 ||

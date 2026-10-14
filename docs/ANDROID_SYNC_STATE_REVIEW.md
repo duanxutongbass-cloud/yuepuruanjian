@@ -43,9 +43,9 @@
 
 明确未完成：真实资源下载/验证、Room 与文件系统跨资源原子提交、持久化 outbox、服务鉴权、进程强杀恢复、原生 PDF、模拟器/真机、UI 接线、NAS/部署。fake journal 仅存在内存，不能称持久化验证。
 
-会话切换立即清活动状态。若同账号/设备已有未决提交或待回传 receipt，新的清单保守 BLOCKED；不静默丢弃或跨会话恢复。当前无恢复入口，需要后续经审核的持久化/会话重新授权适配器。内核实例生命周期内的幂等历史未设淘汰机制，未来持久化实现须补容量和回收策略。不能通过重建内核实例作为重新授权或恢复方案。
+会话切换立即清活动状态。若同账号/设备已有未决提交或待回传 receipt，新的清单保守 BLOCKED；不静默丢弃或跨会话恢复。已越过提交边界的事务当前无跨会话恢复入口，需要后续经审核的持久化/会话重新授权适配器。内核实例生命周期内的幂等历史未设淘汰机制，未来持久化实现须补容量和回收策略。不能通过重建内核实例作为重新授权或恢复方案。
 
-## 验证记录
+## 首轮验证记录（341c53a）
 
 2026-10-14 最终复跑：`testDebugUnitTest assembleDebug assembleDebugAndroidTest lintDebug --no-daemon --max-workers=2`，日志结尾 `BUILD SUCCESSFUL in 53s`。26 个测试类 **172 项 JVM，0 失败、0 错误、0 跳过**，其中本批 `SyncStateCoreTest` **20 项全通过**。应用 APK 与测试 APK 构建通过。Lint **0 错误、10 警告、1 提示**，与 R2 审核记录数量一致；不在本范围修订既有警告。
 
@@ -58,3 +58,16 @@ APK SHA-256（构建证据，不发布）：
 - app-debug-androidTest.apk：`dff24193a11c900eb968bd4f7ad5c9833f68251305f7d887108553cb974f13c2`
 
 提交后仅推送独立分支并创建以 R2 为 base 的草稿 PR，供独立产品审核。真实联网/本地原子提交/设备/原生回归及 UI 联调仍待后续验收。
+
+
+## PR6 独立审核修复：前提交会话重绑
+
+复现基线：首轮提交 `341c53abf1b5821bf1fbfdf06205ee5403692d9b`。先只增加测试，原实现下执行 9 项 `rebind*` 用例，6 项失败：MANIFEST_RECEIVED、VERIFYING、VERIFIED、VERIFICATION_FAILED 四种前提交状态的 A→B→A，同设备恢复，以及最新 revision 的恢复都返回 STALE。旧操作记录与 revision 高水位使没有新 revision 的资源事务停滞。撤权、已发提交边界、个人数据隔离用例在原实现已通过。失败日志与 XML 保留在证据目录 `rebind-red/`。
+
+最小修复仅修改 `receive` 的已有 operation 分支：当前外部建立的会话重新收到完全相同的 operationId/清单，账号/设备相同、epoch 已更换、revision 仍为该身份最高 revision，且旧状态严格位于上述四项白名单时，显式创建新的活动事务。保留原 operationId/payload/revision，丢弃旧 pending token 和旧校验证据，从 MANIFEST_RECEIVED 重新开始；下一命令必为资源验证并使用新 epoch/requestNumber，不直接提交。重复接收为 DUPLICATE；异 payload 为 CONFLICT；已被更高 revision 替代的旧操作仍为 STALE。
+
+不是 `commit == null` 判断：COMMITTING、COMMIT_FAILED、COMMIT_UNKNOWN、QUERYING_COMMIT、RECEIPT_PENDING、CONFIRMING、SERVICE_CONFIRMED 均不得重绑旧操作。CONSENT_REQUIRED 不在白名单，保持个人数据隔离；sticky 撤权先于重绑判断。不同设备拥有不同记录，不借另一设备的验证证据。此修复不建立新认证规则，不恢复已发送提交，不改变离线/进程恢复政策。
+
+新增 9 项测试覆盖四种状态各自完成恢复链、同/异 payload、旧 session/token、A→B→A、撤权限/撤设备、不同设备、旧 revision 与全部提交后状态，以及 consent 隔离。最终重新执行完整 `testDebugUnitTest assembleDebug assembleDebugAndroidTest lintDebug --no-daemon --max-workers=2`，`BUILD SUCCESSFUL in 1m 29s`：26 类 **181 项 JVM，0 失败/错误/跳过**，其中内核 **29 项全部通过**；应用和测试 APK 构建通过；Lint **0 错误、10 警告、1 提示**。未运行设备测试、未连接真实同步服务。
+
+修复后证据：`/workspace/android-sync-state-evidence/rebind-final/summary.json`、`jvm-results/`、`validation-final.log` 和 Lint 报告。应用 APK SHA-256：`df4bc0370602c148c4a1c37bdc1d5065e1b11f0b56764a48e3c3e9bfe18c318d`；测试 APK SHA-256 与首轮相同。修复追加至原功能分支及草稿 PR6，仍以精确 R2 基线为 base，不合并、不发布。
