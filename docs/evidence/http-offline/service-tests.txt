@@ -1,0 +1,11 @@
+test_device_binding_revocation_and_run_boundary (test_server.HttpSecurityTest.test_device_binding_revocation_and_run_boundary) ... ok
+test_guessed_resource_and_member_override_rejected (test_server.HttpSecurityTest.test_guessed_resource_and_member_override_rejected) ... ok
+test_new_version_is_independent_and_old_download_denied (test_server.HttpSecurityTest.test_new_version_is_independent_and_old_download_denied) ... ok
+test_pdf_hash_and_range_are_real_bytes (test_server.HttpSecurityTest.test_pdf_hash_and_range_are_real_bytes) ... ok
+test_real_login_and_distinct_server_projections (test_server.HttpSecurityTest.test_real_login_and_distinct_server_projections) ... ok
+test_revocation_denies_old_manifest_download_range_and_commit (test_server.HttpSecurityTest.test_revocation_denies_old_manifest_download_range_and_commit) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 3.101s
+
+OK

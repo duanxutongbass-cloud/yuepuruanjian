@@ -22,7 +22,19 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
+    defaultConfig { buildConfigField("boolean", "HTTP_TEST", "false") }
+    buildTypes {
+        create("syncTest") {
+            initWith(getByName("debug"))
+            applicationIdSuffix = ".httptest"
+            matchingFallbacks += "debug"
+            buildConfigField("boolean", "HTTP_TEST", "true")
+        }
+    }
+    sourceSets.getByName("syncTest").java.srcDir("src/debug/java")
+    testBuildType = providers.gradleProperty("testBuildType").getOrElse("debug")
     sourceSets.getByName("test").resources.srcDir("schemas")
     testOptions.unitTests.isIncludeAndroidResources = true
 

@@ -65,4 +65,15 @@ class PresentationTest {
         assertNull((ScoreResolver(d.copy(permissions = emptyList())).dashboard("m") as DomainResult.Success).value.profile!!.defaultPartName)
         assertNull((ScoreResolver(d.copy(permissions = d.permissions.map { it.copy(isArchived = true) })).dashboard("m") as DomainResult.Success).value.profile!!.defaultPartName)
     }
+    @Test fun previewResolvesActualPersonalPartAndNeverFallsBackAfterRevocation() {
+        val resolver = ScoreResolver(data())
+        val preview = resolver.presentation("m", ScreenRequest.Preview("p")) as DomainResult.Success
+        val score = (preview.value.content as DomainResult.Success).value as ScreenContent.Viewer
+        assertEquals((resolver.resolvePiece("m", "p") as DomainResult.Success).value, score.score)
+        val revoked = ScoreResolver(data().copy(permissions = emptyList()))
+            .presentation("m", ScreenRequest.Preview("p")) as DomainResult.Success
+        assertTrue(revoked.value.content is DomainResult.Failure)
+        assertTrue(ScoreResolver(data()).presentation(null, ScreenRequest.Preview("p")) is DomainResult.Failure)
+    }
+
 }

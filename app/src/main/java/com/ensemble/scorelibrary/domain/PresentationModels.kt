@@ -10,6 +10,7 @@ data class Dashboard(
 )
 sealed interface ScreenRequest {
     data object Home : ScreenRequest
+    data class Preview(val pieceId: String) : ScreenRequest
     data class Piece(val id: String) : ScreenRequest
     data class Concert(val id: String) : ScreenRequest
     data class Viewer(val pieceId: String, val partId: String, val concertId: String? = null,
@@ -36,6 +37,7 @@ fun ScoreResolver.presentation(memberId: String?, request: ScreenRequest): Domai
             is DomainResult.Success -> DomainResult.Success(ScreenContent.Piece(request.id,
                 value.pieces.first { it.id == request.id }.title, parts.value))
         }
+        is ScreenRequest.Preview -> resolvePiece(memberId, request.pieceId).map { ScreenContent.Viewer(it) }
         is ScreenRequest.Concert -> resolveConcert(memberId, request.id).map { ScreenContent.Concert(it) }
         is ScreenRequest.Viewer -> if (request.concertId == null) {
             resolvePart(memberId, request.pieceId, request.partId).map { ScreenContent.Viewer(it) }

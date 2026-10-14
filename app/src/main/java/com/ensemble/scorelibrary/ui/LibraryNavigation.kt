@@ -7,9 +7,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
@@ -73,7 +70,7 @@ private fun NavHostController.openRoot(page: RootPage) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScoreLibraryApp(vm: LibraryViewModel, pdf: com.ensemble.scorelibrary.pdf.PdfReaderViewModel? = null,
-    administration: AdministrationViewModel? = null) {
+    administration: AdministrationViewModel? = null, preview: ScorePreviewViewModel? = null) {
     val archive = com.ensemble.scorelibrary.backup.LocalArchive.current
     val archiveState = archive?.state?.collectAsStateWithLifecycle()?.value
     LaunchedEffect(archiveState?.revision) { if ((archiveState?.revision ?: 0) > 0) vm.retry() }
@@ -91,10 +88,38 @@ fun ScoreLibraryApp(vm: LibraryViewModel, pdf: com.ensemble.scorelibrary.pdf.Pdf
     val route = entry?.destination?.route
     val envelope by vm.state.collectAsStateWithLifecycle()
     val memberId by vm.selectedMember.collectAsStateWithLifecycle()
+    val librarySelection = rememberSaveable(memberId, saver = LibrarySelection.Saver) { LibrarySelection() }
     val fullscreen = pdf?.fullscreen?.collectAsStateWithLifecycle()?.value == true
     val current = if (memberId == envelope.memberId) envelope else envelope.copy(state = UiState.Loading)
     val reader = Routes.isViewer(route)
+    val headerDashboard = (current.state as? UiState.Ready)?.presentation?.dashboard
+    val headerPreview = preview?.state?.collectAsStateWithLifecycle()?.value as? ScorePreviewState.Ready
+    val headerPart = headerPreview?.takeIf { route == "library" && it.target.member == memberId &&
+        it.target.piece == librarySelection.selected.value && it.image.canDisplay() }?.score?.part?.name
+
+    LaunchedEffect(route, memberId, current.state) {
+        if (route != "library" || current.state !is UiState.Ready) preview?.clear()
+    }
+    val ink = com.ensemble.scorelibrary.annotation.LocalAnnotations.current
+    val inkState = ink?.state?.collectAsStateWithLifecycle()?.value
+    var confirmLeave by remember { mutableStateOf(false) }
+    val leaveReader: () -> Unit = {
+        if (reader && inkState?.transitionBlocked == true) confirmLeave = true
+        else { ink?.suspendSession(); nav.popBackStack() }
+    }
+    androidx.activity.compose.BackHandler(reader && !fullscreen) { leaveReader() }
+    LaunchedEffect(memberId) {
+        if (ink?.state?.value?.scope?.member?.let { it != memberId } == true) ink.suspendSession()
+    }
+    if (confirmLeave) AlertDialog(onDismissRequest = { confirmLeave = false }, title = { Text("批注尚未完成保存") },
+        text = { Text("建议留下并重试。继续离开会停止保存，待处理内容仅在当前进程内保留；返回同一成员的原页面后可重试。关闭应用或系统回收可能丢失。") },
+        confirmButton = { TextButton(onClick = { confirmLeave = false; ink?.suspendSession(); nav.popBackStack() },
+            enabled = inkState?.gestureActive != true) { Text("保留在内存并离开") } },
+        dismissButton = { TextButton(onClick = { confirmLeave = false }) { Text("留下处理") } })
     val viewer = (((current.state as? UiState.Ready)?.presentation?.content as? DomainResult.Success)?.value as? ScreenContent.Viewer)
+    LaunchedEffect(reader, viewer) {
+        if (reader && viewer == null) ink?.suspendSession()
+    }
     val pdfBinding = pdf?.binding?.collectAsStateWithLifecycle()?.value
     val pdfAnchor = pdf?.anchor?.collectAsStateWithLifecycle()?.value
     val playing = pdf?.playMode?.collectAsStateWithLifecycle()?.value == true
@@ -109,25 +134,43 @@ fun ScoreLibraryApp(vm: LibraryViewModel, pdf: com.ensemble.scorelibrary.pdf.Pdf
         val controller = activity?.let { androidx.core.view.WindowCompat.getInsetsController(it.window, view) }
         if (reader) {
             controller?.systemBarsBehavior = androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-            controller?.hide(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+            controller?.hide(androidx.core.view.WindowInsetsCompat.Type.systemBars() or androidx.core.view.WindowInsetsCompat.Type.ime())
         } else controller?.show(androidx.core.view.WindowInsetsCompat.Type.systemBars())
         onDispose { controller?.show(androidx.core.view.WindowInsetsCompat.Type.systemBars()) }
     }
     CompositionLocalProvider(com.ensemble.scorelibrary.pdf.LocalPdfReader provides pdf,
-        LocalAdministrationViewModel provides administration) {
-    Scaffold(topBar = {
+        LocalAdministrationViewModel provides administration, LocalScorePreview provides preview,
+        LocalLibrarySelection provides librarySelection) {
+    BoxWithConstraints(Modifier.fillMaxSize()) {
+    val sideNavigation = maxWidth >= 600.dp
+    Row(Modifier.fillMaxSize()) {
+    if (!reader && sideNavigation) WorkspaceNavigation(Routes.root(route)) { nav.openRoot(it) }
+    Scaffold(modifier = Modifier.weight(1f), containerColor = ScorePalette.Workspace, topBar = {
         if (!reader || !fullscreen) {
-        TopAppBar(title = { Text(if (reader) readerTitle else "重奏团曲谱库", maxLines = 1,
-            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis) },
+        TopAppBar(colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = if (reader) ScorePalette.Navigation else ScorePalette.Workspace,
+            titleContentColor = if (reader) androidx.compose.ui.graphics.Color.White else ScorePalette.Ink,
+            navigationIconContentColor = if (reader) androidx.compose.ui.graphics.Color.White else ScorePalette.Ink,
+            actionIconContentColor = if (reader) androidx.compose.ui.graphics.Color.White else ScorePalette.Ink), title = {
+                Column {
+                    Text(if (reader) readerTitle else if (route == "library") "重奏团 · 曲谱库" else "重奏团曲谱库", maxLines = 1,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                    if (route == "library") headerDashboard?.profile?.let { profile ->
+                        Text("${profile.name} · ${headerPart ?: "请选择曲目"}", Modifier.testTag("library-member-part"),
+                            style = MaterialTheme.typography.bodySmall, maxLines = 1,
+                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                    }
+                }
+            },
             navigationIcon = {
                 if (reader || route == Routes.PIECE || route == Routes.CONCERT) IconButton(
-                    onClick = { nav.popBackStack() }, modifier = Modifier.testTag("back")) {
+                    onClick = leaveReader, modifier = Modifier.testTag("back")) {
                     Icon(Icons.AutoMirrored.Outlined.ArrowBack, "返回")
                 }
-            }, actions = { IconButton(onClick = vm::retry, enabled = !reader || !playing && !preparing) { Icon(Icons.Outlined.Refresh, "刷新") } })
+            }, actions = { IconButton(onClick = vm::retry, enabled = !reader || !playing && !preparing && inkState?.transitionBlocked != true) { Icon(Icons.Outlined.Refresh, "刷新") } })
         }
     }, bottomBar = {
-        if (!reader) NavigationBar(Modifier.testTag("bottom-navigation")) {
+        if (!reader && !sideNavigation) NavigationBar(Modifier.testTag("bottom-navigation")) {
             RootPage.entries.filterNot { it == RootPage.Admin }.forEach { page -> NavigationBarItem(
                 modifier = Modifier.testTag("nav-${page.route}"),
                 selected = Routes.root(route) == page || page == RootPage.Profile && route == "admin", onClick = { nav.openRoot(page) },
@@ -154,14 +197,17 @@ fun ScoreLibraryApp(vm: LibraryViewModel, pdf: com.ensemble.scorelibrary.pdf.Pdf
         }
     }
     }
+    }
+    }
 }
 @Composable
 private fun RouteScreen(request: ScreenRequest, root: RootPage, envelope: ScreenState,
     vm: LibraryViewModel, nav: NavHostController) {
     LaunchedEffect(request) { vm.show(request) }
+    val networkSession = com.ensemble.scorelibrary.sync.LocalHttpSession.current
     LibraryScreen(if (request == envelope.request) envelope.state else UiState.Loading, root,
         vm::retry, onMember = { id ->
-            vm.selectMember(id)
+            if (networkSession != null) { if (id == null) networkSession.logout() } else vm.selectMember(id)
             if (id == null) nav.openRoot(RootPage.Profile)
         },
         onPiece = { nav.navigate(Routes.piece(it)) { launchSingleTop = true } },
@@ -215,15 +261,13 @@ fun LibraryScreen(state: UiState, root: RootPage, onRetry: () -> Unit = {},
                         TextButton(onClick = { onMember(null) }) { Text("重新选择成员") }
                     }
                     is UiState.Ready -> {
-                        if (state.offline) ListItem(headlineContent = { Text("当前离线") },
-                            supportingContent = { Text("本地曲库仍可查看") }, leadingContent = { Icon(Icons.Outlined.CloudOff, null) },
-                            modifier = Modifier.testTag("offline"))
+                        if (state.offline) OfflineStatus()
                         when (val content = state.presentation.content) {
                             is DomainResult.Failure -> StatusPanel("暂时无法打开", errorText(content.error.code), Icons.Outlined.ErrorOutline) {
                                 Button(onClick = onRetry) { Text("重试") }
                             }
                             is DomainResult.Success -> when (val page = content.value) {
-                                ScreenContent.Home -> HomePage(root, state.presentation.dashboard, layout, onMember, onPiece, onConcert) { tab, id, new ->
+                                ScreenContent.Home -> HomePage(root, state.presentation.dashboard, layout, onMember, onPiece, onConcert, onPart) { tab, id, new ->
                                     managedId = id; create = new; managementTab = tab
                                 }
                                 is ScreenContent.Piece -> DetailColumns(layout, page.title, "可见声部 · ${page.parts.size}") {
@@ -234,6 +278,12 @@ fun LibraryScreen(state: UiState, root: RootPage, onRetry: () -> Unit = {},
                                 }
                                 is ScreenContent.Concert -> DetailColumns(layout, page.concert.title, "个人演出谱 · ${page.concert.items.size} 首") {
                                     Column {
+                                    page.concert.items.firstOrNull()?.let { first ->
+                                        Button(onClick = { onConcertScore(page.concert.id, first) },
+                                            modifier = Modifier.padding(vertical = 12.dp).testTag("open-concert-reader")) {
+                                            Icon(Icons.Outlined.PlayArrow, null); Text("打开演出谱")
+                                        }
+                                    }
                                     if (dashboard?.profile?.canManage == true && administration != null) TextButton(onClick = {
                                         managedId = page.concert.id; create = false; managementTab = 4
                                     }, modifier = Modifier.testTag("edit-concert-here")) { Icon(Icons.Outlined.Edit, null); Text("编辑节目单") }
@@ -255,10 +305,26 @@ fun LibraryScreen(state: UiState, root: RootPage, onRetry: () -> Unit = {},
 }
 
 @Composable
+internal fun OfflineStatus() {
+    var showExplanation by remember { mutableStateOf(false) }
+    TextButton(onClick = { showExplanation = true }, modifier = Modifier.testTag("offline"),
+        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)) {
+        Icon(Icons.Outlined.CloudOff, null, Modifier.size(16.dp))
+        Spacer(Modifier.width(6.dp))
+        Text("离线 · 说明", style = MaterialTheme.typography.labelMedium)
+    }
+    if (showExplanation) AlertDialog(onDismissRequest = { showExplanation = false },
+        modifier = Modifier.testTag("offline-explanation"), title = { Text("当前离线") },
+        text = { Text("本地曲库仍可查看。已有本地 PDF 和批注可离线使用；能否打开具体声部仍取决于当前成员授权和文件是否完整。缺失文件与权限错误会在谱页区域显示。本应用尚未实现 NAS 同步。") },
+        confirmButton = { TextButton(onClick = { showExplanation = false }, modifier = Modifier.testTag("offline-close")) { Text("知道了") } })
+}
+
+@Composable
 private fun HomePage(root: RootPage, dashboard: Dashboard, layout: PadLayout,
     onMember: (String?) -> Unit, onPiece: (String) -> Unit, onConcert: (String) -> Unit,
-    onManage: (Int, String?, Boolean) -> Unit) {
+    onPart: (String, String) -> Unit, onManage: (Int, String?, Boolean) -> Unit) {
     val administration = LocalAdministrationViewModel.current
+    val networkSession = com.ensemble.scorelibrary.sync.LocalHttpSession.current
     if (root == RootPage.Admin && administration != null) {
         AdministrationScreen(dashboard, administration)
         return
@@ -270,7 +336,7 @@ private fun HomePage(root: RootPage, dashboard: Dashboard, layout: PadLayout,
                 item { ListItem(headlineContent = { Text(profile.name) }, supportingContent = { Text(profile.defaultPartName ?: "默认声部暂不可用") }, leadingContent = { Icon(Icons.Outlined.Person, null) }) }
                 item { TextButton(onClick = { onMember(null) }) { Icon(Icons.AutoMirrored.Outlined.Logout, null); Text("退出当前成员") } }
             }
-            item { MemberPicker(dashboard, onMember) }
+            if (networkSession == null) item { MemberPicker(dashboard, onMember) }
             if (administration != null && (dashboard.profile?.canManage == true || dashboard.members.isEmpty())) {
                 item { TextButton(onClick = { onManage(0, null, false) }, modifier = Modifier.testTag("profile-management")) { Icon(Icons.Outlined.Settings, null); Text(if (dashboard.members.isEmpty()) "创建管理员" else "管理中心") } }
                 if (dashboard.profile?.canManage == true) item { TextButton(onClick = { onManage(2, null, false) }, modifier = Modifier.testTag("profile-part-grants")) { Icon(Icons.Outlined.AdminPanelSettings, null); Text("成员与声部授权") } }
@@ -281,29 +347,28 @@ private fun HomePage(root: RootPage, dashboard: Dashboard, layout: PadLayout,
         return
     }
     if (dashboard.profile == null) {
-        StatusPanel("选择当前成员", if (dashboard.members.isEmpty()) "尚无成员记录" else "", Icons.Outlined.Person) {
-            MemberPicker(dashboard, onMember)
+        StatusPanel("选择当前成员", if (dashboard.members.isEmpty()) "请到「我的」创建首位本地管理员" else "本地测试身份，不是在线登录", Icons.Outlined.Person) {
+            if (networkSession == null) MemberPicker(dashboard, onMember)
         }
         return
     }
     when (root) {
         RootPage.Library -> {
-            Heading("曲库", "${dashboard.pieces.size} 首曲目")
             if (dashboard.profile.canManage && administration != null) TextButton(onClick = { onManage(0, null, false) }, modifier = Modifier.testTag("library-import")) { Icon(Icons.Outlined.FileOpen, null); Text("导入曲谱") }
-            if (dashboard.pieces.isEmpty()) StatusPanel("曲库为空", "尚无曲目记录", Icons.Outlined.LibraryMusic)
-            else LazyVerticalGrid(columns = if (layout == PadLayout.Compact || layout == PadLayout.Medium) GridCells.Fixed(1) else GridCells.Adaptive(360.dp),
-                horizontalArrangement = Arrangement.spacedBy(24.dp), contentPadding = PaddingValues(bottom = 24.dp)) {
-                items(dashboard.pieces, key = { it.id }) { piece -> Entry(piece.title, piece.composer.orEmpty(),
-                    Icons.Outlined.MusicNote, "piece-${piece.id}") { onPiece(piece.id) } }
+            // Local catalog titles are shared by design; the isolated HTTP session shows only its manifest.
+            // This is a display filter, not a substitute for the resolver's permission checks.
+            val httpState = networkSession?.state?.collectAsStateWithLifecycle()?.value
+            val pieces = if (networkSession == null) dashboard.pieces else {
+                val allowed = httpState?.takeIf { it.member == dashboard.profile.id }
+                    ?.manifest?.scores?.map { it.piece }?.toSet().orEmpty()
+                dashboard.pieces.filter { it.id in allowed }
             }
+            PieceWorkspace(pieces, dashboard.profile.id, onPart = onPart, onPiece = onPiece)
         }
         RootPage.Concerts -> {
             Heading("节目单", "${dashboard.concerts.size} 场演出")
             if (dashboard.profile.canManage && administration != null) TextButton(onClick = { onManage(4, null, true) }, modifier = Modifier.testTag("concert-create")) { Icon(Icons.Outlined.Add, null); Text("新建节目单") }
-            if (dashboard.concerts.isEmpty()) StatusPanel("暂无节目单", "尚无演出记录", Icons.Outlined.Event)
-            else LazyColumn { items(dashboard.concerts, key = { it.id }) { concert ->
-                Entry(concert.title, "", Icons.Outlined.Event, "concert-${concert.id}") { onConcert(concert.id) }
-            } }
+            ConcertWorkspace(dashboard.concerts, dashboard.profile.id, onConcert)
         }
         RootPage.Admin -> {
             Heading("管理", dashboard.profile.name)

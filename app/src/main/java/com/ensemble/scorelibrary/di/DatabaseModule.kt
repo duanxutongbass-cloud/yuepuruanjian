@@ -20,7 +20,7 @@ object DatabaseModule {
         Room.databaseBuilder(
             context,
             ScoreLibraryDatabase::class.java,
-            "ensemble-score-library.db"
+            if (com.ensemble.scorelibrary.BuildConfig.HTTP_TEST) "synthetic-http-library.db" else "ensemble-score-library.db"
         ).addMigrations(ScoreLibraryDatabase.MIGRATION_1_2, ScoreLibraryDatabase.MIGRATION_2_3).build()
 
     @Provides

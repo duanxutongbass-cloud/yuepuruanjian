@@ -36,7 +36,10 @@ class LibraryScreenTest {
     }
     @Test fun offlineEmptyLibraryAndMemberAdminDenialRender() {
         compose.setContent { MaterialTheme { LibraryScreen(ready(offline = true), RootPage.Library) } }
-        compose.onNodeWithTag("offline").assertExists()
+        compose.onNodeWithTag("offline").performClick()
+        compose.onNodeWithTag("offline-explanation").assertExists()
+        compose.onNodeWithTag("offline-close").performClick()
+        compose.onNodeWithTag("offline-explanation").assertDoesNotExist()
         compose.onNodeWithText("曲库为空").assertExists()
     }
     @Test fun fileMissingDoesNotExposePathOrRenderPdf() {

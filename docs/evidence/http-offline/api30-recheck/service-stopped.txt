@@ -1,0 +1,1 @@
+Loopback HTTP server was shut down and closed before offline reader opened. No network or security settings changed.

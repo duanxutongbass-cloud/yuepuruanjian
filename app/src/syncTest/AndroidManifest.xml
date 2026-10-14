@@ -1,0 +1,3 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+    <application android:label="曲谱库 · 临时联网测试" android:allowBackup="false" android:networkSecurityConfig="@xml/test_network" tools:replace="android:label,android:allowBackup" />
+</manifest>

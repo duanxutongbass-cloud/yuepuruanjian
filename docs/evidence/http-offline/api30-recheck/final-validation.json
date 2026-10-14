@@ -1,0 +1,18 @@
+{
+  "code_sha": "238c2b9a349fa0399217a55962018a7264de1000",
+  "jvm": {
+    "tests": 200,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "native": {
+    "tests": 1,
+    "failures": 0,
+    "skipped": 0,
+    "seconds": 234.548,
+    "api": 30,
+    "viewport": "800x1200"
+  },
+  "apk_sha256": "bdcdcaa2481f87dc64d004ba425b0f24c82777829192cc81a1a2823d30ba054f"
+}

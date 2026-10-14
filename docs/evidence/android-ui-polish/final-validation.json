@@ -1,0 +1,24 @@
+{
+  "code_sha": "81e20f3e24058d932695dc5af8aa35d55d64406c",
+  "jvm": {
+    "tests": 168,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lint": {
+    "errors": 0,
+    "warnings": 10,
+    "hints": 1
+  },
+  "api30_800x1200": {
+    "app_ui_passed": 1,
+    "app_ui_seconds": 190.949,
+    "affected_native_passed": 6,
+    "native_seconds": 70.555
+  },
+  "native_1280x1800": "not verified; JVM layout only",
+  "api34": "not verified; earlier system ANRs",
+  "physical": "not tested",
+  "apk_sha256": "29cd8d427760ae7c35aa2191d5542e1bb03d508be1da310b4ae9fa8c5a132847"
+}

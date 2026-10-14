@@ -1,0 +1,74 @@
+INSTRUMENTATION_STATUS: class=com.ensemble.scorelibrary.sync.HttpEndToEndTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=
+com.ensemble.scorelibrary.sync.HttpEndToEndTest:
+INSTRUMENTATION_STATUS: test=loginAuthorizedDownloadAccountIsolationRetryThenServiceStoppedOfflineReader
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.ensemble.scorelibrary.sync.HttpEndToEndTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stack=androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 180000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:755)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:362)
+	at com.ensemble.scorelibrary.sync.HttpEndToEndTest.await(HttpEndToEndTest.kt:31)
+	at com.ensemble.scorelibrary.sync.HttpEndToEndTest.access$await(HttpEndToEndTest.kt:27)
+	at com.ensemble.scorelibrary.sync.HttpEndToEndTest$loginAuthorizedDownloadAccountIsolationRetryThenServiceStoppedOfflineReader$1.invokeSuspend(HttpEndToEndTest.kt:159)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:94)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:70)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source:1)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:48)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source:1)
+	at com.ensemble.scorelibrary.sync.HttpEndToEndTest.loginAuthorizedDownloadAccountIsolationRetryThenServiceStoppedOfflineReader(HttpEndToEndTest.kt:55)
+
+INSTRUMENTATION_STATUS: stream=
+Error in loginAuthorizedDownloadAccountIsolationRetryThenServiceStoppedOfflineReader(com.ensemble.scorelibrary.sync.HttpEndToEndTest):
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 180000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:755)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:362)
+	at com.ensemble.scorelibrary.sync.HttpEndToEndTest.await(HttpEndToEndTest.kt:31)
+	at com.ensemble.scorelibrary.sync.HttpEndToEndTest.access$await(HttpEndToEndTest.kt:27)
+	at com.ensemble.scorelibrary.sync.HttpEndToEndTest$loginAuthorizedDownloadAccountIsolationRetryThenServiceStoppedOfflineReader$1.invokeSuspend(HttpEndToEndTest.kt:159)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:94)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:70)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source:1)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:48)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source:1)
+	at com.ensemble.scorelibrary.sync.HttpEndToEndTest.loginAuthorizedDownloadAccountIsolationRetryThenServiceStoppedOfflineReader(HttpEndToEndTest.kt:55)
+
+INSTRUMENTATION_STATUS: test=loginAuthorizedDownloadAccountIsolationRetryThenServiceStoppedOfflineReader
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_RESULT: stream=
+
+Time: 362.532
+There was 1 failure:
+1) loginAuthorizedDownloadAccountIsolationRetryThenServiceStoppedOfflineReader(com.ensemble.scorelibrary.sync.HttpEndToEndTest)
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 180000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:755)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:362)
+	at com.ensemble.scorelibrary.sync.HttpEndToEndTest.await(HttpEndToEndTest.kt:31)
+	at com.ensemble.scorelibrary.sync.HttpEndToEndTest.access$await(HttpEndToEndTest.kt:27)
+	at com.ensemble.scorelibrary.sync.HttpEndToEndTest$loginAuthorizedDownloadAccountIsolationRetryThenServiceStoppedOfflineReader$1.invokeSuspend(HttpEndToEndTest.kt:159)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:94)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:70)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source:1)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:48)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source:1)
+	at com.ensemble.scorelibrary.sync.HttpEndToEndTest.loginAuthorizedDownloadAccountIsolationRetryThenServiceStoppedOfflineReader(HttpEndToEndTest.kt:55)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+
+INSTRUMENTATION_CODE: -1

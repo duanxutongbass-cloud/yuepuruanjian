@@ -1,0 +1,10 @@
+2026-10-14: Android 11 / API30 software emulators, no /dev/kvm.
+Google APIs x86_64 r16, emulator 37.2.12: system_server died before App install; package service missing.
+Bounded single-core / 1200x1600 retry: DeviceStorageMonitorService NullPointerException; system providers unavailable, then package service missing.
+Final AOSP x86_64 r11 attempt: boot property 1 and screen_brightness 102 confirmed system provider readiness.
+Main APK install: Performing Streamed Install / Success.
+Instrumentation APK install: Failure calling service package: Broken pipe (32).
+One instrumentation install retry on same AOSP device: Can't find service: package.
+AOSP crash buffer: DeadSystemException in systemui, launcher3, phone and other system processes.
+Native instrumentation never started. 0 native tests executed; 0 claimed passing. No E2E screenshots produced.
+Stopped emulator after bounded attempts. Did not change TLS, firewall or system network security settings.

@@ -1,8 +1,28 @@
+# Android 临时 HTTP 集成（原生验收阻塞，未通过）
+
+已完成实际服务/客户端、200 JVM、6 HTTP 服务端测试和 APK/Lint；原生 API30 系统在安装阶段崩溃，真实 App 闭环和两张截图未完成；本轮目标未验收。独立草稿 PR #7，详细结果以 [ANDROID_HTTP_OFFLINE_REVIEW.md](ANDROID_HTTP_OFFLINE_REVIEW.md) 为准。未合并 main；版本/schema 不变。
+
+# 最新 Android UI 精修交付
+
+本轮代码 `81e20f3`，继续草稿 PR #5。冷灰纸面、紧凑离线说明、实际曲名/声部与直达阅读器已实现；最终证据和附件见 [ANDROID_UI_POLISH_REVIEW.md](ANDROID_UI_POLISH_REVIEW.md)。下文为此前阶段记录。
+
 # 项目当前状态
 
-更新：2026-10-10。项目：重奏团曲谱库 Android V1。
+更新：2026-10-14。项目：重奏团曲谱库 Android V1。
 
-## 当前基线
+## 2026-10-14 Android 界面切片（进行中）
+
+用户最新指令：只推进 Android，停止配套 Windows 整理工具开发。Windows/NAS 信息不是本轮阻塞。新分支 `feat/android-paper-library-v3` 从已审核批注补丁 `6e39372e185e4238ae243726d16d4f56fc55ba81` 派生，远端 main 核验仍为 `32b702e6019b4a8f4471634163d3844b28f03d65`。不使用整理工具 PR 作为基线，不合并、不推 main、不发布。
+
+第三版 PNG/ZIP 已确认存在，执行环境按原 ID/materialize 及本地目的地有限重试，下载被网络代理 `403 Forbidden` 拒绝，尚未实际查看像素。用户视觉审核已明确退回首版浅色工作区/白卡网格：目标是深色整体工作台、窄导航、左列表、右侧真实授权 PDF 白纸预览与顶部成员/搜索。不能将首版称作第三版完成。
+
+本轮从 PR #5 的 31985241 继续接入真实首页授权 PDF 预览：列表选择→同一实际声部阅读器→返回保留查询与选择；撤权/错误/成员变化/离开会清屏，迟到帧被丢弃，位图按所有权和视图租约释放。用户已明确原图 403 不阻塞这个功能闭环；精确视觉匹配继续待验。完整 JVM 168 项通过，Lint 0 错误/10 警告/1 提示；真实 MainActivity 的完整闭环已在 Android 11/API30 软件模拟器通过（1 项，183.694 秒，含恢复重新鉴权/撤权/全屏/缺文件重试/节目单），实际运行发现的恢复停滞和键盘遮挡已修复；另 6 项原生预览/PDF/导出恢复回归通过（77.464 秒）。模拟器证据独立维护于 [ANDROID_PAPER_UI_REVIEW](ANDROID_PAPER_UI_REVIEW.md)。版本仍 0.9.6 / code 8 / schema 3。
+
+## 当前批次
+
+2026-10-13 批注可靠性补丁与 10.0 契约收口已形成，R2 本次 152 项 JVM 全部通过、APK/测试 APK 构建成功、Lint 0 错误/10 警告/1 提示，恢复草稿鉴权显示窗口已修正，R2 已获产品经理复审接受，并按用户授权保存为独立分支的草稿 PR；本批证据单列 ANNOTATION_RELIABILITY_REVIEW。历史 130 JVM/40 模拟器不是本次结果，完整模拟器回归仍未过。版本与 schema 不变，后续阶段未开始。最新联网决定以 PHASE10_0_REQUIREMENTS 为准：共享设备多账号已确认；已进入冻结演出收到撤权可完成当前场次，退出不得重开；个人 NAS 备份默认开启且同团队管理员可读，但首次上传仍须每位成员知情确认，尚未实现网络权限。
+
+## 历史基线
 
 - Phase 1、2、3、4、4.5、5、6、7、8 已在对应软件批次范围内通过；不代表物理 Pad、无线或长期性能验收。
 - 当前测试包：0.9.6，versionCode 8，Android 8.0 / API 26 及以上。
@@ -74,3 +94,5 @@ Phase 9.5 本地软件范围已通过，模拟器重装与独立设备恢复通�
 - Lint：`../app/build/reports/lint-results-debug.html`
 
 这些 build 路径会被后续构建更新；阶段历史测试数字必须保留在阶段报告中，不能把最新产物当成旧阶段专属产物。
+
+GitHub 保存入口：[草稿 PR #1](https://github.com/duanxutongbass-cloud/yuepuruanjian/pull/1)，分支 `feat/annotation-reliability-phase10-r2`；R2 代码提交 `7557788939bf9bd07e37f4e1839188d1718c5fb9`。远端 main 基线未改动，没有合并、release 或部署。仓库未配置 Actions workflow，检查时该代码提交无 workflow run 或 commit status；152 项为本次云端本地测试结果，不能称为 GitHub CI 已通过。
