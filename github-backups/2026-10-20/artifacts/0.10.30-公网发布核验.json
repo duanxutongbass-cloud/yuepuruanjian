@@ -1,0 +1,29 @@
+{
+  "verifiedAt": "2026-10-20T05:08:45.700608+00:00",
+  "origin": "https://124355.xyz:18443",
+  "normalTlsValidation": true,
+  "redirectsAllowed": false,
+  "release": {
+    "packageName": "com.ensemble.scorelibrary",
+    "versionCode": 42,
+    "versionName": "0.10.30",
+    "sha256": "b734a1c0a645ea6870930a16310fab81bdcf1d70198332fb9979ddc8d799223a",
+    "size": 13992553,
+    "notes": "修复注册按钮旁缺少校验说明、进度与错误反馈，以及注册成功进入个人空间后反馈丢失；连接中断时提示先登录确认。账号可管理个人空间、创建自己的团队或加入其他团队，各团队管理员角色和乐谱授权独立。沿用原签名覆盖升级，无需卸载；保留现有曲谱、编号和设备。",
+    "available": true
+  },
+  "fullDownload": {
+    "size": 13992553,
+    "sha256": "b734a1c0a645ea6870930a16310fab81bdcf1d70198332fb9979ddc8d799223a"
+  },
+  "contentLengthAndETagMatched": true,
+  "privateEndpoints": {
+    "/v1/catalog": 401,
+    "/v2/catalog": 401,
+    "/v1/admin/capabilities": 401,
+    "/v2/admin/capabilities": 401,
+    "/v1/me/teams": 401,
+    "/v1/me/team-operations/32c5fd2a-2e45-4ef2-8ed5-9a15a817a82d": 401
+  },
+  "physicalAcceptance": "待用户本人验收"
+}

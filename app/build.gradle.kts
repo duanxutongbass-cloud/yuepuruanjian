@@ -14,8 +14,8 @@ android {
         applicationId = "com.ensemble.scorelibrary"
         minSdk = 26
         targetSdk = 36
-        versionCode = 9
-        versionName = "0.9.7"
+        versionCode = 45
+        versionName = "0.10.33"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -25,7 +25,19 @@ android {
         buildConfig = true
     }
     defaultConfig { buildConfigField("boolean", "HTTP_TEST", "false") }
+    // Temporary release history requested for the testing period. Commercial builds must set false.
+    defaultConfig { buildConfigField("boolean", "TEST_RELEASE_NOTES", "true") }
+    // Temporary operation records go only to the user's NAS; disabled in formal release builds.
+    defaultConfig { buildConfigField("boolean", "TEST_OPERATION_LOGS", "true") }
     buildTypes {
+        getByName("release") {
+            isDebuggable = false
+            // User chose the existing NAS channel: retain its certificate so
+            // installed copies can upgrade without uninstalling their data.
+            signingConfig = signingConfigs.getByName("debug")
+            buildConfigField("boolean", "TEST_OPERATION_LOGS", "false")
+            buildConfigField("boolean", "TEST_RELEASE_NOTES", "false")
+        }
         create("syncTest") {
             initWith(getByName("debug"))
             applicationIdSuffix = ".httptest"

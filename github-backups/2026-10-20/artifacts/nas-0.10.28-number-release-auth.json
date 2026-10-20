@@ -1,0 +1,14 @@
+{
+  "GET /v2/admin/number-releases": {
+    "status": 401,
+    "error": "session_invalid"
+  },
+  "POST /v2/admin/number-releases/preview": {
+    "status": 401,
+    "error": "session_invalid"
+  },
+  "POST /v2/admin/number-releases/commit": {
+    "status": 401,
+    "error": "session_invalid"
+  }
+}

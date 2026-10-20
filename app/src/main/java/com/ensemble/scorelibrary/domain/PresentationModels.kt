@@ -2,7 +2,8 @@ package com.ensemble.scorelibrary.domain
 
 data class MemberChoice(val id: String, val name: String)
 data class Profile(val id: String, val name: String, val defaultPartName: String?, val canManage: Boolean)
-data class PieceSummary(val id: String, val title: String, val composer: String?)
+data class PieceSummary(val id: String, val title: String, val composer: String?, val categoryName: String? = null,
+    val organizerSequence: String? = null, val partNames: List<String> = emptyList(), val categoryCode: String? = null)
 data class ConcertSummary(val id: String, val title: String)
 data class Dashboard(
     val members: List<MemberChoice>, val profile: Profile? = null,

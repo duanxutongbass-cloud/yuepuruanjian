@@ -38,7 +38,9 @@ fun AdminChoice(label: String, value: String?, choices: List<Pair<String?,String
             }
             Icon(Icons.Outlined.ArrowDropDown,null)
         }
-        DropdownMenu(expanded,{expanded=false}) { choices.forEach { (id,name) ->
+        DropdownMenu(expanded,{expanded=false}) {
+            DropdownMenuItem(text={Text("关闭菜单")},onClick={expanded=false})
+            choices.forEach { (id,name) ->
             DropdownMenuItem(text={Text(name,maxLines=2)},onClick={expanded=false;change(id)})
         } }
     }
@@ -76,6 +78,9 @@ fun ManagementEditor(descriptor: EditDescriptor, catalog: ManagementCatalog, sta
         else->definition?.sortOrder ?: 0 }).toString()) }
     var role by rememberSaveable(id) { mutableStateOf((member?.role ?: MemberRole.MEMBER).name) }
     var status by rememberSaveable(id) { mutableStateOf((concert?.status ?: ConcertStatus.DRAFT).name) }
+    var restrictedAudience by rememberSaveable(id) { mutableStateOf(concert?.audienceMembers != null || concert?.audienceParts != null) }
+    var audienceMembers by rememberSaveable(id) { mutableStateOf(com.ensemble.scorelibrary.domain.audienceIds(concert?.audienceMembers).toList()) }
+    var audienceParts by rememberSaveable(id) { mutableStateOf(com.ensemble.scorelibrary.domain.audienceIds(concert?.audienceParts).toList()) }
     var enabled by rememberSaveable(id) { mutableStateOf(item?.isEnabled ?: true) }
     val fresh=originalToken==state.token
     val number=order.toIntOrNull()
@@ -96,7 +101,9 @@ fun ManagementEditor(descriptor: EditDescriptor, catalog: ManagementCatalog, sta
         "binding"->ManagementCommand.Binding((binding ?: PartScoreBindingEntity(id=id,piecePartId=descriptor.parent,scorePdfId=chosenPdf!!,startPage=1,endPage=1))
             .copy(movementId=chosenMovement,scorePdfId=chosenPdf!!,startPage=start.toInt(),endPage=end.toInt(),isArchived=archived))
         "member"->ManagementCommand.Member((member ?: MemberEntity(id=id,displayName=name)).copy(displayName=name,role=MemberRole.valueOf(role),defaultPartDefinitionId=chosenDefinition,isArchived=archived))
-        "concert"->ManagementCommand.Concert((concert ?: ConcertEntity(id=id,title=name)).copy(title=name,status=ConcertStatus.valueOf(status),isArchived=archived))
+        "concert"->ManagementCommand.Concert((concert ?: ConcertEntity(id=id,title=name)).copy(title=name,status=ConcertStatus.valueOf(status),isArchived=archived,
+            audienceMembers=if(restrictedAudience) org.json.JSONArray(audienceMembers).toString() else null,
+            audienceParts=if(restrictedAudience) org.json.JSONArray(audienceParts).toString() else null))
         "item"->ManagementCommand.Item((item ?: ConcertItemEntity(id=id,concertId=descriptor.parent,pieceId=chosenPiece!!,sortOrder=number!!)).copy(sortOrder=number!!,isEnabled=enabled,isArchived=archived))
         else->ManagementCommand.Pdf(requireNotNull(pdf).copy(title=name,isArchived=archived))
     }
@@ -114,8 +121,26 @@ fun ManagementEditor(descriptor: EditDescriptor, catalog: ManagementCatalog, sta
                 enabled=!state.busy && (kind=="member" || part==null),tag="definition",change={chosenDefinition=it})
             if(kind=="member") AdminChoice("角色",role,MemberRole.entries.map{it.name to if(it==MemberRole.ADMIN)"管理员" else "成员"},!state.busy,change={role=it!!})
             if(kind=="concert") AdminChoice("状态",status,ConcertStatus.entries.map{it.name to when(it){ConcertStatus.DRAFT->"草稿";ConcertStatus.READY->"就绪";ConcertStatus.PUBLISHED->"已发布";ConcertStatus.PERFORMING->"演出中";ConcertStatus.FINISHED->"已结束"}},!state.busy,change={status=it!!})
+            if(kind=="concert") {
+                Row(verticalAlignment=Alignment.CenterVertically) {
+                    Switch(restrictedAudience,{restrictedAudience=it},enabled=!state.busy)
+                    Text("指定可见成员 / 声部")
+                }
+                if(restrictedAudience) {
+                    Text("勾选成员或其默认声部即可看见节目单；乐谱仍须声部授权。都不勾选时仅管理员可管理。",style=MaterialTheme.typography.bodySmall)
+                    d.members.filterNot { it.isArchived }.forEach { m -> Row(verticalAlignment=Alignment.CenterVertically) {
+                        Checkbox(m.id in audienceMembers,{checked -> audienceMembers=if(checked) audienceMembers+m.id else audienceMembers-m.id},enabled=!state.busy)
+                        Text(m.displayName)
+                    } }
+                    Text("按默认声部",style=MaterialTheme.typography.titleSmall)
+                    d.definitions.filterNot { it.isArchived }.forEach { part -> Row(verticalAlignment=Alignment.CenterVertically) {
+                        Checkbox(part.id in audienceParts,{checked -> audienceParts=if(checked) audienceParts+part.id else audienceParts-part.id},enabled=!state.busy)
+                        Text(part.name)
+                    } }
+                }
+            }
             if(kind=="item") {
-                AdminChoice("曲目",chosenPiece,d.pieces.filter{!it.isArchived || it.id==chosenPiece}.map{it.id to it.title},!state.busy && item==null,change={chosenPiece=it})
+                ConcertPiecePicker(d, chosenPiece, !state.busy && item==null) { chosenPiece=it }
                 Row(verticalAlignment=Alignment.CenterVertically){Switch(enabled,{enabled=it},enabled=!state.busy);Text("启用")}
             }
             if(kind=="binding") {

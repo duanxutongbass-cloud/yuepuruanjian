@@ -1,0 +1,112 @@
+{
+  "version": "0.10.32",
+  "versionCode": 44,
+  "published": true,
+  "app": {
+    "versionName": "0.10.32",
+    "versionCode": 44,
+    "tests": {
+      "tests": 793,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "classes": 136,
+    "lint": {
+      "debug": {
+        "errors": 0,
+        "warnings": 22
+      },
+      "release": {
+        "errors": 0,
+        "warnings": 22
+      }
+    },
+    "inputFiles": 342,
+    "inputsUnchanged": true,
+    "roomSchemaUnchanged": true,
+    "releaseNonDebuggable": true,
+    "operationLogs": false,
+    "testReleaseHistory": false,
+    "existingCertificatePreserved": true,
+    "certificateSha256": "9f360690612dabcdc4c13c8fb0b89af99402a64782f8fdcba79cddfb2be745fa",
+    "coverageUpgradeRequirements": "same applicationId/certificate; higher versionCode; unchanged Room schema",
+    "physicalAcceptance": "pending user after NAS publication",
+    "published": false,
+    "yuepuruanjian-0.10.32-release.apk": {
+      "bytes": 14025325,
+      "sha256": "b80be12f6211a78fd0d66948075a7dcfd61f165ab6c26c069096d5a40443d73b"
+    },
+    "yuepuruanjian-0.10.32-androidTest.apk": {
+      "bytes": 1363687,
+      "sha256": "f6e85794c372ab23890e160bf0f4771c44ef638807d8bbe9fbee991a615d0a03"
+    }
+  },
+  "public": {
+    "verifiedAt": "2026-10-20T10:13:40.243177+00:00",
+    "origin": "https://124355.xyz:18443",
+    "normalTlsValidation": true,
+    "redirectsAllowed": false,
+    "release": {
+      "packageName": "com.ensemble.scorelibrary",
+      "versionCode": 44,
+      "versionName": "0.10.32",
+      "sha256": "b80be12f6211a78fd0d66948075a7dcfd61f165ab6c26c069096d5a40443d73b",
+      "size": 14025325,
+      "notes": "修复新账号未创建或加入团队时缺少正常入口：直接开放个人曲库、节目单和我的导航，可进入账号与团队、应用更新及脚踏设置，无需先建团。团队内容仍按各团队审核与乐谱授权显示。包含已完成的阅读加载与自动分类改进；沿用原签名覆盖升级，保留账号、个人文件、曲谱和编号。",
+      "available": true
+    },
+    "fullDownload": {
+      "size": 14025325,
+      "sha256": "b80be12f6211a78fd0d66948075a7dcfd61f165ab6c26c069096d5a40443d73b"
+    },
+    "contentLengthAndETagMatched": true,
+    "privateEndpoints": {
+      "/v1/catalog": 401,
+      "/v2/catalog": 401,
+      "/v1/admin/capabilities": 401,
+      "/v2/admin/capabilities": 401,
+      "/v1/me/teams": 401,
+      "/v1/me/team-operations/2a72e08a-d205-4ed9-acc6-6d07baa121f8": 401
+    },
+    "physicalAcceptance": "待用户本人验收"
+  },
+  "isolatedPublisher": {
+    "isolated": true,
+    "realApks": true,
+    "localHttpOnly": true,
+    "productionTouched": false,
+    "cases": [
+      {
+        "previousVersionCode": 42,
+        "newVersionCode": 44,
+        "oldApkRetained": true,
+        "repeatIdempotent": true,
+        "tamperRejected": true,
+        "businessAndIdentityUnchanged": true
+      },
+      {
+        "previousVersionCode": 43,
+        "newVersionCode": 44,
+        "oldApkRetained": true,
+        "repeatIdempotent": true,
+        "tamperRejected": true,
+        "businessAndIdentityUnchanged": true
+      }
+    ],
+    "sha256": "b80be12f6211a78fd0d66948075a7dcfd61f165ab6c26c069096d5a40443d73b"
+  },
+  "tabletReadOnlyObservation": {
+    "installedVersion": "0.10.30",
+    "noNavigationBeforeTeam": true,
+    "installedOrClicked": false
+  },
+  "nasServiceUnchanged": "0.10.29",
+  "nasApkOnly": true,
+  "oldApkRetained": true,
+  "sourceFiles": 568,
+  "frozenInputHashesVerified": true,
+  "postBuildSharedEditsExcluded": {},
+  "physicalAcceptance": "待用户本人更新后验收",
+  "actualAccountsTeamsOrScoresOperated": false
+}

@@ -51,6 +51,67 @@ class AnnotationViewModelTest {
     @After fun close() { store.clear(); Dispatchers.resetMain() }
     private fun model() = AnnotationViewModel(repository, dispatcher).also { store.put("ink", it) }
     private val points = listOf(InkPoint(.2f, .3f), InkPoint(.6f, .3f))
+    @Test fun widthControlsChangeNewInkAndSelectedExistingInkWithUndo() = runTest(dispatcher) {
+        val vm=model();vm.bind(scope);runCurrent();vm.tool(AnnotationTool.PEN)
+        vm.width(.006f);vm.stroke(points);runCurrent()
+        val pen=vm.state.value.marks.single();assertEquals(.006f,pen.width)
+        vm.tool(AnnotationTool.HIGHLIGHT);vm.width(.002f);vm.stroke(points);runCurrent()
+        assertEquals(.006f,vm.state.value.marks.last().width)
+        vm.tool(AnnotationTool.SYMBOL);vm.stroke(points);runCurrent()
+        val symbol=vm.state.value.marks.last()
+        vm.selection(listOf(InkPoint(.1f,.1f),InkPoint(.9f,.1f),InkPoint(.9f,.9f),InkPoint(.1f,.9f)));runCurrent()
+        vm.width(.004f);vm.resizeSelectedStrokes();runCurrent()
+        assertEquals(.004f,vm.state.value.marks[0].width)
+        assertEquals(.012f,vm.state.value.marks[1].width)
+        assertEquals(symbol,vm.state.value.marks[2])
+        vm.undo();runCurrent();assertEquals(pen,vm.state.value.marks[0])
+        vm.width(Float.NaN);vm.width(Float.POSITIVE_INFINITY);assertEquals(.004f,vm.state.value.width)
+        vm.gesture(scope,true);vm.width(.01f);assertEquals(.004f,vm.state.value.width);vm.gesture(scope,false)
+        vm.bind(scope.copy(page=2));runCurrent();assertEquals(.004f,vm.state.value.width)
+    }
+    @Test fun hairpinsUseDraggedLengthIndependentOpeningAndCanResizeWithUndo() = runTest(dispatcher) {
+        val vm=model();vm.bind(scope);runCurrent();vm.tool(AnnotationTool.SYMBOL);vm.symbol("<")
+        vm.symbolScale(.75f);vm.stroke(points);runCurrent()
+        val original=vm.state.value.marks.single()
+        assertEquals(points,original.points);assertEquals(.75f,original.symbolScale)
+        assertEquals(original,InkCodec.decode(InkCodec.encode(listOf(original))).single())
+        vm.selection(listOf(InkPoint(.1f,.1f),InkPoint(.9f,.1f),InkPoint(.9f,.9f),InkPoint(.1f,.9f)));runCurrent()
+        vm.hairpinLength(.3f);vm.symbolScale(1.5f);vm.resizeSelectedSymbols();runCurrent()
+        assertEquals(.3f,vm.state.value.marks.single().points.last().x-original.points.first().x,.00001f)
+        assertEquals(1.5f,vm.state.value.marks.single().symbolScale)
+        vm.undo();runCurrent();assertEquals(original,vm.state.value.marks.single())
+        vm.hairpinLength(Float.NaN);assertEquals(.3f,vm.state.value.hairpinLength)
+        vm.bind(scope.copy(page=2));runCurrent();assertEquals(.3f,vm.state.value.hairpinLength)
+    }
+    @Test fun stampSizePersistsSeparatelyFromPenAndCanResizeSelectedWithUndo() = runTest(dispatcher) {
+        val vm = model(); vm.bind(scope); runCurrent()
+        vm.tool(AnnotationTool.PEN); vm.stroke(points); runCurrent()
+        val pen = vm.state.value.marks.single()
+        vm.symbolScale(.5f); vm.tool(AnnotationTool.SYMBOL); vm.stroke(points); runCurrent()
+        val stamp = vm.state.value.marks.last()
+        assertEquals(.5f, stamp.symbolScale)
+        assertEquals(vm.state.value.marks, InkCodec.decode(InkCodec.encode(vm.state.value.marks)))
+        vm.width(.012f); assertEquals(.5f, vm.state.value.symbolScale)
+        vm.tool(AnnotationTool.LASSO)
+        vm.selection(listOf(InkPoint(.1f,.1f),InkPoint(.9f,.1f),InkPoint(.9f,.9f),InkPoint(.1f,.9f)));runCurrent()
+        vm.symbolScale(1.5f); vm.resizeSelectedSymbols(); runCurrent()
+        assertEquals(pen,vm.state.value.marks.first())
+        assertEquals(stamp.copy(symbolScale=1.5f),vm.state.value.marks.last())
+        vm.undo();runCurrent();assertEquals(stamp,vm.state.value.marks.last())
+        vm.redo();runCurrent();assertEquals(1.5f,vm.state.value.marks.last().symbolScale)
+        vm.bind(scope.copy(page=2));runCurrent();assertEquals(1.5f,vm.state.value.symbolScale)
+        vm.bind(scope);runCurrent();assertEquals(1.5f,vm.state.value.marks.last().symbolScale)
+        vm.symbolScale(Float.NaN);assertEquals(1.5f,vm.state.value.symbolScale)
+    }
+    @Test fun legacyStampRetainsOriginalSizeAndInvalidScaleIsRejected() {
+        val stamp = InkMark(kind=MarkKind.SYMBOL,points=listOf(InkPoint(.5f,.5f)))
+        val encoded=InkCodec.encode(listOf(stamp))
+        assertFalse(encoded.contains("symbolScale"))
+        assertEquals(stamp,InkCodec.decode(encoded).single())
+        listOf(Float.NaN,Float.POSITIVE_INFINITY,.1f,3f).forEach {
+            assertTrue(runCatching { stamp.copy(symbolScale=it) }.isFailure)
+        }
+    }
     @Test fun editLockIsReversibleAndDoesNotUnfreezeConcert() = runTest(dispatcher) {
         records[scope] = empty.copy(concert = "concert", locked = true)
         val vm = model(); vm.bind(scope); runCurrent()

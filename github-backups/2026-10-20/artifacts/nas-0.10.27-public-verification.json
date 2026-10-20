@@ -1,0 +1,45 @@
+{
+  "verifiedAt": "2026-10-19T14:08:40.233601+00:00",
+  "metadata": {
+    "packageName": "com.ensemble.scorelibrary",
+    "versionCode": 39,
+    "versionName": "0.10.27",
+    "sha256": "6b0506bf7926c72a90ed5a32d9891fa3a47766cd152e4ebb982594cdd09dcd49",
+    "size": 22080609,
+    "notes": "15号手写笔：可开启逐点压感粗细，并选择主/副侧键按住临时整笔擦除，支持撤销；笔画中换键取消未完成动作。设置默认关闭，工具栏手写笔设置开启，仅使用系统实际笔输入。压感随保存、恢复、同步保留，旧笔迹不变。兼容服务已先更新；旧客户端需更新后编辑压感页。保留26曲库和回收站改进。",
+    "available": true
+  },
+  "fullDownload": {
+    "size": 22080609,
+    "sha256": "6b0506bf7926c72a90ed5a32d9891fa3a47766cd152e4ebb982594cdd09dcd49"
+  },
+  "anonymousPrivate": {
+    "/v1/me": 401,
+    "/v1/catalog": 401,
+    "/v2/catalog": 401,
+    "/v1/admin/artifacts": 401,
+    "/v2/admin/artifacts": 401,
+    "/v1/admin/capabilities": 401,
+    "/v2/admin/capabilities": 401,
+    "/v1/admin/number-inventory": 401,
+    "/v2/admin/number-inventory": 401,
+    "/v1/admin/uploads": 401,
+    "/v2/admin/uploads": 401,
+    "/v1/admin/publications": 401,
+    "/v2/admin/publications": 401,
+    "/v1/admin/grants": 401,
+    "/v2/admin/grants": 401,
+    "/v1/annotations": 401,
+    "/v1/personal-folders": 401,
+    "/v1/admin/programs": 401,
+    "/v1/deletions": 401,
+    "/v2/deletions": 401
+  },
+  "tlsVerification": true,
+  "transport": "Direct HTTPS with default certificate verification; system proxy configuration unchanged",
+  "serviceChanged": true,
+  "serviceImage": "yuepu-team-api:0.10.27",
+  "databaseMigrated": false,
+  "productionScoreOperations": false,
+  "physicalAcceptance": "pending user"
+}

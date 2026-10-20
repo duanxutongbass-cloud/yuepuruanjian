@@ -1,0 +1,24 @@
+{
+  "release": {
+    "packageName": "com.ensemble.scorelibrary",
+    "versionCode": 37,
+    "versionName": "0.10.25",
+    "sha256": "2de632a9ae65047fb7341ebf5bf2549338078ca2d6c2a8dc6f40bf0f8c2181d3",
+    "size": 21287526,
+    "notes": "修复编号协议升级后，旧离线授权缓存阻断已删除内容清理、导致已登录账号无法进入团队曲库的问题。旧缓存仅按原协议核验和过滤，不升级为新的授权；保留身份校验、退休屏障、其他文件及个人文件功能。无需清数据或重复删除NAS源谱。"
+  },
+  "previousReleaseRetained": true,
+  "fullPublicDownload": {
+    "size": 21287526,
+    "sha256": "2de632a9ae65047fb7341ebf5bf2549338078ca2d6c2a8dc6f40bf0f8c2181d3"
+  },
+  "serviceChanged": false,
+  "databaseMigrated": false,
+  "productionScoreOperations": false,
+  "physicalAcceptance": "pending user",
+  "backup": "/data/expanded-0122/app-releases/before-0.10.25.json",
+  "publicProof": "nas-0.10.25-public-verification.json",
+  "serviceImage": "yuepu-team-api:0.10.22",
+  "productionRoot": "/data/expanded-0122",
+  "publisherProject": "yuepu-app-0125"
+}

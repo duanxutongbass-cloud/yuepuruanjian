@@ -1,0 +1,7 @@
+__pycache__
+*.sqlite3*
+*.pdf
+*.log
+test_*.py
+interop_fixture.py
+.env*

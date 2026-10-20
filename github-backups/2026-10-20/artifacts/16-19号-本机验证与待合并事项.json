@@ -1,0 +1,114 @@
+{
+  "version": "0.10.29",
+  "versionCode": 41,
+  "state": "development checkpoint; merge ownership and production release pending",
+  "published": false,
+  "productionOperationsThisTurn": false,
+  "app": {
+    "versionName": "0.10.29",
+    "versionCode": 41,
+    "tests": {
+      "tests": 779,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "classes": 132,
+    "lint": {
+      "debug": {
+        "errors": 0,
+        "warnings": 22
+      },
+      "release": {
+        "errors": 0,
+        "warnings": 22
+      }
+    },
+    "inputFiles": 335,
+    "inputsUnchanged": true,
+    "roomSchemaUnchanged": true,
+    "releaseNonDebuggable": true,
+    "operationLogs": false,
+    "testReleaseHistory": false,
+    "existingCertificatePreserved": true,
+    "certificateSha256": "9f360690612dabcdc4c13c8fb0b89af99402a64782f8fdcba79cddfb2be745fa",
+    "coverageUpgradeRequirements": "same applicationId/certificate; higher versionCode; unchanged Room schema",
+    "physicalAcceptance": "pending user after NAS publication",
+    "published": false,
+    "yuepuruanjian-0.10.29-release.apk": {
+      "bytes": 13992557,
+      "sha256": "280d2e865fd3dfb1b540387819166e555b4b87a0d9452541a84ba3c1740a9eb0"
+    },
+    "yuepuruanjian-0.10.29-androidTest.apk": {
+      "bytes": 1363687,
+      "sha256": "de5cc09f2dd2ec3086dc9fbd5fec51680afcee4b15a456b57572ece3e5dce45a"
+    }
+  },
+  "service": {
+    "tests": 272,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "inputsUnchanged": true,
+    "results": [
+      [
+        0,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ]
+  },
+  "isolatedMigration": {
+    "isolated": true,
+    "originalAndAggregateRestores": true,
+    "retirementAndReusedSequencePreserved": true,
+    "oldReaders": [
+      {
+        "target": "expanded-v4",
+        "refused": true,
+        "sha256": "babff8241d32c6a61d7ffaf715da8a8153ce3ccb9b5190c16ce578222e5ea347"
+      },
+      {
+        "target": "multi",
+        "refused": true,
+        "sha256": "4cc3d68166dd8649170f8396cf7ce66afab9fa745618d953cac670cf098468c9"
+      }
+    ],
+    "oldArchiveReaderRefused": true,
+    "privateEndpoints": {
+      "/v1/me": 401,
+      "/v2/catalog": 401,
+      "/v1/me/teams": 401,
+      "/v1/me/team-operations/bbd5e7c2-78e3-4e34-b682-aca325876ea8": 401,
+      "/v1/me/teams/create": 401,
+      "/v1/me/teams/apply": 401,
+      "/v1/me/teams/switch": 401,
+      "/v1/admin/number-releases": 401,
+      "/v1/admin/number-releases/preview": 401,
+      "/v1/admin/number-releases/commit": 401
+    },
+    "oldChannelPreserved": true,
+    "unusedDeploymentRollback": true,
+    "isolatedRealApkPublicationAndRetryAndTamper": true,
+    "realApkHash": "280d2e865fd3dfb1b540387819166e555b4b87a0d9452541a84ba3c1740a9eb0",
+    "sourceInputsUnchanged": true,
+    "transport": "localhost HTTP only; not production HTTPS verification"
+  },
+  "desktop": {
+    "multiTeamFocusedTests": 3,
+    "failures": 0,
+    "seconds": 6.12,
+    "full017Verified": false,
+    "lastVerifiedShippedVersion": "0.1.6",
+    "pending": "Shared 0.1.7 PDF compatibility changes overlap and await the human merge ownership decision"
+  },
+  "pending": [
+    "Resolve the shared organizer 0.1.7 overlap and NAS hold scope",
+    "Finish/validate/package the unified organizer",
+    "Build/check NAS image, fresh production backup and independent restores, stop old service, migrate/switch and verify full HTTPS APK",
+    "User physical acceptance after NAS publication"
+  ]
+}

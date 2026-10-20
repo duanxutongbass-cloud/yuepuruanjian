@@ -20,7 +20,7 @@ sealed interface ScorePreviewState {
     data class Ready(val target: PreviewTarget, val score: ResolvedConcertItem, val image: PreviewImage) : ScorePreviewState {
         val frame get() = image.frame
     }
-    data class Failure(val target: PreviewTarget, val message: String) : ScorePreviewState
+    data class Failure(val target: PreviewTarget, val message: String, val choosePart:Boolean=false) : ScorePreviewState
 }
 
 /** A single bounded, read-only first authorized page; never a cached guess or another member's page. */
@@ -32,14 +32,16 @@ class ScorePreviewViewModel @Inject constructor(
     private val mutable = MutableStateFlow<ScorePreviewState>(ScorePreviewState.Empty)
     val state = mutable.asStateFlow()
     private var target: PreviewTarget? = null
+    private var targetOwner: Any? = null
     private var generation = 0L
     private var bindingId = 0L
     private var job: Job? = null
 
-    fun bind(member: String?, piece: String?, width: Int, height: Int) {
+    fun bind(member: String?, piece: String?, width: Int, height: Int, owner: Any? = null) {
         val next = if (member == null || piece == null || width <= 0 || height <= 0) null
             else PreviewTarget(member, piece, width.coerceAtMost(1200), height.coerceAtMost(1800))
-        if (next == target) return
+        if (next == target && owner === targetOwner) return
+        targetOwner = owner
         generation++
         val binding = ++bindingId
         job?.cancel()
@@ -49,6 +51,8 @@ class ScorePreviewViewModel @Inject constructor(
         job = viewModelScope.launch {
             try {
                 repository.observe(next.member, ScreenRequest.Preview(next.piece))
+                    .map { result -> previewScore(result, next) }
+                    .distinctUntilChanged()
                     .map { result ->
                         currentCoroutineContext().ensureActive()
                         if (bindingId != binding) throw CancellationException("Preview binding changed")
@@ -59,28 +63,18 @@ class ScorePreviewViewModel @Inject constructor(
                     }.collectLatest { (revision, result) ->
                         var pendingImage: PreviewImage? = null
                         try {
-                            val presentation = when (result) {
+                            val score = when (result) {
                                 is DomainResult.Success -> result.value
                                 is DomainResult.Failure -> {
-                                    publish(next, revision, ScorePreviewState.Failure(next, errorText(result.error.code)))
+                                    val choice=result.error.code==ErrorCode.DEFAULT_PART_MISSING
+                                    publish(next, revision, ScorePreviewState.Failure(next,
+                                        if(choice) "请先选择要阅读的声部" else errorText(result.error.code),choice))
                                     return@collectLatest
                                 }
-                            }
-                            val content = when (val content = presentation.content) {
-                                is DomainResult.Success -> content.value
-                                is DomainResult.Failure -> {
-                                    publish(next, revision, ScorePreviewState.Failure(next, errorText(content.error.code)))
-                                    return@collectLatest
-                                }
-                            }
-                            val score = (content as? ScreenContent.Viewer)?.score
-                            if (presentation.dashboard.profile?.id != next.member || score?.pieceId != next.piece) {
-                                publish(next, revision, ScorePreviewState.Failure(next, errorText(ErrorCode.UNAUTHORIZED)))
-                                return@collectLatest
                             }
                             val segment = score.segments.firstOrNull() ?: throw PdfFailure(ReaderError.INVALID_PAGE_RANGE)
                             // Only the source page selected by Domain, after real file/hash/page-range validation.
-                            engine.inspect(listOf(segment))
+                            engine.inspectForReading(listOf(segment))
                             val frame = engine.render(PdfPageRef(segment, segment.startPage - 1),
                                 next.width, next.height, FitMode.PAGE, 0f)
                             val image = PreviewImage(frame)
@@ -100,6 +94,16 @@ class ScorePreviewViewModel @Inject constructor(
             }
         }
     }
+    private fun previewScore(result: DomainResult<Presentation>, expected: PreviewTarget): DomainResult<ResolvedConcertItem> {
+        if (result is DomainResult.Failure) return result
+        val presentation = (result as DomainResult.Success).value
+        val content = presentation.content
+        if (content is DomainResult.Failure) return content
+        val score = ((content as DomainResult.Success).value as? ScreenContent.Viewer)?.score
+        return if (presentation.dashboard.profile?.id == expected.member && score?.pieceId == expected.piece)
+            DomainResult.Success(checkNotNull(score))
+        else DomainResult.Failure(DomainError(ErrorCode.UNAUTHORIZED, expected.piece))
+    }
     private fun publish(expected: PreviewTarget, revision: Long, value: ScorePreviewState): Boolean {
         if (target != expected || generation != revision) return false
         replace(value)
@@ -114,10 +118,14 @@ class ScorePreviewViewModel @Inject constructor(
         clear()
         super.onCleared()
     }
-    fun clear() = bind(null, null, 0, 0)
+    fun clear(owner: Any? = null) {
+        if(owner != null && owner !== targetOwner) return
+        bind(null, null, 0, 0)
+    }
     fun retry() {
         val previous = target ?: return
+        val owner = targetOwner
         clear()
-        bind(previous.member, previous.piece, previous.width, previous.height)
+        bind(previous.member, previous.piece, previous.width, previous.height, owner)
     }
 }

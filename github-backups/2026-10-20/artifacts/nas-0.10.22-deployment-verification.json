@@ -1,0 +1,48 @@
+{
+  "migration": {
+    "proof": "/data/library/backups/number13-20261018T193511Z-9f55bda8/migration-proof.json",
+    "pdfCount": 5,
+    "sourceUnchanged": true
+  },
+  "publication": {
+    "databaseVersion": 4,
+    "namingVersion": 2,
+    "localHealthVerified": true,
+    "anonymousPrivateRejected": true,
+    "previousApkRetained": true,
+    "backupProof": "/data/library/backups/number13-20261018T193511Z-9f55bda8/migration-proof.json",
+    "fullApkDownload": {
+      "size": 21205026,
+      "sha256": "37035a4900fd077adb835fe39c1856867c1fa440d47bbbe0e11ba4eec409731d"
+    },
+    "release": {
+      "packageName": "com.ensemble.scorelibrary",
+      "versionCode": 34,
+      "versionName": "0.10.22",
+      "sha256": "37035a4900fd077adb835fe39c1856867c1fa440d47bbbe0e11ba4eec409731d",
+      "size": 21205026,
+      "notes": "编号13：扩位编号、全库最小空号及三端兼容。升级保留数据，真机功能待本人验收。"
+    },
+    "internalPublicationCompleted": true,
+    "publicDownloadVerified": true,
+    "physicalAcceptance": "pending user",
+    "productionScoresDeleted": false
+  },
+  "publicVerification": "nas-0.10.22-public-verification.json",
+  "project": "yuepu-team-api-0122",
+  "container": "yuepu-team-api-0122-team-api-1",
+  "containerId": "0623394e89c7e9672ea1eec927f9aef59e7b67256160d2f17630152ee6de790b",
+  "image": "yuepu-team-api:0.10.22",
+  "root": "/data/expanded-0122",
+  "previousProject": "yuepu-team-api",
+  "previousContainerStopped": true,
+  "oldVolumeAndDirectoryRetained": true,
+  "oldImageRetained": true,
+  "existingNetwork": "yuepu-team-api_default",
+  "productionScoresDeleted": false,
+  "deploymentMethod": "Independent compose project on existing external network and volume; original project preserved",
+  "retainedFailures": [
+    "Project terminal rebuild did not apply; new project creation used",
+    "Bootstrap CRLF hash rejected before execution; normalized LF input matched expected SHA and retry succeeded"
+  ]
+}

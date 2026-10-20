@@ -32,3 +32,15 @@ data class AnnotationConcertSnapshotEntity(
     val payload: String, val manifest: String, val createdBy: String,
     val createdAt: Long = System.currentTimeMillis(),
 )
+
+/** Durable transport baseline/outbox; excluded from portable asset archives and never contains credentials. */
+@Entity(tableName = "annotation_cloud", foreignKeys = [ForeignKey(entity = ScorePdfVersionEntity::class,
+    parentColumns = ["id"], childColumns = ["versionId"], onDelete = ForeignKey.RESTRICT)],
+    indices = [Index("versionId"), Index(value = ["versionId", "pageIndex", "kind"], unique = true)])
+data class AnnotationCloudEntity(
+    @PrimaryKey val id: String,
+    val versionId: String, val pageIndex: Int, val kind: String,
+    val remoteRevision: Long = 0, val baseline: String = "[]", val syncedGeneration: Long = 0,
+    val requestId: String? = null, val requestBody: String? = null, val requestGeneration: Long = 0,
+    val conflictPayload: String? = null, val conflictRevision: Long = 0,
+)

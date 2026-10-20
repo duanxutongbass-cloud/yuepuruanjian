@@ -1,0 +1,1298 @@
+{
+  "0.1.3-windows-verification.json": {
+    "bytes": 14886,
+    "sha256": "d404ea556b5c87f840805072d5c842894856f1c468fc4a043e7999530c03d2f5"
+  },
+  "0.10.22-android-verification.json": {
+    "bytes": 44893,
+    "sha256": "f6a27126933a704cbfcdf2dc168c8183dcc8bda6a76e71e4ce4cc0ef29f527ea"
+  },
+  "backend-expanded-inventory-verification.json": {
+    "bytes": 6057,
+    "sha256": "bea883ae5319306bf87704322e1edebca2a8b7da328a0e8c6a9b9b862a228fd9"
+  },
+  "inventory-evidence/handoff-input-audit.json": {
+    "bytes": 147,
+    "sha256": "928ecd9bd0ada1ba9ff889fcf9c2988a9683a1dd587407896ff927270a178262"
+  },
+  "inventory-evidence/inventory-boundaries.log": {
+    "bytes": 210,
+    "sha256": "631330d6caaeeba69eec1d3cae4fec057461f01d013c136d67e7c496be493556"
+  },
+  "inventory-evidence/inventory-boundaries.xml": {
+    "bytes": 713,
+    "sha256": "7f9f0597e68c7c8ac87f5a5991ab604cafb4c7448fc599a8eefd128329f47f8f"
+  },
+  "inventory-evidence/inventory-related-inputs.json": {
+    "bytes": 5038,
+    "sha256": "58eff4367d5e1abee66376482eb4ae9bada050d5b76aab9d8d7628cf780dbebd"
+  },
+  "inventory-evidence/inventory-related.log": {
+    "bytes": 220,
+    "sha256": "cb711fc9cde4ed0aef906b40b68d2e79ea75d631fd3581a438855ec2ee154abd"
+  },
+  "inventory-evidence/inventory-related.xml": {
+    "bytes": 4575,
+    "sha256": "8ff356076e7c5dfdcb63dd11bb4ce7adb32418ccf5d3ce33183a24ec9e5a2075"
+  },
+  "inventory-evidence/inventory-repro.log": {
+    "bytes": 1441,
+    "sha256": "0dce2bffe1d8ad371ca79c497b5a8ff4270b402043f415c6b5757e162034241e"
+  },
+  "inventory-evidence/inventory-repro.xml": {
+    "bytes": 1347,
+    "sha256": "d77735b84f22751b01d56902765bfb6f665151929651dabced5f9fefccf0e634"
+  },
+  "inventory-evidence/protocol-baseline-permitted.xml": {
+    "bytes": 3608,
+    "sha256": "e35249c5d1c481dc852957a14471dc7f18db8ed407b81805b5065693080348b2"
+  },
+  "inventory-evidence/service-audit-inputs.json": {
+    "bytes": 5038,
+    "sha256": "47378f3e1fedaa068c121549c8f93b7da22d32d3aae4640ae4382e1e905714ab"
+  },
+  "nas-0.10.22-deployment-verification.json": {
+    "bytes": 2024,
+    "sha256": "753f8146bab3f8d81ca972086674dee9f43eee64f7975c34df300ecdd20121db"
+  },
+  "nas-0.10.22-public-verification.json": {
+    "bytes": 1413,
+    "sha256": "9a3053f415f415be7be989678bb0de6c91d009d957a8baba69879bb282ce6738"
+  },
+  "nas-0122-healthy.png": {
+    "bytes": 103064,
+    "sha256": "fd1f4640e67cd9071518e56fcdef5ba0a8f01dfea821cd31c34a66d4eed2118d"
+  },
+  "nas-0122-migration.png": {
+    "bytes": 88853,
+    "sha256": "e5e18c0ebb67da50a9e1e59beaa55280fed4ed82972c4ca992c51aef50eabe3c"
+  },
+  "nas-0122-precheck.png": {
+    "bytes": 75985,
+    "sha256": "841f5948a6ab9d59180b1481c88c172b71a736026796b38ffe0fab0546f07e9a"
+  },
+  "nas-0122-published.png": {
+    "bytes": 77803,
+    "sha256": "be962addc4fe3d8faaa3c543d675840e676a6dba5cc5807bb021ca198c5e0a73"
+  },
+  "new-exe-expanded-ui-final.json": {
+    "bytes": 7632,
+    "sha256": "6a008cd2a30b3ab1b2d187d450b56d2086f881a4103cb16e38333264a2f350f4"
+  },
+  "new-exe-expanded-ui-first.json": {
+    "bytes": 7605,
+    "sha256": "ab35e5f302c602640d11682b2800f6edb755681170c7b91611335a1830d2136d"
+  },
+  "old-exe-expanded-isolation.json": {
+    "bytes": 308,
+    "sha256": "f71aee7c33fc119d3853d10a1aadd88cd7870bb7fce3e88210c40838a6ed6904"
+  },
+  "old-exe-expanded-ui.json": {
+    "bytes": 1337,
+    "sha256": "c2f8570c457f2ed1c9509562a00e46768d69c5919b2617e0e2dec7b54c51de67"
+  },
+  "ScoreOrganizer-0.1.3-number13/SHA256.json": {
+    "bytes": 50626,
+    "sha256": "45aa1713cfc9f4203102278e701c8b340f268d21efebc2eca986306e3745e7f5"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/_asyncio.pyd": {
+    "bytes": 75056,
+    "sha256": "e9d3d32feda3b62fff31a32c2afa4dae7a95f8e6ebf8ea491e45bf4233d1b8ef"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/_bz2.pyd": {
+    "bytes": 88880,
+    "sha256": "86aba3f32102e218946eff789d921195a64ab7c122eaa55ceab3de4ffb69b2b5"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/_ctypes.pyd": {
+    "bytes": 131888,
+    "sha256": "b739ab763f9e4a1820b9de653567d04c7467087f3a89c00e4b3f93df72dabb13"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/_decimal.pyd": {
+    "bytes": 263984,
+    "sha256": "8441a0567738f194c0b3e31008ac8ddcdfb0d9eec0b4b2aba195b83d92b082d6"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/_hashlib.pyd": {
+    "bytes": 70448,
+    "sha256": "0477fbbd7a3425331a5f4de89e840d024ff4b7c6c662d7b68061b5850305e00a"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/_lzma.pyd": {
+    "bytes": 168240,
+    "sha256": "5912bc75f3d49efd57d857787da0890696e50fae02c30469989766adb516bef4"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/_multiprocessing.pyd": {
+    "bytes": 39728,
+    "sha256": "91e8bf949287c13c32fcd980498835c48b8f59e348618c8704938f160749e0ab"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/_overlapped.pyd": {
+    "bytes": 59696,
+    "sha256": "65901b199e9c0fe4206793761349f8de90bce2587d0ce9063d879a6128811d91"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/_queue.pyd": {
+    "bytes": 36144,
+    "sha256": "7bb23b3a1732d63649de6e7d7f2165e81a229b2dd001ceba4c8bffa69ede616c"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/_socket.pyd": {
+    "bytes": 87344,
+    "sha256": "a6cd5a1070b62cdd3b8b91cac60200bff4a400a54daf7d4e9ca6b50a4854c8ce"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/_sqlite3.pyd": {
+    "bytes": 127792,
+    "sha256": "0eea8fc0d3f8ea447b87d398877ec30262eaecf6fbc440b7ebc72d5865055c09"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/_ssl.pyd": {
+    "bytes": 180528,
+    "sha256": "72d6085b579defeb2f75ecd0012040a77b1922e6d507b5fdec0e5ef9517d87f6"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/_uuid.pyd": {
+    "bytes": 29488,
+    "sha256": "9a50acbe2f958db9bc3bea06436e0c0bd2bb68a508b895a7399499b83721df9d"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/_wmi.pyd": {
+    "bytes": 41264,
+    "sha256": "9755d0a51bd15aff76b82bd8d2528775b3797b0dce090f49ff4a876612eb5232"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-core-console-l1-1-0.dll": {
+    "bytes": 22872,
+    "sha256": "015bd08815c7b934a8952c3a7578e9ce59f21136e8a880d42bbd414bec2c6058"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-core-datetime-l1-1-0.dll": {
+    "bytes": 22896,
+    "sha256": "5534812cdbdae94ba45cb216e5eb9af686b853948df54365103555abbbaf9d9a"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-core-debug-l1-1-0.dll": {
+    "bytes": 22872,
+    "sha256": "837d2b1b2cd03e03fc6ccb050698b6b5763af17c201304872342a5eae9e0a2d2"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-core-errorhandling-l1-1-0.dll": {
+    "bytes": 22872,
+    "sha256": "de43b165f568c276c00e95acd454e3092f352a18e95874595f4f4658c06d2ec7"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-core-fibers-l1-1-0.dll": {
+    "bytes": 22872,
+    "sha256": "3cebc45bf479ad74cfabf2c6bfd4994d7ad639ed1221025981d19cedf9ce0416"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-core-fibers-l1-1-1.dll": {
+    "bytes": 22872,
+    "sha256": "5ef70308bcca628ce6b0e2856b15b1c7ae340c3f9bbbc4c1071d8c191a34a5c3"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-core-file-l1-1-0.dll": {
+    "bytes": 27008,
+    "sha256": "250ac829f2617bcac1c6e5b8c4f630462e20765863ba573526a3e11bbfb94a9a"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-core-file-l1-2-0.dll": {
+    "bytes": 22888,
+    "sha256": "ae14079a114733f60ce87b92cba42acd8083c2cd67594e53bc37dc0b97a4b465"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-core-file-l2-1-0.dll": {
+    "bytes": 22912,
+    "sha256": "914bf26a298713119477ea0a8e7bd43171b91344ebe24fb47ad77c49686e3d87"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-core-handle-l1-1-0.dll": {
+    "bytes": 22896,
+    "sha256": "ab5489955e371b15f77906c08ec3c7affe2c7a46a08c514ca628768b4478974b"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-core-heap-l1-1-0.dll": {
+    "bytes": 22872,
+    "sha256": "c70f9644d8377fa39c5b71f2e9734c1400d7598904fdeb772e8502099982dcb7"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-core-interlocked-l1-1-0.dll": {
+    "bytes": 22888,
+    "sha256": "f8129710188e407bb0e6f46d30aeba277d67b947ece5fe09e883fde2323f3ae6"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-core-kernel32-legacy-l1-1-1.dll": {
+    "bytes": 22888,
+    "sha256": "5200b16cb2ddc61cfc07373a9a84aa85a3ab50806ca96c879c883275832944c1"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-core-libraryloader-l1-1-0.dll": {
+    "bytes": 22872,
+    "sha256": "48786fb88b001dcd1f63acea903d3ca9cc0b3060d5a325e3f2f3cbc3bfd53166"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-core-localization-l1-2-0.dll": {
+    "bytes": 22872,
+    "sha256": "9ec3898f7eba91faa28b51616c211a2689e3a13aeef8de6e13cb674e49d689eb"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-core-memory-l1-1-0.dll": {
+    "bytes": 22896,
+    "sha256": "3a6cbc524c99e1cd80d5368f5601402a37ad602528b1ab628093573ef638eb3b"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-core-namedpipe-l1-1-0.dll": {
+    "bytes": 22888,
+    "sha256": "97145ef89c44949fcf0f04ac834a8bc7d687ef49ee73ae9fc32f3c11136b7201"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-core-processenvironment-l1-1-0.dll": {
+    "bytes": 22872,
+    "sha256": "8bc7c10b1851aea644e9c9f381cdb935e091fee6b0be3d3aedc6fffaac96adb7"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-core-processthreads-l1-1-0.dll": {
+    "bytes": 22912,
+    "sha256": "d8030b777617c71f0f94564607699dbf7561487d779db9756aed378c5675213f"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-core-processthreads-l1-1-1.dll": {
+    "bytes": 22872,
+    "sha256": "f5e676713340f73a03a3d41a6ec9883b431da7d16c7f07bd0a920fb80e6c0753"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-core-profile-l1-1-0.dll": {
+    "bytes": 22872,
+    "sha256": "f023d47e44d3eea6b0743580f57e8c6ba81e79d5ebfa7da26250076c647b980e"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-core-rtlsupport-l1-1-0.dll": {
+    "bytes": 22888,
+    "sha256": "9746d8930704153578a628c010638a5f818ffe5a927e25591b108e256dc6afca"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-core-string-l1-1-0.dll": {
+    "bytes": 22896,
+    "sha256": "7c53ae24c982d16ffd1bf7f918d115b11b7f30e57bc7feaa18cb9781e4abb926"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-core-synch-l1-1-0.dll": {
+    "bytes": 22896,
+    "sha256": "56d9d62ca5dba79a6581b8d574a7d8b2a64a5ecb71e47dcf06ed0285708b1859"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-core-synch-l1-2-0.dll": {
+    "bytes": 22888,
+    "sha256": "f6482bbec5612c39ecb4822787a333f2b7570f7a5f922a4059be41ba957bb372"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-core-sysinfo-l1-1-0.dll": {
+    "bytes": 22896,
+    "sha256": "272d02765fdd3582618236c2d309abba069642f9bc1062ede069d0c144e17007"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-core-sysinfo-l1-2-0.dll": {
+    "bytes": 22912,
+    "sha256": "8a0900788859d0eb51c2f48f50cc6ed376a120b518100fa20e11d7702ccde260"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-core-timezone-l1-1-0.dll": {
+    "bytes": 22896,
+    "sha256": "ff35de6c03812b332e140f17dade25c5dd4775156da9eeb1eaae3fddd27236ec"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-core-util-l1-1-0.dll": {
+    "bytes": 22896,
+    "sha256": "191ef3e98641a57296f19d572d8eb62489470ff1ef6030d136af170c2f835173"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-crt-conio-l1-1-0.dll": {
+    "bytes": 22872,
+    "sha256": "54ee5ec719a051496ff60aa00dbeaa94b9a7d2cdac27fe9b7317f1a666b6a2aa"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-crt-convert-l1-1-0.dll": {
+    "bytes": 26992,
+    "sha256": "8b94662429171019fcd63c70bbf2095a075170599704a5e7dcdbe3da13f3a429"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-crt-environment-l1-1-0.dll": {
+    "bytes": 22912,
+    "sha256": "39e5929593709e8af3bc9e0a75ec1155778d6f4a247f4cdfc58928ad6db88434"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-crt-filesystem-l1-1-0.dll": {
+    "bytes": 22872,
+    "sha256": "5a8ecebac32edf4e1f3c5c6c1c8ea1a1add6cda4f9c9cb26f752fb295bea6865"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-crt-heap-l1-1-0.dll": {
+    "bytes": 22872,
+    "sha256": "c71080cbcb43bf1f8f3e391deb12a582eb0abefc80946f340675a2c616e4feb4"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-crt-locale-l1-1-0.dll": {
+    "bytes": 22896,
+    "sha256": "6c68648e524187e03c4ad9aaa4a99113c6ee9f29fb39cc0ed93f951975138e63"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-crt-math-l1-1-0.dll": {
+    "bytes": 31064,
+    "sha256": "d4fbcccbe29371cbce431e43b2eb4f7ba9a6f04a3d740a071f02457a505e9dc8"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-crt-private-l1-1-0.dll": {
+    "bytes": 76120,
+    "sha256": "29bf3d90617d3781d19b332d6ceb9f20ba5ce082ec74bf6c34d5d4aee56e48a1"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-crt-process-l1-1-0.dll": {
+    "bytes": 22896,
+    "sha256": "47c1935942e3ac0812e4dcf18c0e265e565f0194a3349111c299712f5565f7ac"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-crt-runtime-l1-1-0.dll": {
+    "bytes": 26968,
+    "sha256": "72adc1b3677e0814d9c4ebf0964000e84bb2acf67336c8963061665e44f78029"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-crt-stdio-l1-1-0.dll": {
+    "bytes": 26968,
+    "sha256": "900afc3989673c9bb1a687ed38c192f46db9e6ba6d11a668898a539e7fc23798"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-crt-string-l1-1-0.dll": {
+    "bytes": 26968,
+    "sha256": "fcf12466cc12fd3b73611fc0763a5a1f9d44e90349513c34a0c83b0f36421793"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-crt-time-l1-1-0.dll": {
+    "bytes": 22912,
+    "sha256": "886e57c4a6adb299b38f02945369f590a67da4e79a798359fc60aaa067212d7c"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/api-ms-win-crt-utility-l1-1-0.dll": {
+    "bytes": 22912,
+    "sha256": "5f8f26b216ade615b67a41f6fbbb910972fc6153315a65bb8f09912be50215b1"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/base_library.zip": {
+    "bytes": 1333490,
+    "sha256": "44cba0f40050389daeda74dbeb8650e8b620ae659cb1450dfe9efb0c91e1cc44"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/charset_normalizer/cd.cp312-win_amd64.pyd": {
+    "bytes": 131376,
+    "sha256": "152dd4d7ff100ebbf0bebaf7480c3ed8e501f652f558bfef07be02eb81438ac3"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/charset_normalizer/md.cp312-win_amd64.pyd": {
+    "bytes": 224048,
+    "sha256": "7a6f485fe198d0e84dcd304e7f93a4629b59da0200b6fda983bee3f0057aa67e"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/concrt140.dll": {
+    "bytes": 315704,
+    "sha256": "2e401d56f18221e2374aef2ffc31c2afc3f9a2b6ff0c5f48f361a567ffb88cca"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/icudt78.dll": {
+    "bytes": 33126192,
+    "sha256": "e2ab6eb288322d6efedfada0e95fe1e474d3ddc8a11490b536e693fef79d09e5"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/libcrypto-3-x64.dll": {
+    "bytes": 7449904,
+    "sha256": "01fb6556f2351a0c3ebb2c2b10234197778704145a191e5ea42a2f6623d39a1a"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/libffi-8.dll": {
+    "bytes": 43824,
+    "sha256": "e49daa31bad9b9c1094ba25a40579e5d3f0a4adbd727341e1c0acea0bc167787"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/libssl-3-x64.dll": {
+    "bytes": 1336624,
+    "sha256": "ed0dec3a6e669ef443d3dee1285341cfbe203956a1fdb01e9c35825f6fc28d97"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/msvcp140-a4c2229bdc2a2a630acdc095b4d86008.dll": {
+    "bytes": 575056,
+    "sha256": "a4c2229bdc2a2a630acdc095b4d86008e5c3e3bc7773174354f3da4f5beb9cde"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/msvcp140.dll": {
+    "bytes": 549176,
+    "sha256": "f6f1d55bfd64027820ddce48f9cd8cf46d53bfa34047e6acf4ef348d492a05cb"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/msvcp140_1.dll": {
+    "bytes": 27448,
+    "sha256": "2be87527c41e1ba8aff48e326e0adcd4743516e0bbcc9304986c726e27de6aca"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/msvcp140_2.dll": {
+    "bytes": 271672,
+    "sha256": "6a72ed8a87eae1671640bd1ca98eccb989f1772ae46ab84594e385bf6d4ac4fb"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/msvcp140_codecvt_ids.dll": {
+    "bytes": 23352,
+    "sha256": "5bf7277ca4f6da70667c8d922aeba632e64be2551dadb87fd798a0a47ca08718"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/numpy/_core/_multiarray_tests.cp312-win_amd64.pyd": {
+    "bytes": 79152,
+    "sha256": "c12d44f215b0fe77edfb4179f65ac748b00d35ce5a175d0bb815391e2e025868"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/numpy/_core/_multiarray_umath.cp312-win_amd64.pyd": {
+    "bytes": 4544816,
+    "sha256": "1d177989d10caf5aaf33f00b86aceefc4c811d9687266e75baf719366b40f7b0"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/numpy/fft/_pocketfft_umath.cp312-win_amd64.pyd": {
+    "bytes": 292144,
+    "sha256": "0e45b1410347e9e202839589fc74074dc7c9e40158e5b52a218f18bb5138577b"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/numpy/linalg/_umath_linalg.cp312-win_amd64.pyd": {
+    "bytes": 127792,
+    "sha256": "5110f8ddd9d2387a8a2cb0a1e39c7c2430923f683fd25568d96c894e31dad961"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/numpy/random/_bounded_integers.cp312-win_amd64.pyd": {
+    "bytes": 223024,
+    "sha256": "47091d93c35fd1819536cc626182dbc332e9e5679515e067d197010b836cab19"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/numpy/random/_common.cp312-win_amd64.pyd": {
+    "bytes": 175920,
+    "sha256": "989e87e377e01a5af99875c70689194563e09ee00444794e83c57f792cd15d84"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/numpy/random/_generator.cp312-win_amd64.pyd": {
+    "bytes": 600880,
+    "sha256": "3165926786d06bffe7e677de92a57627992c375b2202f178c6f661aefda37a53"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/numpy/random/_mt19937.cp312-win_amd64.pyd": {
+    "bytes": 99632,
+    "sha256": "8e24536bd8b35e7410325f7df4f377812460d6a30f592c61d580ee53d848468f"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/numpy/random/_pcg64.cp312-win_amd64.pyd": {
+    "bytes": 110384,
+    "sha256": "642be9bea364ae3a90fcfe831e3adabc760ee6ade9e701101da4c29ee6b85999"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/numpy/random/_philox.cp312-win_amd64.pyd": {
+    "bytes": 94000,
+    "sha256": "cff362a1a27b67a07778febcbaeafd7950a40cd6c86505bc0b1c2ffc01cbd55d"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/numpy/random/_sfc64.cp312-win_amd64.pyd": {
+    "bytes": 75568,
+    "sha256": "e8df3e3c63b1d8a5ef3ffb84883f4fb5ffd356339a6c3eb5be2714317d97d3dd"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/numpy/random/bit_generator.cp312-win_amd64.pyd": {
+    "bytes": 173872,
+    "sha256": "38f3f481fe0636e54208a3c9194fbcb13390f45ebf7cadaa81fe7e5d698abbac"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/numpy/random/mtrand.cp312-win_amd64.pyd": {
+    "bytes": 497968,
+    "sha256": "00ed03af8fd7ac3f82562718b91b9546339c6abd67fc6b2e46abe3e584dccd8f"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/numpy-2.3.5.dist-info/DELVEWHEEL": {
+    "bytes": 462,
+    "sha256": "a2beda198cb0067dc300e1ecad590e9b32017b4990e2b9018c7b304683c2a600"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/numpy-2.3.5.dist-info/entry_points.txt": {
+    "bytes": 220,
+    "sha256": "ec26fade0c8bdac211a6c1dd003a65eb16885b925395423e93fcaa115af4052c"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/numpy-2.3.5.dist-info/INSTALLER": {
+    "bytes": 4,
+    "sha256": "ceebae7b8927a3227e5303cf5e0f1f7b34bb542ad7250ac03fbcde36ec2f1508"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/numpy-2.3.5.dist-info/LICENSE.txt": {
+    "bytes": 46841,
+    "sha256": "596b953e1dcbe829b32ae444387efa15003fc6abdeca8a2179f364a6364c286e"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/numpy-2.3.5.dist-info/METADATA": {
+    "bytes": 60935,
+    "sha256": "7f8a1bfc2b82fee89e1ceef1038aa174ee814832b54c39b4b1b93028ce3f27b1"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/numpy-2.3.5.dist-info/RECORD": {
+    "bytes": 110571,
+    "sha256": "7175f3a78594b8cafeee10490167e9669a65404e4b3d6a00bf84a2c7f08f3339"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/numpy-2.3.5.dist-info/REQUESTED": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/numpy-2.3.5.dist-info/WHEEL": {
+    "bytes": 85,
+    "sha256": "e743de01ba6503a3e4234858398a1e69c07d512d51e8482ec9f3a7b1c707d165"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/numpy.libs/libscipy_openblas64_-9e3e5a4229c1ca39f10dc82bba9e2b2b.dll": {
+    "bytes": 20419376,
+    "sha256": "00f10bf89e231f27ad54c7349659ae4c88d0dcbe9efb9325867f817e8bbc9bdc"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/numpy.libs/msvcp140-a4c2229bdc2a2a630acdc095b4d86008.dll": {
+    "bytes": 575056,
+    "sha256": "a4c2229bdc2a2a630acdc095b4d86008e5c3e3bc7773174354f3da4f5beb9cde"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/pyexpat.pyd": {
+    "bytes": 226096,
+    "sha256": "e50ffa858b05700da0598eaa241550e3199b22bb3a32adef730169a6a1111605"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/opengl32sw.dll": {
+    "bytes": 20639544,
+    "sha256": "18aedc7a4b610f53bcc7b7a5c5ed9293c7e86f030e3273ad54ed3bb1ebd36702"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/plugins/generic/qtuiotouchplugin.dll": {
+    "bytes": 102712,
+    "sha256": "8565656807db29cfb6170e6803181f24e0bed3aa1b14684d29694e375cc5ee96"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/plugins/iconengines/qsvgicon.dll": {
+    "bytes": 72504,
+    "sha256": "f9e21af351bd5d5629bc00e8e3796b552eca92d1a9645438c865b9c53af1714f"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/plugins/imageformats/qgif.dll": {
+    "bytes": 48440,
+    "sha256": "77782de4aa4f7b75a7cc4d3f24aee49da935c312ea13d25f4cda3a98d180145c"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/plugins/imageformats/qicns.dll": {
+    "bytes": 56632,
+    "sha256": "93e2e588cd1036af3c6300b539d648b3825625788e59a3f0f1863d9901c9759f"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/plugins/imageformats/qico.dll": {
+    "bytes": 47416,
+    "sha256": "a0e4d0d0319e075f6cc5f774084bf390f7af83600f38685c6bc9c407681cc22c"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/plugins/imageformats/qjpeg.dll": {
+    "bytes": 592696,
+    "sha256": "dd42bdcd229744a9515db82ba9a802c74b6589cc508c3e85fb30f06ba24b9da6"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/plugins/imageformats/qpdf.dll": {
+    "bytes": 42296,
+    "sha256": "0625e11f7ed136d4556cdc248527f26ac23eca93fa77764e9b64535557613efc"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/plugins/imageformats/qsvg.dll": {
+    "bytes": 40248,
+    "sha256": "b63f97ed0ae60aa5bc332c37e429c1f31154e1eee358352b2c49598c5269843b"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/plugins/imageformats/qtga.dll": {
+    "bytes": 39224,
+    "sha256": "ce95aa019d940533341b4f08a10ddd3b0393162678c47904251da77aeadfd34e"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/plugins/imageformats/qtiff.dll": {
+    "bytes": 991032,
+    "sha256": "ce696a2dd2e57b8852f7d01834725f54a4d0be66c3d2c491df60fd907fece907"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/plugins/imageformats/qwbmp.dll": {
+    "bytes": 36664,
+    "sha256": "e118243bd3528aa5fe6378a8839abe0efc200e891af06ee369b97b2ff239b89c"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/plugins/imageformats/qwebp.dll": {
+    "bytes": 566072,
+    "sha256": "02ae5555b688f78aade5cedcd66c646b73d519460c008c23e75ad408bd152668"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/plugins/networkinformation/qnetworklistmanager.dll": {
+    "bytes": 79160,
+    "sha256": "2bd047476183c76004221fb44adb7ada9b4b6ce5c2929d63ff67a5305b430f1a"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/plugins/platforminputcontexts/qtvirtualkeyboardplugin.dll": {
+    "bytes": 36664,
+    "sha256": "bbf479e6380061699e734a32f4fe0b6fc8bc2de007ae53b0206e6e36abf1e3e2"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/plugins/platforms/qdirect2d.dll": {
+    "bytes": 1082168,
+    "sha256": "18213464be5a5a1d39af6a2c876ce21a6bb6a634c814651d09f0ef7e4719edc2"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/plugins/platforms/qminimal.dll": {
+    "bytes": 62264,
+    "sha256": "c9025bc5f4653c5aadac87f06ab391763e82adf792f6759c6027a78a5efcaf5c"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/plugins/platforms/qoffscreen.dll": {
+    "bytes": 111928,
+    "sha256": "d24ef380ab0882d39f21539dcf57ab4213875a6fc658a53012f2d2fd275c6f69"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/plugins/platforms/qwindows.dll": {
+    "bytes": 1001784,
+    "sha256": "ddd5cf6a96f058cfafcbc901ddeb5df010d755f0716beacfb557f8b27b733afe"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/plugins/styles/qmodernwindowsstyle.dll": {
+    "bytes": 241464,
+    "sha256": "74d4c47b56a942afb3723bb105900501bb8f91a46a8b592fa722cc4fdb2ce9bf"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/plugins/tls/qcertonlybackend.dll": {
+    "bytes": 105784,
+    "sha256": "87574d467b6f9640a15e37bf4183179c6a7cefc4dc84346b8f4cffb989cf1e12"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/plugins/tls/qopensslbackend.dll": {
+    "bytes": 317752,
+    "sha256": "94b3492bc4087da2818e2749a5a03f7d810611b2e3648bd8d580ad087363046f"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/plugins/tls/qschannelbackend.dll": {
+    "bytes": 249144,
+    "sha256": "2915a86a2531e65fd4905f0cc1c8dc353772a4f52aeda5100725dd9249db54d1"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/QtCore.pyd": {
+    "bytes": 3521336,
+    "sha256": "6486f6f0a2fec42fc8c652c0b76bb3ad0d44eaccad9c72e577116a075681eebb"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/QtGui.pyd": {
+    "bytes": 3936056,
+    "sha256": "9ac544d1bcf8a26c408c63090d05506f8382d5378ee3a204e29a3ac5449c5b2b"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/QtNetwork.pyd": {
+    "bytes": 1039672,
+    "sha256": "22bffdb2a431b5a986de255f7eb0fcd1fd7d9e85c53967978e2ab479b33a13c5"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/QtWidgets.pyd": {
+    "bytes": 4911416,
+    "sha256": "a8e323e56a93c1a8a70981c36a409c0a2546e7a08da5be8ca4e03dfd27febc2a"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_ar.qm": {
+    "bytes": 104,
+    "sha256": "b11333c520ccd8e375cde20985df402d586a1a95e0796313bbeb9f717d4db22e"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_bg.qm": {
+    "bytes": 91,
+    "sha256": "1e22ee126ec9f76031d880285a907b3a0c4510392319ff700dcdee964abbb1ad"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_ca.qm": {
+    "bytes": 91,
+    "sha256": "17ab2623c7f6e8def44b3dbcb517544185817d65f1298ddb10ef71136f232bdc"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_cs.qm": {
+    "bytes": 95,
+    "sha256": "c585918fb1d4821a054ea40bdcf279f275ca76c88a5793f433dac6a611ac7e8f"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_da.qm": {
+    "bytes": 91,
+    "sha256": "f6773c672acb73fdef6e092060d69d1e5dfee840012bac912d1e92de28714386"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_de.qm": {
+    "bytes": 91,
+    "sha256": "0401c316aa3b50a172eb44a4ff1ec384924073beec7c928ef888ec48e4612688"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_en.qm": {
+    "bytes": 33,
+    "sha256": "494ac9a2b2cb2fdeced353f4a9f898ed8dcf616e9bc667438c62681e3f7f79cf"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_es.qm": {
+    "bytes": 91,
+    "sha256": "648ed4519bc45d7a4779479a7626ea16cf9aa23e93a0b178546cc47bea0591ab"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_fa.qm": {
+    "bytes": 84,
+    "sha256": "3f4c989c6b2990d80cc6299408214b31698923b52f154483b3371875de91f88e"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_fi.qm": {
+    "bytes": 91,
+    "sha256": "342d01c7eeb234e431d0506821c4cd03c0433115d8d63fee3357be2331858879"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_fr.qm": {
+    "bytes": 91,
+    "sha256": "c896a38892a92346b033793d56440993236b23e47e06f3974afdb0552f628387"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_gd.qm": {
+    "bytes": 70,
+    "sha256": "49df855a004a17950338af3146466f6df4d5852410bd0b58ea80e0d0203a9d24"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_gl.qm": {
+    "bytes": 323590,
+    "sha256": "204a01ac7deb6b5bae193afecbd1e50d18c73bf7d94badeb2bbfdf6123c4ed93"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_he.qm": {
+    "bytes": 57,
+    "sha256": "36f01fff2f25e116d4b7af78097b7e49520fd5b7fb6fb120e40be228c05c045f"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_help_ar.qm": {
+    "bytes": 8743,
+    "sha256": "222088c9752d1cc3bab985ef2dc77e5ae78578dce18a61ec15b39f02e588163d"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_help_bg.qm": {
+    "bytes": 10599,
+    "sha256": "cbcdd1e0bbae332d80ddb0a286056f17c824fa28d353d7fdf12fc97d9f6fe054"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_help_ca.qm": {
+    "bytes": 7435,
+    "sha256": "fe40962c814a9f489e18d033e4aaabe435232c9bcf760830c6165af507cca80e"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_help_cs.qm": {
+    "bytes": 15297,
+    "sha256": "4ac56fc63e400943bab13f1d4c418502138908e1d488c24aee6131d3d17552aa"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_help_da.qm": {
+    "bytes": 4795,
+    "sha256": "6bb092552a398687119f6d52145f04bf8373977446d8f00c0dcbd56b96829f0f"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_help_de.qm": {
+    "bytes": 7569,
+    "sha256": "037bc99abf98571ae9375c2513536c15b571d66406c36c1de447b547ff539c07"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_help_en.qm": {
+    "bytes": 33,
+    "sha256": "494ac9a2b2cb2fdeced353f4a9f898ed8dcf616e9bc667438c62681e3f7f79cf"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_help_es.qm": {
+    "bytes": 10704,
+    "sha256": "fd16b279f8cf69077f75e94d90c9c07a2afff3948a579e3789f5ffb5e5f4202d"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_help_fr.qm": {
+    "bytes": 3573,
+    "sha256": "875ee2dcdc64e3dea888d84048e382d3921a175f12847de2e6b1cb12ad9add50"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_help_gl.qm": {
+    "bytes": 10891,
+    "sha256": "7399a248609974773f60866c87b78ea7dfbc4f750313d692f7886cd763883c9f"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_help_hr.qm": {
+    "bytes": 5170,
+    "sha256": "8c8cc3c5b1ab2b074f82937001b896603420ef75592b3b78172177360dd7ea61"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_help_hu.qm": {
+    "bytes": 7255,
+    "sha256": "7be32e015119c969453abb6e8f3fb377963a69fafb10c27b796737b5eb283eaf"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_help_it.qm": {
+    "bytes": 10612,
+    "sha256": "316fe8d0815e2b4b396895beb38ef1a40431915b5e054df80f4c0cd556f26e4b"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_help_ja.qm": {
+    "bytes": 7917,
+    "sha256": "ae603b2c0d434d40cde433ffcba65f9ee27978a9e19316007be7fe782a5b8b47"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_help_ka.qm": {
+    "bytes": 7091,
+    "sha256": "159c74f94b384b5ee6afdf38b6cfc4806bc99ecf73be02d4a7021d4ceba7ec7e"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_help_kk.qm": {
+    "bytes": 6971,
+    "sha256": "de92b7bc46998da4becb07f810e7947f0e22d5f7bf152b8bd7be90375027dfa0"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_help_ko.qm": {
+    "bytes": 5708,
+    "sha256": "f11c64694e8e34e1d2c46c1a1d15d6ba9f2db7b61de4fdf54eca5ab977c3e052"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_help_nl.qm": {
+    "bytes": 5087,
+    "sha256": "44a8a0daf775d14352180052d13f623814d7bdf98e2c5c80144b7bf74214e3b0"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_help_nn.qm": {
+    "bytes": 6934,
+    "sha256": "4c8a7213942078e4f72f5babd26c41b77ace70189714a58b5504a7d5ad0193dc"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_help_pl.qm": {
+    "bytes": 9673,
+    "sha256": "cc6cb4d8c54086224672f2e49e623c8cb7c0c1cd65b8d5ecd42fc9ba3a6065bd"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_help_pt_BR.qm": {
+    "bytes": 16030,
+    "sha256": "b4015c5d519b4fe93c00bf734d1742e4f0094d89862664d548eb64a46a2feae7"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_help_ru.qm": {
+    "bytes": 7288,
+    "sha256": "557b644e6da5f1ec720ef93965617087e4d1f40b2494cc5aa524cf3796108de7"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_help_sk.qm": {
+    "bytes": 10388,
+    "sha256": "f41e33e1d790bd0d3eb180f1f875bc191fe74773628f25c2cad95e1402e66867"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_help_sl.qm": {
+    "bytes": 10363,
+    "sha256": "2ec955e662407ebcd8dcdae5aaa21e4108e0b5b0aee0e9db712c27072943535f"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_help_sv.qm": {
+    "bytes": 6934,
+    "sha256": "95bdb03dbaa6dbdfda46c249e9ccce9a353f71ddb8b112961e8b005b2c60b13c"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_help_tr.qm": {
+    "bytes": 6723,
+    "sha256": "81da2f88cd624097581f2d29b10311796bcd9ab289e65883346d276110542d28"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_help_uk.qm": {
+    "bytes": 9750,
+    "sha256": "497cfc473684692ee44d7a3795e8fb2270c57069fd9eb98a615dd29ab9be8a7c"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_help_zh_CN.qm": {
+    "bytes": 5115,
+    "sha256": "e256d1f6034a5a5521c62f129f91731216e474f71e1d9caea3d3dcb11b670deb"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_help_zh_TW.qm": {
+    "bytes": 5160,
+    "sha256": "40112812abb43853d678cc6d97729f21f21b3a7321c827fc9d18f6c936447d1e"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_hr.qm": {
+    "bytes": 102,
+    "sha256": "fc9e4146f33be3d09b234be01e56235d3037d8d82d64f0700b4d4a6e253a61a7"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_hu.qm": {
+    "bytes": 84,
+    "sha256": "c2fa649f167cdb801d1cc0cb69c1d93594fd5bf8c0b7e79b969935da5c3e19aa"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_it.qm": {
+    "bytes": 91,
+    "sha256": "9e7a18bc20ebeec54baaaf41c918a74534511271f796dffffd0f9b9ec31c68d3"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_ja.qm": {
+    "bytes": 84,
+    "sha256": "0f5fe50452947d1ee9755249d860354bff6977279b4c496a5bc77e5b89dd745e"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_ka.qm": {
+    "bytes": 94,
+    "sha256": "00b67c6dfc255079b5b98a5640f82519c96b2520a028682fba4078b39d743eaa"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_kk.qm": {
+    "bytes": 86,
+    "sha256": "23f7ccad75b8b2d70eb0ed0fc910dacc667e9ff65ed1e328c65263ad2d172cda"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_ko.qm": {
+    "bytes": 84,
+    "sha256": "1d254b535e1cb35cbcad8210b15b89f4488159826bf35b4504696263dd102fa3"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_lg.qm": {
+    "bytes": 57,
+    "sha256": "6ba668501f4c040c66da1bdc022362da3c8cf663da6aa484cbdb599028da98ed"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_lt.qm": {
+    "bytes": 165383,
+    "sha256": "47eb5f97467df769261421d54a5bea1131c9fb9b6388791d38bb6574335b64bf"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_lv.qm": {
+    "bytes": 63,
+    "sha256": "addeca285282338294f24ca50d37d08a5f68d3785d0a94af86dd4ec8f2a3b449"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_nl.qm": {
+    "bytes": 91,
+    "sha256": "39e870cbd25c0f97fa9b1828d5ea1ed9849857a2e26c5321b3f13c76be8f0548"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_nn.qm": {
+    "bytes": 91,
+    "sha256": "4e544e23f75eafe1553dc896973db23b5795cd243786d5c653cc0f36a46ca74f"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_pl.qm": {
+    "bytes": 99,
+    "sha256": "e6890afa0caf0f6db0248e4c94f6016b8ec8bc266f1e0e9b8f01e8ea912cf968"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_pt_BR.qm": {
+    "bytes": 106,
+    "sha256": "0e24c58e35271853f8cdfb3f0f7b0741b5a9a588e43cdec62ae85a3842771e0a"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_pt_PT.qm": {
+    "bytes": 70334,
+    "sha256": "2c1e7bbf5168a64b43752dd4c547601c0bde6d610f8671fa3e3af38597e84783"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_ru.qm": {
+    "bytes": 102,
+    "sha256": "1b388e2d6d1bd405603e794e498c6d7ec5f5a5ad819243546f6399181da36758"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_sk.qm": {
+    "bytes": 95,
+    "sha256": "840c3b01c89df976fc1d2e5bfc6fc84b65666b8a3ceb4cbf5aa0c22af3d2a383"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_sl.qm": {
+    "bytes": 228428,
+    "sha256": "c44e0313a9414cc0e490b65b0c036fa11bca959353b228886547bc2c8492034f"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_sv.qm": {
+    "bytes": 91,
+    "sha256": "daaae448e0814b469ac3d7a91096fde15491600a6b8bc6c01508425fb5e8b3ec"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_tr.qm": {
+    "bytes": 84,
+    "sha256": "59e8a0c411be3b0802a68561b090f182099d6b75c4fe46f398e55f11528e11b9"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_uk.qm": {
+    "bytes": 102,
+    "sha256": "053ec1f677c4dba48c6a97eb28f4fc78c1511324d1843d7f4cec2c7c00a66145"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_zh_CN.qm": {
+    "bytes": 99,
+    "sha256": "c0e29d32c9540a7e78643b74214e633c56f6ab11f018e516629f2c11b1fb09fc"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qt_zh_TW.qm": {
+    "bytes": 99,
+    "sha256": "24e226954491689549a1a1990db3b8cb78888008d8163b2fd2442b772b6d1b5f"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_ar.qm": {
+    "bytes": 160017,
+    "sha256": "e03fe68d83201543698fd7fe267dd5dfc5bfd195147e74ff2f19ac3491401263"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_bg.qm": {
+    "bytes": 165337,
+    "sha256": "e448ac9e3f16c29eb27af3012efe21052daa78fabfb34cd6dff2f69ee3bd3cdb"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_ca.qm": {
+    "bytes": 269007,
+    "sha256": "5298532fc52ffbc4e2c549f277151a61e741921c834286f7c04d3753677b6b04"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_cs.qm": {
+    "bytes": 174701,
+    "sha256": "03028b42df5479270371e4c3bdc7df2f56cbbe6dda956a2864ac6f6415861fe8"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_da.qm": {
+    "bytes": 181387,
+    "sha256": "7d1e5ca3310b54d104c19bf2abd402b38e584e87039a70e153c4a9af74b25c22"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_de.qm": {
+    "bytes": 224345,
+    "sha256": "a1483bae0385c380edad72b818ce7c2f54ba617ba4c709b2a34a76886d5b5f3d"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_en.qm": {
+    "bytes": 33,
+    "sha256": "494ac9a2b2cb2fdeced353f4a9f898ed8dcf616e9bc667438c62681e3f7f79cf"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_es.qm": {
+    "bytes": 165170,
+    "sha256": "4ffda56ba3bb5414ab0482d1dde64a6f226e3488f6b7f3f11a150e01f53fa4c8"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_fa.qm": {
+    "bytes": 148156,
+    "sha256": "f78e59b5bdd586181a999034ba418868ed17fe9c05707fb65e523f70e92253d2"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_fi.qm": {
+    "bytes": 179941,
+    "sha256": "e47fe13713e184d07fa4495dde0c589b0e8f562e91574a3558a9363443a4fa72"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_fr.qm": {
+    "bytes": 159463,
+    "sha256": "314243a55c32679ad473fdfe48dc7d66e973ad0fc8bf2164480c58dddb50c1a7"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_gd.qm": {
+    "bytes": 189580,
+    "sha256": "63b439dd44139aa3aed54c2ebe03fa9bc77f22c14ed8fba8eff2608445bb233d"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_he.qm": {
+    "bytes": 138690,
+    "sha256": "e1ebca16afe8994356f81ca007fbdb9ddf865842010fe908923d873b687cad3f"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_hr.qm": {
+    "bytes": 149711,
+    "sha256": "bb9eec9a9a652c1340dc75eb2e749be50df00f885b3d6900dfc76799c45b244d"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_hu.qm": {
+    "bytes": 205885,
+    "sha256": "98463295539d769c8645a0b7fb95ad38454cfd0b14f36af485513f036ddbbbc6"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_it.qm": {
+    "bytes": 161166,
+    "sha256": "7808ed542a7833c4bd94ec8bdfbbca00bb4f2fe15979b9121ce3249323687300"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_ja.qm": {
+    "bytes": 129913,
+    "sha256": "2b9581c69b975f59be505b127cd3c19d403ef3d12e0e8386fb97238223e9c1df"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_ka.qm": {
+    "bytes": 201105,
+    "sha256": "e55e4b72fa620bebee5297ca59dfe2f49894a1e544f2b7485b1cfd8829289d6f"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_kk.qm": {
+    "bytes": 259281,
+    "sha256": "8bab72c453e87489d76cc7efffc57e947cbfa239dee4d6fa113f7b7b8cbd5b86"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_ko.qm": {
+    "bytes": 156799,
+    "sha256": "0179ed1b136e1cb3f583351eaa2c545ba3d83a6ee3f82c32505926a1a5f5f183"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_lg.qm": {
+    "bytes": 315764,
+    "sha256": "31c0cc4ce13b1d74fe0c19ed0b47638fb31e20c93ee08092533e884007aebfb5"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_lv.qm": {
+    "bytes": 153608,
+    "sha256": "846e047573ae40c83671c3ba7f73e27efc24b98c82701da0df9973e574178bb2"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_nl.qm": {
+    "bytes": 202861,
+    "sha256": "f61513bcdbb6ad800585f9437a95d018aab17fa12ee414aa31462ff279d8240e"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_nn.qm": {
+    "bytes": 196411,
+    "sha256": "f9f2fb7c60e7fcb38bbd3c1314ef122145594265e20b0659ff00004baab13ac7"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_pl.qm": {
+    "bytes": 162962,
+    "sha256": "3cf6b5c14d5eb0cf81e9af2066e66b3aa579a6b9b3c323ed670761f6254a8c54"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_pt_BR.qm": {
+    "bytes": 290955,
+    "sha256": "3475d61604b938d459949801a906dbd34a8ca824ade94120015d676e208da859"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_ru.qm": {
+    "bytes": 203767,
+    "sha256": "3da6605668f9178d11a838c4515478084dcfb4f9cf22f99d7a92b492db9c224b"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_sk.qm": {
+    "bytes": 125763,
+    "sha256": "d586ae2c314074cf398417fdecb40709d5478dfeb0a67c2fe60d509ee9b59ed7"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_sv.qm": {
+    "bytes": 249963,
+    "sha256": "5a2178dd2c03cc4516697f1fb0049649c9ed53f5cde6b937786733dae06aeda8"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_tr.qm": {
+    "bytes": 248720,
+    "sha256": "353fdfd7165659a49212e7a25bf91c0a71588e52c836f7496640f26782414634"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_uk.qm": {
+    "bytes": 158274,
+    "sha256": "51b8ff55b37dc5907d637a8ddda12fbe816852b0244c74eb4f0fb84867a786e0"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_zh_CN.qm": {
+    "bytes": 147222,
+    "sha256": "0481a9b92a6f0578400e960a7d5ee70217a6a450eaf7f98b7d32b8dbd0d58616"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/PySide6/translations/qtbase_zh_TW.qm": {
+    "bytes": 126185,
+    "sha256": "21012b2b427f8d09d31ce9cae582ca27955b478ca3dc2ec18a3068d808638c6a"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/pyside6.abi3.dll": {
+    "bytes": 262968,
+    "sha256": "d5b87ccb0a7c305854bd120242b0a75002d0b50a35532d0f6171e4ed0f3cc82a"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/python3.dll": {
+    "bytes": 71984,
+    "sha256": "e588188088c15e2f08d2b114e842cff7f6a9efd73dd8d759534a97ce7e6a6727"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/python312.dll": {
+    "bytes": 6985520,
+    "sha256": "70e319bca85e7c776bfb2501361b03c0ed5714adcada4105bd5efa779d5e63d6"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/Qt6Core.dll": {
+    "bytes": 10472760,
+    "sha256": "f57ed38afd95d0306cca9d88d997f639f70c7628a4f1f064eae291d579487121"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/Qt6Gui.dll": {
+    "bytes": 9683256,
+    "sha256": "abd20026e190e8cc69667d1bea042db05cd353cc05e7da74b063c20b7da3f6cd"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/Qt6Network.dll": {
+    "bytes": 1780536,
+    "sha256": "1c7c393b264ae78f4dee211656377a086c4be714bf768d3135f94f11c1d0be61"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/Qt6OpenGL.dll": {
+    "bytes": 1989944,
+    "sha256": "788b743bfaca141ca83e28c161646d51de92a71adf7a86c653c36fdea5a9bf5b"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/Qt6Pdf.dll": {
+    "bytes": 4623672,
+    "sha256": "5caf5744e017df85455c5c7e11028c5ec2765633a7ca64a11d7b64d127f6c4cc"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/Qt6Qml.dll": {
+    "bytes": 5390136,
+    "sha256": "0be9fc8ad3b7d2d19d0ed49a9026f02b78c4498ab2f53ca574d34a0740d7888a"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/Qt6QmlMeta.dll": {
+    "bytes": 158520,
+    "sha256": "6edac38b27868e69c8ae15b08145688b02358426d5d652a0d2865ca4476fde0a"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/Qt6QmlModels.dll": {
+    "bytes": 1021752,
+    "sha256": "78e79eee241326da0754e29f4b372dee9ff7b75f3484099504c4750ac1f519e6"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/Qt6QmlWorkerScript.dll": {
+    "bytes": 80184,
+    "sha256": "475456ab8f1e9570f5f5f496b0941445a34fca4bbac0dd07ea84ee5ea15e7194"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/Qt6Quick.dll": {
+    "bytes": 6752568,
+    "sha256": "3c93688f36ad4e5c5c2fd73587f50ee94e1dfa4891805bbe5d6d0c031450faa2"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/Qt6Svg.dll": {
+    "bytes": 608056,
+    "sha256": "8f1de5b28aab1eedb415c751c81f9cfaa2804242868c0ceea5f3fdb4b2babca4"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/Qt6VirtualKeyboard.dll": {
+    "bytes": 424248,
+    "sha256": "973369caa6d13fa08f6b1cd57004dcf4f137f8ef98ec6876ad07ba690ee0b9a3"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/Qt6Widgets.dll": {
+    "bytes": 6520120,
+    "sha256": "2f62cbe2869fff4e20df7369c2786e1ec7ec290d5a63d1371b7f70cf06909c3f"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/rapidfuzz/_feature_detector_cpp.cp312-win_amd64.pyd": {
+    "bytes": 35328,
+    "sha256": "b224d98219ac439a855a153087d4ef862d0d0cc95edb85f226674c7a66d54618"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/rapidfuzz/distance/_initialize_cpp.cp312-win_amd64.pyd": {
+    "bytes": 236032,
+    "sha256": "6d4e95dd020d216056913a66ebe99d65296f9bfc506ada8a77f6e45173fab4f1"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/rapidfuzz/distance/metrics_cpp.cp312-win_amd64.pyd": {
+    "bytes": 1527808,
+    "sha256": "d64c63525b522ae81bf562b3bcbee72a6422a4ce1ddeace1f1fc12dd257eea67"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/rapidfuzz/distance/metrics_cpp_avx2.cp312-win_amd64.pyd": {
+    "bytes": 1538048,
+    "sha256": "bd11dc26388e7deef9b4318c0d7001b9b0cc488d05ec7595ae18fc1aa7a6b82a"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/rapidfuzz/fuzz_cpp.cp312-win_amd64.pyd": {
+    "bytes": 817664,
+    "sha256": "1ec7eab0fed6df6822f9a482a2b243732ea32168c9b48d11244aa6dbc79475a4"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/rapidfuzz/fuzz_cpp_avx2.cp312-win_amd64.pyd": {
+    "bytes": 828928,
+    "sha256": "61f0d2b8a92b72e5d8e0f174a654fbb6e64cc2ed3e5e7a1e733aea822b883cf3"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/rapidfuzz/process_cpp_impl.cp312-win_amd64.pyd": {
+    "bytes": 511488,
+    "sha256": "ecf1530d441e749cf34bedc8c382cb0ebd4939980ccaac1234528e23aab72b0d"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/rapidfuzz/utils_cpp.cp312-win_amd64.pyd": {
+    "bytes": 162304,
+    "sha256": "086b71e8bdfa9c02e0fd359df02ae271bf67d512c44af2704e787ba4a843417e"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/select.pyd": {
+    "bytes": 34608,
+    "sha256": "529d8e5b4dcdc853792a699595508e982a161828de4f53ade3bf365ffc46948f"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/shiboken6/Shiboken.pyd": {
+    "bytes": 33080,
+    "sha256": "8ccf415b2cefb5b6462504581ab1993fb41afe04e415931d8a72049f1c79b267"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/shiboken6.abi3.dll": {
+    "bytes": 399672,
+    "sha256": "07c318c02be5a3a9f1475f5a2d0cd438f4d4ea3288c28e2e10bc5ebbbec8de86"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/sqlite3.dll": {
+    "bytes": 1623344,
+    "sha256": "14cf42702eaeb1e9d08a3aa7f4cf1f6ed7246c005bcc661f52807277207ea959"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/ucrtbase.dll": {
+    "bytes": 1362264,
+    "sha256": "3239227d27667ba20d10a880751924e5719de0078f9fce232d149d383f7681f6"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/unicodedata.pyd": {
+    "bytes": 1143600,
+    "sha256": "14b444e65cd7afc6d72780c416a9b5a5b79f4d6abdca7cb443496df9f4cfbd6a"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/vcruntime140.dll": {
+    "bytes": 116024,
+    "sha256": "a36e0cb185eb89533ed96d4568138f86a1315756a8b2644c5963a8ce23e32101"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/_internal/vcruntime140_1.dll": {
+    "bytes": 41272,
+    "sha256": "302b1e160e858602490a55e32ae2e29ddfc0bec2a188e19550cb655cdaa58f9c"
+  },
+  "ScoreOrganizer-0.1.3-number13/Windows程序/曲谱库重奏乐谱整理工具.exe": {
+    "bytes": 5089676,
+    "sha256": "edef08dc943d66e47ddaa9470e8c91876eb772083b325ee4a4a23d2cd3fff1d0"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/altgraph/altgraph-0.17.5.dist-info/LICENSE": {
+    "bytes": 1002,
+    "sha256": "6c194d6db0c64d45535d10c95142b9b0cda7b7dcc7f1ddee302b3d536f3dbe46"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/packaging/packaging-26.3.dist-info/licenses/LICENSE": {
+    "bytes": 197,
+    "sha256": "cad1ef5bd340d73e074ba614d26f7deaca5c7940c3d8c34852e65c4909686c48"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/packaging/packaging-26.3.dist-info/licenses/LICENSE.APACHE": {
+    "bytes": 10174,
+    "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/packaging/packaging-26.3.dist-info/licenses/LICENSE.BSD": {
+    "bytes": 1344,
+    "sha256": "b70e7e9b742f1cc6f948b34c16aa39ffece94196364bc88ff0d2180f0028fac5"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/pefile/pefile-2024.8.26.dist-info/LICENSE": {
+    "bytes": 1083,
+    "sha256": "b44409c067c6da52bfb54bb6624fb11a7b52157c3a13ae1400232f8196e86ad3"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/PyInstaller/pyinstaller-6.22.3.dist-info/licenses/COPYING.txt": {
+    "bytes": 32604,
+    "sha256": "0598064c7d2718e38d7914a7d08343b2fa008e3bea9ebba2aa7a6ffa5900dd64"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/pyinstaller-hooks-contrib/pyinstaller_hooks_contrib-2026.8.dist-info/licenses/LICENSE": {
+    "bytes": 27666,
+    "sha256": "91d0baaff00773038e72c0a1fc9d5d2d38706b7a2b9c04f34296608f931b9cd0"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/PySide6/pyside6-6.12.0.dist-info/licenses/LicenseRef-Qt-Commercial.txt": {
+    "bytes": 470,
+    "sha256": "4f54763ac0fe2abd8f7f8d8fe370a94a08ebf84786aa0b91045bd6628deb08a3"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/PySide6_Addons/pyside6_addons-6.12.0.dist-info/licenses/LicenseRef-Qt-Commercial.txt": {
+    "bytes": 470,
+    "sha256": "4f54763ac0fe2abd8f7f8d8fe370a94a08ebf84786aa0b91045bd6628deb08a3"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/PySide6_Essentials/pyside6_essentials-6.12.0.dist-info/licenses/LicenseRef-Qt-Commercial.txt": {
+    "bytes": 470,
+    "sha256": "4f54763ac0fe2abd8f7f8d8fe370a94a08ebf84786aa0b91045bd6628deb08a3"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/pytest/pytest-8.4.2.dist-info/licenses/LICENSE": {
+    "bytes": 1091,
+    "sha256": "ca836a5f9ecca3b2f350230faa20a48fb8b145653b5568d784862df864706b9b"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/Python-LICENSE.txt": {
+    "bytes": 25066,
+    "sha256": "886a0ead2d89030ee62dbff52b04e47ab91998341295bb9c56fb952b4e081c7a"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/pywin32-ctypes/pywin32_ctypes-0.2.3.dist-info/LICENSE.txt": {
+    "bytes": 1644,
+    "sha256": "dfa83b3e2709adfcdb838d9ad55823ca674abb780e60563d9dd9544ccbf785e9"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/rapidfuzz/rapidfuzz-3.14.6.dist-info/licenses/LICENSE": {
+    "bytes": 1092,
+    "sha256": "f34ccdffdff56fc417785915eedf18601d5479755df3c472b2c754c29802d683"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/setuptools/setuptools/_vendor/autocommand-2.2.2.dist-info/LICENSE": {
+    "bytes": 7634,
+    "sha256": "ade78d04982d69972d444a8e14a94f87a2334dd3855cc80348ea8e240aa0df2d"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/setuptools/setuptools/_vendor/backports.tarfile-1.2.0.dist-info/LICENSE": {
+    "bytes": 1023,
+    "sha256": "86da0f01aeae46348a3c3d465195dc1ceccde79f79e87769a64b8da04b2a4741"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/setuptools/setuptools/_vendor/importlib_metadata-8.7.1.dist-info/licenses/LICENSE": {
+    "bytes": 10278,
+    "sha256": "458502e12d97bbf64438606a20044aa85eb05fb0a8a807bb35dbec253fd1fc04"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/setuptools/setuptools/_vendor/jaraco.text-4.0.0.dist-info/LICENSE": {
+    "bytes": 1023,
+    "sha256": "86da0f01aeae46348a3c3d465195dc1ceccde79f79e87769a64b8da04b2a4741"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/setuptools/setuptools/_vendor/jaraco_context-6.1.0.dist-info/licenses/LICENSE": {
+    "bytes": 1076,
+    "sha256": "9755a18519666e5f0f4cae3daad3d7012bcae48a600b31237d75e9fe134e6683"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/setuptools/setuptools/_vendor/jaraco_functools-4.4.0.dist-info/licenses/LICENSE": {
+    "bytes": 1076,
+    "sha256": "5a57cb4db85e2a2dd88c290628908add57e3451449e0a9a71fdfb38776fd759d"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/setuptools/setuptools/_vendor/more_itertools-10.8.0.dist-info/licenses/LICENSE": {
+    "bytes": 1053,
+    "sha256": "09f1c8c9e941af3e584d59641ea9b87d83c0cb0fd007eb5ef391a7e2643c1a46"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/setuptools/setuptools/_vendor/packaging-26.0.dist-info/licenses/LICENSE": {
+    "bytes": 197,
+    "sha256": "cad1ef5bd340d73e074ba614d26f7deaca5c7940c3d8c34852e65c4909686c48"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/setuptools/setuptools/_vendor/packaging-26.0.dist-info/licenses/LICENSE.APACHE": {
+    "bytes": 10174,
+    "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/setuptools/setuptools/_vendor/packaging-26.0.dist-info/licenses/LICENSE.BSD": {
+    "bytes": 1344,
+    "sha256": "b70e7e9b742f1cc6f948b34c16aa39ffece94196364bc88ff0d2180f0028fac5"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/setuptools/setuptools/_vendor/platformdirs-4.4.0.dist-info/licenses/LICENSE": {
+    "bytes": 1089,
+    "sha256": "29e0fd62e929850e86eb28c3fdccf0cefdf4fa94879011cffb3d0d4bed6d4db6"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/setuptools/setuptools/_vendor/tomli-2.4.0.dist-info/licenses/LICENSE": {
+    "bytes": 1072,
+    "sha256": "b80816b0d530b8accb4c2211783790984a6e3b61922c2b5ee92f3372ab2742fe"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/setuptools/setuptools/_vendor/wheel-0.46.3.dist-info/licenses/LICENSE.txt": {
+    "bytes": 1107,
+    "sha256": "30c23618679108f3e8ea1d2a658c7ca417bdfc891c98ef1a89fa4ff0c9828654"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/setuptools/setuptools/_vendor/zipp-3.23.0.dist-info/licenses/LICENSE": {
+    "bytes": 1076,
+    "sha256": "5a57cb4db85e2a2dd88c290628908add57e3451449e0a9a71fdfb38776fd759d"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/setuptools/setuptools/config/_validate_pyproject/NOTICE": {
+    "bytes": 18737,
+    "sha256": "09c9bcea95ca086f8bc5bed174e40bc835b297d40fb5f86bbbb570fe0a5581a7"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/setuptools/setuptools/config/NOTICE": {
+    "bytes": 493,
+    "sha256": "2dddf08818297a3b89d43d95ff659d8da85741108c9136dfa3a4d856c0623bd8"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/setuptools/setuptools-84.0.0.dist-info/licenses/LICENSE": {
+    "bytes": 1023,
+    "sha256": "86da0f01aeae46348a3c3d465195dc1ceccde79f79e87769a64b8da04b2a4741"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/shiboken6/shiboken6-6.12.0.dist-info/licenses/LicenseRef-Qt-Commercial.txt": {
+    "bytes": 470,
+    "sha256": "4f54763ac0fe2abd8f7f8d8fe370a94a08ebf84786aa0b91045bd6628deb08a3"
+  },
+  "ScoreOrganizer-0.1.3-number13/依赖许可/构建依赖版本.json": {
+    "bytes": 535,
+    "sha256": "cad422693452f7968cf013c34c18b32b51ac38a8c629fd7feb853ec71a2f47ba"
+  },
+  "ScoreOrganizer-0.1.3-number13/升级和验收说明.md": {
+    "bytes": 3807,
+    "sha256": "9890fb9a6573dda3ad7e3720281a117f46cd4d1335e58922ecf80fea935a9b1e"
+  },
+  "ScoreOrganizer-0.1.3-number13/启动保留旧库.cmd": {
+    "bytes": 89,
+    "sha256": "43888ad22d590ba7dbc62614325c860320c3cc7ad99169b23113eb72e661443c"
+  },
+  "ScoreOrganizer-0.1.3-number13/启动整理工具.cmd": {
+    "bytes": 80,
+    "sha256": "2e9d999149f25d9820468092a0cffa696af8cb79332a54578562cabf0aadc24d"
+  },
+  "ScoreOrganizer-0.1.3-number13/说明.txt": {
+    "bytes": 441,
+    "sha256": "709378557eec52ac2b781021d668044d4f1864d1f4d6696a7bae3808a04c560a"
+  },
+  "ScoreOrganizer-0.1.3-number13.zip": {
+    "bytes": 76467957,
+    "sha256": "352dfccbf689c19905183b0d011fcb7d34a0aa6d513add7551eb236c29738b6a"
+  },
+  "team-service-0.10.22.zip": {
+    "bytes": 65780,
+    "sha256": "37f19d96b3a75361a44ed47e4d30101b344b89c49c65a04a0ee2c1963172240b"
+  },
+  "yuepuruanjian-0.10.22-androidTest.apk": {
+    "bytes": 1328316,
+    "sha256": "dc8ba2003563f85bcf6818dd4bdd50a28007094de060851d666a7bb1ffea3ce1"
+  },
+  "yuepuruanjian-0.10.22-number13.apk": {
+    "bytes": 21205026,
+    "sha256": "37035a4900fd077adb835fe39c1856867c1fa440d47bbbe0e11ba4eec409731d"
+  },
+  "编号13-0.10.22-完整源码.zip": {
+    "bytes": 4190594,
+    "sha256": "c3239613bf19c4a88ee6aa32bc1eeb169d44f634baee30a579c555f7d6fdf430"
+  },
+  "编号13-NAS迁移与恢复工具.zip": {
+    "bytes": 154539,
+    "sha256": "51e7eff6bfd95e7598024b7b120e5ce1d9ef01a16b58e7308e6ec0611bfce3cc"
+  },
+  "编号13-交付与验收说明.txt": {
+    "bytes": 4523,
+    "sha256": "ce99ca22eb27f5f129bef7fb82a107fa89f3650bc32fd77d6c5abd815ee67729"
+  },
+  "编号13-完成验证.json": {
+    "bytes": 7417,
+    "sha256": "efdac14f8a2862e47d72baa316560d7c051b7f7833a46df82d009160efa87057"
+  },
+  "编号13-完整测试证据.zip": {
+    "bytes": 246665,
+    "sha256": "b984c5e9a7425112525de635cad8c30b713c5c21c75237ab89759e7b894ee1de"
+  },
+  "编号13-源码校验.json": {
+    "bytes": 124482,
+    "sha256": "2d2e52373036168ffbad96fa8c98a07410823390a87a3cb09d0babda76c956b0"
+  }
+}

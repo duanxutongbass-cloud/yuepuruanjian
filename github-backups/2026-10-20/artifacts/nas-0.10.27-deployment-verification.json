@@ -1,0 +1,42 @@
+{
+  "app": {
+    "release": {
+      "packageName": "com.ensemble.scorelibrary",
+      "versionCode": 39,
+      "versionName": "0.10.27",
+      "sha256": "6b0506bf7926c72a90ed5a32d9891fa3a47766cd152e4ebb982594cdd09dcd49",
+      "size": 22080609,
+      "notes": "15号手写笔：可开启逐点压感粗细，并选择主/副侧键按住临时整笔擦除，支持撤销；笔画中换键取消未完成动作。设置默认关闭，工具栏手写笔设置开启，仅使用系统实际笔输入。压感随保存、恢复、同步保留，旧笔迹不变。兼容服务已先更新；旧客户端需更新后编辑压感页。保留26曲库和回收站改进。"
+    },
+    "previousReleaseRetained": true,
+    "fullPublicDownload": {
+      "size": 22080609,
+      "sha256": "6b0506bf7926c72a90ed5a32d9891fa3a47766cd152e4ebb982594cdd09dcd49"
+    },
+    "serviceChanged": false,
+    "databaseMigrated": false,
+    "productionScoreOperations": false,
+    "physicalAcceptance": "pending user",
+    "backup": "/data/expanded-0122/app-releases/before-0.10.27.json"
+  },
+  "service": {
+    "serviceUpdated": true,
+    "databaseMigrated": false,
+    "independentRestore": true,
+    "pdfs": 0,
+    "sourceInputs": 25
+  },
+  "publicProof": "nas-0.10.27-public-verification.json",
+  "serviceImage": "yuepu-team-api:0.10.27",
+  "previousServiceImage": "yuepu-team-api:0.10.22",
+  "productionRoot": "/data/expanded-0122",
+  "businessProject": "yuepu-team-api-0127-final",
+  "previousBusinessStopped": true,
+  "backup": "/data/expanded-0122/backups/before-service-0127-v2/backup.zip",
+  "backupProof": "/data/expanded-0122/backups/before-service-0127-v2/verified.json",
+  "databaseMigrated": false,
+  "productionScoreOperations": false,
+  "registeredSourcePdfs": 0,
+  "initialDeploymentFailure": "First prepare blocked on permanent_deletion_jobs storageId rebinding in independent restore; no new business started or APK published; old service resumed; read-only diagnosis found only that table differed and PDFs equal. Strict own-storage-only normalization added to helper v2 and synthetic deletion-history backup/restore/retry/tamper rejection passed. New backup directory used for final deployment.",
+  "note": "APK component serviceChanged=false describes its channel-only operation; overall service was updated22->27 before APK publication"
+}

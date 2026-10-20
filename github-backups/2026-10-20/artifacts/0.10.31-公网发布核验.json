@@ -1,0 +1,29 @@
+{
+  "verifiedAt": "2026-10-20T09:36:42.290977+00:00",
+  "origin": "https://124355.xyz:18443",
+  "normalTlsValidation": true,
+  "redirectsAllowed": false,
+  "release": {
+    "packageName": "com.ensemble.scorelibrary",
+    "versionCode": 43,
+    "versionName": "0.10.31",
+    "sha256": "4323e8dc0fe9eb4751c7ece68300362944354ef6418cf93226a4fead5c9b338d",
+    "size": 14008937,
+    "notes": "修复注册校验、进度、错误和成功反馈；个人空间由本人管理，可创建自己的团队并加入其他团队，角色和乐谱授权分别管理。优化本机看谱：按需检查当前页段、复用已校验的私有文档，超时明确提示；曲库按既有编号自动显示01等分类文件夹。保留原签名、账号、曲谱、编号与设备，无需卸载。真机渲染速度由用户更新后验收。",
+    "available": true
+  },
+  "fullDownload": {
+    "size": 14008937,
+    "sha256": "4323e8dc0fe9eb4751c7ece68300362944354ef6418cf93226a4fead5c9b338d"
+  },
+  "contentLengthAndETagMatched": true,
+  "privateEndpoints": {
+    "/v1/catalog": 401,
+    "/v2/catalog": 401,
+    "/v1/admin/capabilities": 401,
+    "/v2/admin/capabilities": 401,
+    "/v1/me/teams": 401,
+    "/v1/me/team-operations/bc99da36-d881-42ec-8d4f-d90262079c61": 401
+  },
+  "physicalAcceptance": "待用户本人验收"
+}

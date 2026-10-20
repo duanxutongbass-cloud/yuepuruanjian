@@ -1,0 +1,44 @@
+{
+  "verifiedAt": "2026-10-19T04:57:29.913206+00:00",
+  "metadata": {
+    "packageName": "com.ensemble.scorelibrary",
+    "versionCode": 35,
+    "versionName": "0.10.23",
+    "sha256": "4aca26bce6667076a30034dbd5c49303e4397680efd016e99c46f31814f0f2c0",
+    "size": 21205026,
+    "notes": "修复彻底删除后本机笔迹退休清理误判私有根路径，以及把本机清理失败误报成网络错误。保留登录和退休屏障，可重试加载；不会重复删除NAS曲谱。",
+    "available": true
+  },
+  "fullDownload": {
+    "size": 21205026,
+    "sha256": "4aca26bce6667076a30034dbd5c49303e4397680efd016e99c46f31814f0f2c0"
+  },
+  "anonymousPrivate": {
+    "/v1/me": 401,
+    "/v1/catalog": 401,
+    "/v2/catalog": 401,
+    "/v1/admin/artifacts": 401,
+    "/v2/admin/artifacts": 401,
+    "/v1/admin/capabilities": 401,
+    "/v2/admin/capabilities": 401,
+    "/v1/admin/number-inventory": 401,
+    "/v2/admin/number-inventory": 401,
+    "/v1/admin/uploads": 401,
+    "/v2/admin/uploads": 401,
+    "/v1/admin/publications": 401,
+    "/v2/admin/publications": 401,
+    "/v1/admin/grants": 401,
+    "/v2/admin/grants": 401,
+    "/v1/annotations": 401,
+    "/v1/personal-folders": 401,
+    "/v1/admin/programs": 401,
+    "/v1/deletions": 401,
+    "/v2/deletions": 401
+  },
+  "tlsVerification": true,
+  "transport": "Direct HTTPS with default certificate verification; system proxy configuration unchanged",
+  "serviceChanged": false,
+  "databaseMigrated": false,
+  "productionScoreOperations": false,
+  "physicalAcceptance": "pending user"
+}

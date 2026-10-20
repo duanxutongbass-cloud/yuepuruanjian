@@ -20,6 +20,7 @@ data class ManagementCatalog(val data: LibrarySnapshot, val lockedConcerts: Set<
 
 sealed interface ManagementCommand {
     data class Piece(val value: PieceEntity) : ManagementCommand
+    data class RemovePiece(val id: String, val removed: Boolean) : ManagementCommand
     data class Movement(val value: MovementEntity) : ManagementCommand
     data class Definition(val value: PartDefinitionEntity) : ManagementCommand
     data class Part(val value: PiecePartEntity) : ManagementCommand
@@ -86,6 +87,15 @@ class LibraryManagement @Inject constructor(@param:ApplicationContext private va
             piece(value.pieceId); definition(value.partDefinitionId); return value
         }
         when(command) {
+            is ManagementCommand.RemovePiece -> {
+                val row = requireNotNull(data.pieces.firstOrNull { it.id == command.id }) { "曲目不存在" }
+                if (command.removed) {
+                    guardPiece(row.id, protected)
+                    data.items.filter { it.pieceId == row.id && !it.isArchived }.forEach { dao.updateConcertItem(it.copy(isArchived = true)) }
+                }
+                dao.updatePiece(row.copy(isArchived = command.removed))
+                row.id
+            }
             is ManagementCommand.Piece -> {
                 val v=command.value.copy(title=text(command.value.title,200,"曲目名称"), composer=command.value.composer?.trim()?.ifEmpty{null},
                     arranger=command.value.arranger?.trim()?.ifEmpty{null},notes=command.value.notes?.trim()?.ifEmpty{null})
@@ -149,6 +159,8 @@ class LibraryManagement @Inject constructor(@param:ApplicationContext private va
                 if(old==null) dao.insertMember(v) else dao.updateMember(v); v.id
             }
             is ManagementCommand.Concert -> {
+                command.value.audienceMembers?.let { ids -> require(audienceIds(ids).all { id -> data.members.any { it.id == id && !it.isArchived } }) { "可见成员不存在或已归档" } }
+                command.value.audienceParts?.let { ids -> require(audienceIds(ids).all { id -> data.definitions.any { it.id == id && !it.isArchived } }) { "可见声部不存在或已归档" } }
                 val v=command.value.copy(title=text(command.value.title,200,"节目单名称"))
                 if(!v.isArchived) check(data.items.filter{it.concertId==v.id && !it.isArchived && it.isEnabled}.all { item ->
                     data.pieces.any{it.id==item.pieceId && !it.isArchived}

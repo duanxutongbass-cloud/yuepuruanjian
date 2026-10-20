@@ -1,0 +1,20 @@
+[project]
+name = "score-organizer"
+version = "0.1.7"
+description = "曲谱库 Windows 前置重奏乐谱整理工具"
+requires-python = ">=3.12"
+dependencies = [
+    "PySide6>=6.7,<7",
+    "rapidfuzz>=3.9,<4",
+    "pypdf>=6.10,<7",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8,<9",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+

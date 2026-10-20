@@ -24,6 +24,7 @@ val LocalScorePreview = staticCompositionLocalOf<ScorePreviewViewModel?> { null 
 internal fun ScorePreviewPane(member: String, piece: String?, model: ScorePreviewViewModel?,
     onPart: (String, String) -> Unit, onDetails: () -> Unit, modifier: Modifier = Modifier, pieceTitle: String? = null) {
     var size by remember { mutableStateOf(IntSize.Zero) }
+    val previewOwner = remember { Any() }
     val owner = LocalLifecycleOwner.current
     var resumed by remember(owner) { mutableStateOf(owner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) }
     // A pause/resume pair can occur while composition is suspended; a boolean alone loses that event.
@@ -31,13 +32,13 @@ internal fun ScorePreviewPane(member: String, piece: String?, model: ScorePrevie
     DisposableEffect(owner, model) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) { resumed = true; resumeGeneration++ }
-            if (event == Lifecycle.Event.ON_PAUSE) { resumed = false; model?.clear() }
+            if (event == Lifecycle.Event.ON_PAUSE) { resumed = false; model?.clear(previewOwner) }
         }
         owner.lifecycle.addObserver(observer)
-        onDispose { owner.lifecycle.removeObserver(observer); model?.clear() }
+        onDispose { owner.lifecycle.removeObserver(observer); model?.clear(previewOwner) }
     }
     LaunchedEffect(member, piece, size, model, resumed, resumeGeneration) {
-        if (resumed) model?.bind(member, piece, size.width, size.height) else model?.clear()
+        if (resumed) model?.bind(member, piece, size.width, size.height, previewOwner) else model?.clear(previewOwner)
     }
     val raw = model?.state?.collectAsStateWithLifecycle()?.value
     // Reject old frames in this composition too, before the bind effect has run.
@@ -79,9 +80,10 @@ internal fun ScorePreviewPane(member: String, piece: String?, model: ScorePrevie
                     update = { it.contentDescription = "${state.score.title} · ${state.score.part.name} · 原谱预览"; it.show(state.image) })
                 state is ScorePreviewState.Failure -> Column(horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Icon(Icons.Outlined.ErrorOutline, null)
+                    if(!state.choosePart)Icon(Icons.Outlined.ErrorOutline, null)
                     Text(state.message, Modifier.testTag("preview-error"))
-                    TextButton(onClick = { model.retry() }, modifier = Modifier.testTag("preview-retry")) { Text("重试预览") }
+                    if(state.choosePart)Button(onClick=onDetails,modifier=Modifier.testTag("preview-select-part")) { Text("选择声部") }
+                    else TextButton(onClick = { model.retry() }, modifier = Modifier.testTag("preview-retry")) { Text("重试预览") }
                 }
                 else -> CircularProgressIndicator(Modifier.testTag("preview-loading"))
             }

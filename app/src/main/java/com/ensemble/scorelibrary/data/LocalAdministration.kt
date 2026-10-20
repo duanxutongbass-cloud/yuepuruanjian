@@ -1,5 +1,7 @@
 package com.ensemble.scorelibrary.data
 
+import com.ensemble.scorelibrary.domain.ScoreNumber
+
 import android.content.Context
 import android.net.Uri
 import androidx.room.withTransaction
@@ -15,6 +17,8 @@ data class ImportScoreRequest(
     val title: String, val partName: String, val memberId: String,
     val startPage: Int = 1, val endPage: Int? = null, val concertTitle: String = "",
     val grantAdministrator: Boolean = false,
+    val categoryCode: String? = null, val categoryName: String? = null,
+    val organizerSequence: String? = null, val appendToNumberedPiece: Boolean = false,
 )
 
 class LocalAdministration @Inject constructor(
@@ -43,6 +47,9 @@ class LocalAdministration @Inject constructor(
         require(request.title.trim().isNotEmpty() && request.title.trim().length <= 200) { "请输入曲目名称（最多 200 字）" }
         require(request.partName.trim().isNotEmpty() && request.partName.trim().length <= 100) { "请输入声部名称（最多 100 字）" }
         require(request.concertTitle.trim().length <= 200) { "节目单名称最多 200 字" }
+        require((request.categoryCode == null && request.categoryName == null) ||
+            (request.categoryCode?.matches(Regex("[0-9]{2}")) == true && !request.categoryName.isNullOrBlank() && request.categoryName.length <= 100)) { "分类须包含两位编号和名称" }
+        require(request.organizerSequence == null || runCatching { ScoreNumber.sequence(request.organizerSequence) }.isSuccess) { "整理器曲目序号须为规范十进制整数" }
         requireAdmin(actorId)
         ManagedPdfImporter(context).publish(uri) { staged ->
             val pageCount = staged.pages
@@ -55,8 +62,15 @@ class LocalAdministration @Inject constructor(
                 val definition = database.resolutionDao().definitions().firstOrNull { it.name == request.partName.trim() }
                     ?.also { check(!it.isArchived) { "该声部已归档，请使用其他名称" } }
                     ?: PartDefinitionEntity(name = request.partName.trim()).also { dao.insertPartDefinition(it) }
-                val piece = PieceEntity(title = request.title.trim())
-                dao.insertPiece(piece)
+                val data = database.resolutionDao().snapshot()
+                val existing = existingOrganizerPiece(data.pieces, data.parts, request, definition.id)
+                val piece = if (existing != null) {
+                    check(data.items.filter { it.pieceId == existing.id }.none { database.annotationDao().snapshot(it.concertId) != null }) { "该曲目已有冻结演出，请使用未冻结曲目" }
+                    existing
+                } else {
+                    PieceEntity(title = request.title.trim(), categoryCode = request.categoryCode, categoryName = request.categoryName,
+                        organizerSequence = request.organizerSequence).also { dao.insertPiece(it) }
+                }
                 val part = PiecePartEntity(pieceId = piece.id, partDefinitionId = definition.id)
                 dao.insertPiecePart(part)
                 val pdf = ScorePdfEntity(title = piece.title)
@@ -71,7 +85,9 @@ class LocalAdministration @Inject constructor(
                 val recipients = (listOf(request.memberId) + if (request.grantAdministrator) listOf(actorId) else emptyList()).distinct()
                 for (recipient in recipients) {
                     dao.insertExtraPermission(MemberPiecePartPermissionEntity(memberId = recipient, piecePartId = part.id))
-                    dao.insertAssignment(PiecePartAssignmentEntity(memberId = recipient, piecePartId = part.id))
+                    if (data.assignments.none { assignment -> !assignment.isArchived && assignment.memberId == recipient &&
+                        data.parts.any { it.id == assignment.piecePartId && it.pieceId == piece.id } })
+                        dao.insertAssignment(PiecePartAssignmentEntity(memberId = recipient, piecePartId = part.id))
                 }
                 if (request.concertTitle.isNotBlank()) {
                     val concert = database.resolutionDao().concerts().firstOrNull {

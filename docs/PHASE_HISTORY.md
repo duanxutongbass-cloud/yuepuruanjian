@@ -1,8 +1,14 @@
+# 2026-10-15 账号与服务端鉴权
+
+Android 0.10.0/code12/schema5：持久团队账号、邀请注册、设备绑定、修改密码、退出、设备撤销和成员停用；独立 Python/SQLite/Waitress 服务增加逐文件授权/发布/Range 下载鉴权。Android 完整 235 项通过，服务端最终 29 项通过；Debug 与 AndroidTest APK 构建成功，Lint 0 错误/15 警告。新增真实 Kotlin/Python 协议互通测试。NAS 容器候选已准备但未构建镜像/部署，正式曲库与批注同步尚未接入，用户继续真机测试。见 [ACCOUNT_SERVICE_0100](ACCOUNT_SERVICE_0100.md)。
+
 # 2026-10-14 临时 HTTP 集成（原生环境阻塞，未通过）
 
 从 UI PR5 派生独立集成分支，接入真实临时服务与 Android HTTP 下载/本地阅读。200 JVM 与 6 HTTP 测试通过，构建/Lint 通过，API30 系统服务崩溃，原生验收及两张关键截图未完成；不算阶段通过。[实测记录](ANDROID_HTTP_OFFLINE_REVIEW.md)。
 
 # 阶段历史
+
+2026-10-14 用户提供完整 yuepuruanjianqianzhi，指定作为 App 电脑端附属软件。源码保留在 desktop-organizer，增加只读字典JSON设置菜单出口与可选数据位置。Android0.9.8/code10/schema4接入同源文件名、乐器、分类、序号，明确补谱与拒绝冲突、保留迁移、v1备份接受和v2元数据往返。Android完整212项通过，Debug/AndroidTest构建成功，Lint无错误；Windows完整514项通过，EXE打包及实际空库启动/控件读取成功。未进行Pad实测、截图像素验收、NAS同步或远程推送，见 ORGANIZER_COMPANION。
 
 2026-10-14 本地 0.9.7/code9 修复用户实测“选择 PDF”灰色无法使用：选文件与提交分离，自动建议文件名标题并保护手工输入，元数据校验可见、身份切换清除选谱。新增 3 项 UI 回归后完整 JVM 203 项通过、Debug/AndroidTest APK 构建成功、Lint XML 0 错误/12 警告/0 提示。schema3 不变，未进行真机验收；整理器命名规则与乐器/分类映射仍待上传，见 PDF_IMPORT_ENTRY_REVIEW。
 
@@ -66,3 +72,5 @@
 2026-10-13 PR #4 / `967d154` 获受信本机管理员可视原型条件通过；PM 指出响应丢失与迟到 review/page 的三处前端状态竞态。当前仅在 PR #4 原分支收口统一终态和权威回执恢复，未扩展业务/技术栈，修前与修后证据见 PHASE10_1_VISUAL_REVIEW 的状态收口段；修订待 PM 再审。
 
 2026-10-14 用户要求将已有分支合并进本地 main；整合 Android HTTP/UI/批注、同步核心与本地管理 CLI/可视复核成果。生产代码无合并冲突，三个进度文档按双边记录和最新复验更新。当前本地验证见 LOCAL_MERGE_REVIEW；合并不表示 NAS 部署或真机验收完成。
+
+2026-10-14：0.9.9 本地平板反馈改进，包含固定视口批注、预制音乐符号、全屏阅读、个人曲库文件夹/封面、节目单可见成员/声部和编号元数据；schema5/备份v3，保留旧档转换。实机性能和正式 NAS/同步未验收，具体见 READER_AND_LIBRARY_099.md。

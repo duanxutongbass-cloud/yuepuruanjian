@@ -19,8 +19,8 @@ def verify(path):
         assert sum(entry.file_size for entry in entries) <= 2 * 1024**3 + 16 * 1024**2 + 65536
         root = json.loads(archive.read("manifest.json"))
         assert root["format"] == "ensemble-score-library"
-        assert type(root["formatVersion"]) is int and root["formatVersion"] == 1
-        assert root["databaseVersion"] == 3
+        assert type(root["formatVersion"]) is int
+        assert (root["formatVersion"], root["databaseVersion"]) in {(1, 3), (2, 4), (3, 5)}
         files = root["files"]
         assert names == {"manifest.json", "README.txt"} | {item["entry"] for item in files}
         assert len({item["versionId"] for item in files}) == len(files)

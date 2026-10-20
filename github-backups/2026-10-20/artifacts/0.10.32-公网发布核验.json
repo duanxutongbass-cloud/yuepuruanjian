@@ -1,0 +1,29 @@
+{
+  "verifiedAt": "2026-10-20T10:13:40.243177+00:00",
+  "origin": "https://124355.xyz:18443",
+  "normalTlsValidation": true,
+  "redirectsAllowed": false,
+  "release": {
+    "packageName": "com.ensemble.scorelibrary",
+    "versionCode": 44,
+    "versionName": "0.10.32",
+    "sha256": "b80be12f6211a78fd0d66948075a7dcfd61f165ab6c26c069096d5a40443d73b",
+    "size": 14025325,
+    "notes": "修复新账号未创建或加入团队时缺少正常入口：直接开放个人曲库、节目单和我的导航，可进入账号与团队、应用更新及脚踏设置，无需先建团。团队内容仍按各团队审核与乐谱授权显示。包含已完成的阅读加载与自动分类改进；沿用原签名覆盖升级，保留账号、个人文件、曲谱和编号。",
+    "available": true
+  },
+  "fullDownload": {
+    "size": 14025325,
+    "sha256": "b80be12f6211a78fd0d66948075a7dcfd61f165ab6c26c069096d5a40443d73b"
+  },
+  "contentLengthAndETagMatched": true,
+  "privateEndpoints": {
+    "/v1/catalog": 401,
+    "/v2/catalog": 401,
+    "/v1/admin/capabilities": 401,
+    "/v2/admin/capabilities": 401,
+    "/v1/me/teams": 401,
+    "/v1/me/team-operations/2a72e08a-d205-4ed9-acc6-6d07baa121f8": 401
+  },
+  "physicalAcceptance": "待用户本人验收"
+}

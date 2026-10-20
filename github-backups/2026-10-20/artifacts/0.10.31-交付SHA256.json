@@ -1,0 +1,46 @@
+{
+  "0.10.31-阅读与分类修复说明.txt": {
+    "bytes": 2729,
+    "sha256": "d302f3c716e08686c3f5f0583a2570c8d7ee7c88553dba2bd59f7251c2951784"
+  },
+  "0.10.31-阅读与分类修复核验.json": {
+    "bytes": 5659,
+    "sha256": "272858446b24bd97730bb0a2ba808964134b870dea1fc582985a7d15ac0d91f3"
+  },
+  "0.10.31-完整源码.zip": {
+    "bytes": 1559194,
+    "sha256": "292bb45309fdf2648b86bd5f8089b1093987bc67a8cad0806e5a2a1dfc9bb92b"
+  },
+  "0.10.31-源码SHA256.json": {
+    "bytes": 77518,
+    "sha256": "b6afe17ee7a579ec96487aee16957a10b502a592bd73ab1a02eacce76f7aff12"
+  },
+  "0.10.31-验证与部署留档.zip": {
+    "bytes": 13788789,
+    "sha256": "45a16cab570534408d27950338382d2aadc20ed19f606aa8d2680b06808608c2"
+  },
+  "0.10.31-App本机验证.json": {
+    "bytes": 1553,
+    "sha256": "3a22a9a4ec13cd4702d4cdb0c1a0524cdb4726455e90ecba025028c26ff8f7ac"
+  },
+  "0.10.31-自动分类文件夹.png": {
+    "bytes": 37981,
+    "sha256": "4bc42f1f33729fc40a089a16aeb92e02c922c024aa1b4aa27b5f63a36fe4143b"
+  },
+  "yuepuruanjian-0.10.31-release.apk": {
+    "bytes": 14008937,
+    "sha256": "4323e8dc0fe9eb4751c7ece68300362944354ef6418cf93226a4fead5c9b338d"
+  },
+  "yuepuruanjian-0.10.31-androidTest.apk": {
+    "bytes": 1363687,
+    "sha256": "f6e85794c372ab23890e160bf0f4771c44ef638807d8bbe9fbee991a615d0a03"
+  },
+  "0.10.31-公网发布核验.json": {
+    "bytes": 1345,
+    "sha256": "9872b8cadc7ac1340272c784f73f23c5a61402c3993e34b7fe633a6f1f054c80"
+  },
+  "0.10.31-NAS发布核验通过.png": {
+    "bytes": 112517,
+    "sha256": "4f3238bae3e5de1e76fc5ecf59aa1eef34e6e3acc542feadbd498cebc52d69d7"
+  }
+}

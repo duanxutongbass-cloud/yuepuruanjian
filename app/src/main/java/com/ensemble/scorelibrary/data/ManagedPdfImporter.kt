@@ -16,6 +16,7 @@ class ManagedPdfImporter(private val context: Context) {
         require(uri.scheme == "content") { "请通过系统文件选择器选择 PDF" }
         val directory = File(context.filesDir, "scores").apply { check(exists() || mkdirs()) }
         val file = File(directory, "${UUID.randomUUID()}.pdf")
+        check(file.createNewFile()) { "目标PDF已存在，未覆盖原文件，请重试" }
         var committed = false
         try {
             val digest = MessageDigest.getInstance("SHA-256")

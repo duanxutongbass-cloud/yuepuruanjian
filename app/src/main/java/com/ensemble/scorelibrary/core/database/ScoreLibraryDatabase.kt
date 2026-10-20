@@ -38,14 +38,36 @@ import com.ensemble.scorelibrary.core.database.entity.ScorePdfVersionEntity
         ScoreCacheEntryEntity::class,
         com.ensemble.scorelibrary.core.database.entity.AnnotationPageEntity::class,
         com.ensemble.scorelibrary.core.database.entity.AnnotationRevisionEntity::class,
-        com.ensemble.scorelibrary.core.database.entity.AnnotationConcertSnapshotEntity::class
+        com.ensemble.scorelibrary.core.database.entity.AnnotationConcertSnapshotEntity::class,
+        com.ensemble.scorelibrary.core.database.entity.AnnotationCloudEntity::class
     ],
-    version = 3,
+    version = 6,
     exportSchema = true
 )
 @TypeConverters(EnumConverters::class)
 abstract class ScoreLibraryDatabase : RoomDatabase() {
     companion object {
+        val MIGRATION_5_6 = object : androidx.room.migration.Migration(5, 6) {
+            override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                db.execSQL("CREATE TABLE IF NOT EXISTS annotation_cloud (id TEXT NOT NULL PRIMARY KEY, versionId TEXT NOT NULL, pageIndex INTEGER NOT NULL, kind TEXT NOT NULL, remoteRevision INTEGER NOT NULL, baseline TEXT NOT NULL, syncedGeneration INTEGER NOT NULL, requestId TEXT, requestBody TEXT, requestGeneration INTEGER NOT NULL, conflictPayload TEXT, conflictRevision INTEGER NOT NULL, FOREIGN KEY(versionId) REFERENCES score_pdf_versions(id) ON UPDATE NO ACTION ON DELETE RESTRICT)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_annotation_cloud_versionId ON annotation_cloud(versionId)")
+                db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS index_annotation_cloud_versionId_pageIndex_kind ON annotation_cloud(versionId,pageIndex,kind)")
+            }
+        }
+        val MIGRATION_4_5 = object : androidx.room.migration.Migration(4, 5) {
+            override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE concerts ADD COLUMN audienceMembers TEXT")
+                db.execSQL("ALTER TABLE concerts ADD COLUMN audienceParts TEXT")
+            }
+        }
+        val MIGRATION_3_4 = object : androidx.room.migration.Migration(3, 4) {
+            override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE pieces ADD COLUMN categoryCode TEXT")
+                db.execSQL("ALTER TABLE pieces ADD COLUMN categoryName TEXT")
+                db.execSQL("ALTER TABLE pieces ADD COLUMN organizerSequence TEXT")
+                db.execSQL("CREATE UNIQUE INDEX index_pieces_organizerSequence ON pieces(organizerSequence)")
+            }
+        }
         val MIGRATION_2_3 = object : androidx.room.migration.Migration(2, 3) {
             override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
                 db.execSQL("CREATE TABLE IF NOT EXISTS annotation_pages (id TEXT NOT NULL PRIMARY KEY, versionId TEXT NOT NULL, pageIndex INTEGER NOT NULL, ownerKey TEXT NOT NULL, payload TEXT NOT NULL, generation INTEGER NOT NULL, publishedRevisionId TEXT, FOREIGN KEY(versionId) REFERENCES score_pdf_versions(id) ON UPDATE NO ACTION ON DELETE RESTRICT)")
@@ -65,5 +87,6 @@ abstract class ScoreLibraryDatabase : RoomDatabase() {
     }
     abstract fun libraryDao(): LibraryDao
     abstract fun annotationDao(): com.ensemble.scorelibrary.core.database.dao.AnnotationDao
+    abstract fun teamDeletionDao(): com.ensemble.scorelibrary.core.database.dao.TeamDeletionDao
     abstract fun resolutionDao(): com.ensemble.scorelibrary.core.database.dao.ResolutionDao
 }

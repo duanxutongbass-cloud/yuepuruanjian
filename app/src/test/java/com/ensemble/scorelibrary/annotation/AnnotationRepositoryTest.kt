@@ -36,6 +36,42 @@ class AnnotationRepositoryTest {
     }
     private fun scope(member: String = "a", page: Int = 1, item: String? = null) = AnnotationScope(member, "p", "part", "v", page, item)
     private fun mark() = InkMark(kind = MarkKind.PEN, points = listOf(InkPoint(.2f, .3f), InkPoint(.8f, .3f)))
+    @Test fun pressureUsesExistingGuardedRoomStorageAndPublicationWithoutFlattening()=runBlocking {
+        val db=database()
+        try {
+            setup(db);val repo=AnnotationRepository(db);val pen=mark().copy(pressures=listOf(.1f,.9f))
+            repo.save(scope(),AnnotationLayer.PERSONAL,listOf(pen),0)
+            assertEquals(listOf(pen),repo.load(scope()).personal)
+            repo.save(scope(),AnnotationLayer.SHARED,listOf(pen),0);repo.publish(scope())
+            assertEquals(listOf(pen),repo.load(scope()).shared)
+        } finally { db.close() }
+    }
+    @Test fun recoverySourceIsCurrentPdfHashAndChangedHashCannotReceiveOldInk()=runBlocking {
+        val db=database()
+        try {
+            setup(db)
+            val version=db.resolutionDao().versions().single()
+            db.libraryDao().updateVersion(version.copy(fileHash="a".repeat(64)))
+            val repo=AnnotationRepository(db);val source=repo.load(scope()).recoverySource!!
+            assertEquals(RecoverySource("local","a".repeat(64)),source)
+            repo.save(scope(),AnnotationLayer.PERSONAL,listOf(mark()),0,source)
+            db.libraryDao().updateVersion(version.copy(fileHash="b".repeat(64)))
+            try { repo.save(scope(),AnnotationLayer.PERSONAL,emptyList(),1,source);fail("Changed PDF must reject old checkpoint") }
+            catch(_:IllegalStateException) {}
+            assertEquals(1L,repo.load(scope()).personalGeneration)
+            assertEquals("b".repeat(64),repo.load(scope()).recoverySource!!.sha256)
+        } finally { db.close() }
+    }
+    @Test fun recoverySourceRejectsAnotherAccountSpaceBeforeIdempotentReplay()=runBlocking {
+        val db=database()
+        try {
+            setup(db);val repo=AnnotationRepository(db);val marks=listOf(mark());val source=repo.load(scope()).recoverySource!!
+            repo.save(scope(),AnnotationLayer.PERSONAL,marks,0,source)
+            try { repo.save(scope(),AnnotationLayer.PERSONAL,marks,0,source.copy(space="team:other"));fail("Wrong account space") }
+            catch(_:IllegalStateException) {}
+            assertEquals(1L,repo.load(scope()).personalGeneration)
+        } finally { db.close() }
+    }
     @Test fun reopeningDiskDatabaseKeepsInkAndNewPdfVersionHasSeparateLayer() = runBlocking {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val name = "ink-reopen.db"; context.deleteDatabase(name)

@@ -71,10 +71,12 @@ class PerformancePreparationTest {
         assertFalse(model.playMode.value); assertEquals(PerformanceState.Idle,model.performance.value)
         assertEquals(2,(model.state.value as PdfState.Ready).sourcePage)
     }
-    @Test fun restoringPerformanceRechecksFilesAndDoesNotTrustSavedBoolean() = runTest(dispatcher) {
+    @Test fun restoringPositionDoesNotAutomaticallyReenterPerformance() = runTest(dispatcher) {
         val saved=SavedStateHandle(); var model=vm(saved); runCurrent()
         model.action(PedalAction.TOGGLE_PLAY_MODE); runCurrent(); assertTrue(model.playMode.value)
         model.detach(); missing="v4"; model=vm(saved); runCurrent()
+        assertFalse(model.playMode.value); assertEquals(PerformanceState.Idle, model.performance.value)
+        model.action(PedalAction.TOGGLE_PLAY_MODE); runCurrent()
         assertFalse(model.playMode.value); assertTrue(model.performance.value is PerformanceState.Failure)
     }
     @Test fun changingMemberCancelsPendingCheckAndDiscardsOldResult() = runTest(dispatcher) {
@@ -96,5 +98,27 @@ class PerformancePreparationTest {
         try { PerformancePreparation(engine,ink).check("m",listOf(large),true){_,_->}; fail("Must reject oversized programme") }
         catch (_: IllegalArgumentException) { }
         assertTrue(ink.loaded.isEmpty())
+    }
+    @Test fun stoppingOrLeavingEndsPreparedScene() = runTest(dispatcher) {
+        val model = vm(); runCurrent(); model.action(PedalAction.TOGGLE_PLAY_MODE); runCurrent()
+        assertNotNull(model.frozenViewer("m", ScreenRequest.Viewer("p0", "part0", "c", "i0")))
+        model.interruptPerformance(); runCurrent()
+        assertNull(model.frozenViewer("m", ScreenRequest.Viewer("p0", "part0", "c", "i0")))
+        assertFalse(model.playMode.value)
+        model.action(PedalAction.TOGGLE_PLAY_MODE); runCurrent()
+        assertTrue(model.playMode.value)
+        model.detach(); runCurrent()
+        assertNull(model.frozenViewer("m", ScreenRequest.Viewer("p0", "part0", "c", "i0")))
+    }
+    @Test fun enteredSceneUsesCapturedInkWithoutNewRepositoryReads() = runTest(dispatcher) {
+        val model = vm(); runCurrent(); model.action(PedalAction.TOGGLE_PLAY_MODE); runCurrent()
+        val loads = ink.loaded.size
+        ink.locked = false; ink.failurePage = 2
+        val page = com.ensemble.scorelibrary.annotation.AnnotationScope("m", "p0", "part0", "v0", 2, "i0")
+        assertTrue(model.performanceInk(page)!!.locked)
+        assertNull(model.performanceInk(page.copy(member = "other")))
+        model.nextPage(); runCurrent()
+        assertTrue(model.playMode.value)
+        assertEquals(loads, ink.loaded.size)
     }
 }

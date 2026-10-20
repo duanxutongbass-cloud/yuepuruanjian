@@ -1,0 +1,40 @@
+{
+  "versionName": "0.10.30",
+  "versionCode": 42,
+  "tests": {
+    "tests": 785,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "classes": 134,
+  "lint": {
+    "debug": {
+      "errors": 0,
+      "warnings": 22
+    },
+    "release": {
+      "errors": 0,
+      "warnings": 22
+    }
+  },
+  "inputFiles": 337,
+  "inputsUnchanged": true,
+  "roomSchemaUnchanged": true,
+  "releaseNonDebuggable": true,
+  "operationLogs": false,
+  "testReleaseHistory": false,
+  "existingCertificatePreserved": true,
+  "certificateSha256": "9f360690612dabcdc4c13c8fb0b89af99402a64782f8fdcba79cddfb2be745fa",
+  "coverageUpgradeRequirements": "same applicationId/certificate; higher versionCode; unchanged Room schema",
+  "physicalAcceptance": "pending user after NAS publication",
+  "published": false,
+  "yuepuruanjian-0.10.30-release.apk": {
+    "bytes": 13992553,
+    "sha256": "b734a1c0a645ea6870930a16310fab81bdcf1d70198332fb9979ddc8d799223a"
+  },
+  "yuepuruanjian-0.10.30-androidTest.apk": {
+    "bytes": 1363687,
+    "sha256": "de5cc09f2dd2ec3086dc9fbd5fec51680afcee4b15a456b57572ece3e5dce45a"
+  }
+}

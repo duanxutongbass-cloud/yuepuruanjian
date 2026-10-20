@@ -62,6 +62,28 @@ class LibraryManagementTest {
         val before=data();rejected{service.catalog("m")};rejected{service.edit("m",ManagementCommand.Piece(PieceEntity(title="Forbidden")))}
         assertEquals(before,data())
     }
+    @Test fun deleteRestoreRetainsFilesNumbersAndNeverRevivesRemovedProgrammeEntries() = runBlocking {
+        val before = data()
+        rejected { service.edit("m", ManagementCommand.RemovePiece("p1", true)) }
+        service.edit("a", ManagementCommand.RemovePiece("p1", true))
+        var removed = data()
+        assertTrue(removed.pieces.single { it.id == "p1" }.isArchived)
+        assertTrue(removed.items.filter { it.pieceId == "p1" }.all { it.isArchived })
+        assertEquals(before.versions, removed.versions); assertEquals(before.pdfs, removed.pdfs)
+        service.edit("a", ManagementCommand.RemovePiece("p1", false))
+        removed = data()
+        assertEquals(before.pieces, removed.pieces)
+        assertTrue(removed.items.filter { it.pieceId == "p1" }.all { it.isArchived })
+        service.edit("a", ManagementCommand.Concert(removed.concerts.single().copy(isArchived = true)))
+        assertTrue(data().concerts.single().isArchived)
+        service.edit("a", ManagementCommand.Concert(data().concerts.single().copy(isArchived = false)))
+        assertFalse(data().concerts.single().isArchived)
+    }
+    @Test fun deleteLockedPieceRejectedWithoutPartialChanges() = runBlocking {
+        freeze(); val before = data()
+        rejected { service.edit("a", ManagementCommand.RemovePiece("p1", true)) }
+        assertEquals(before, data())
+    }
     @Test fun protectsLastAdministratorAndPromotionDoesNotGrantScores()=runBlocking {
         val admin=data().members.first{it.id=="a"}
         rejected{service.edit("a",ManagementCommand.Member(admin.copy(role=MemberRole.MEMBER)))}

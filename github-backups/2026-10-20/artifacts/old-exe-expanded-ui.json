@@ -1,0 +1,10 @@
+{
+  "window": {
+    "app": "process:C:\\Users\\dxt\\Documents\\Codex\\2026-10-18\\https-chatgpt-com-s-cx-6ad43da3e4a8819180f144c92c069663\\outputs\\ScoreOrganizer-0.1.2\\Windows程序\\曲谱库重奏乐谱整理工具.exe",
+    "id": 2818538,
+    "title": "乐谱库版本不兼容"
+  },
+  "accessibility": {
+    "tree": "Window: \"乐谱库版本不兼容\", App: 曲谱库重奏乐谱整理工具.exe.\n\t0 窗口 (settable, string) 乐谱库版本不兼容 Value: 此乐谱库使用当前整理器不支持的数据格式（1）。请使用创建该库的版本或更新后的整理器打开，不要清空或重新初始化乐谱库。 Secondary Actions: Raise ID: QApplication.QMessageBox\n\t\t1 标题栏 (settable, string) Value: 乐谱库版本不兼容\n\t\t\t2 菜单栏 系统 ID: MenuBar\n\t\t\t\t3 菜单项目 系统\n\t\t\t4 按钮 关闭\n\t\t5 图像 ID: QApplication.QMessageBox.qt_msgboxex_icon_label\n\t\t6 文本 此乐谱库使用当前整理器不支持的数据格式（1）。请使用创建该库的版本或更新后的整理器打开，不要清空或重新初始化乐谱库。 ID: QApplication.QMessageBox.qt_msgbox_label\n\t\t7 组 (settable, string) ID: QApplication.QMessageBox.qt_msgbox_buttonbox\n\t\t\t8 按钮 (settable, string) OK ID: QApplication.QMessageBox.qt_msgbox_buttonbox.QPushButton"
+  }
+}

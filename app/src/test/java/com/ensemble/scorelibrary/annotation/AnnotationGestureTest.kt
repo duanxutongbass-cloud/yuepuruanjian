@@ -9,6 +9,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.testTag
 import androidx.lifecycle.ViewModelStore
 import com.ensemble.scorelibrary.pdf.*
 import kotlinx.coroutines.CompletableDeferred
@@ -46,6 +47,36 @@ class AnnotationGestureTest {
         compose.runOnIdle { model.bind(scope) }
         compose.waitUntil { !model.state.value.busy }
         compose.runOnIdle { model.tool(AnnotationTool.PEN) }
+    }
+    @Test fun normalBackgroundSavingDoesNotResizeToolbarOrShowPendingWarning() {
+        val sample = mutableStateOf(AnnotationState(data=AnnotationData(emptyList(),emptyList(),emptyList(),0,0,true,null,false)))
+        compose.setContent { MaterialTheme { Box(Modifier.testTag("toolbar-bounds")) { AnnotationToolbar(sample.value,model) } } }
+        val before=compose.onNodeWithTag("toolbar-bounds").fetchSemanticsNode().boundsInRoot
+        compose.runOnIdle { sample.value=sample.value.copy(pending=true,saving=true) }
+        compose.onNodeWithTag("annotation-pending").assertDoesNotExist()
+        assertEquals(before,compose.onNodeWithTag("toolbar-bounds").fetchSemanticsNode().boundsInRoot)
+        compose.runOnIdle { sample.value=sample.value.copy(saving=false,pending=false) }
+        assertEquals(before,compose.onNodeWithTag("toolbar-bounds").fetchSemanticsNode().boundsInRoot)
+    }
+    @Test fun mainMusicToolOpensPreparedPaletteAndSelectingStampKeepsItsValue() {
+        val sample=AnnotationState(data=AnnotationData(emptyList(),emptyList(),emptyList(),0,0,true,null,false))
+        compose.setContent { MaterialTheme { AnnotationToolbar(sample,model) } }
+        compose.onNodeWithTag("annotation-音乐符号").performClick()
+        compose.onNodeWithTag("symbol-group-奏法").performScrollTo().performClick()
+        compose.onNodeWithTag("symbol-arco").performScrollTo().performClick()
+        compose.runOnIdle { assertEquals("arco",model.state.value.symbol);assertEquals(AnnotationTool.SYMBOL,model.state.value.tool) }
+    }
+    @Test fun musicPaletteStaysMountedWhenPdfResizeTemporarilyDisablesEditing() {
+        val sample=mutableStateOf(AnnotationState(data=AnnotationData(emptyList(),emptyList(),emptyList(),0,0,true,null,false)))
+        compose.setContent { MaterialTheme { AnnotationToolbar(sample.value,model) } }
+        compose.onNodeWithTag("music-symbol-picker").performClick()
+        val before=compose.onNodeWithTag("music-symbol-palette").fetchSemanticsNode().boundsInRoot
+        compose.runOnIdle { sample.value=sample.value.copy(busy=true,data=null) }
+        compose.onNodeWithTag("music-symbol-palette").assertExists()
+        assertEquals(before,compose.onNodeWithTag("music-symbol-palette").fetchSemanticsNode().boundsInRoot)
+        compose.runOnIdle { sample.value=sample.value.copy(busy=false,data=AnnotationData(emptyList(),emptyList(),emptyList(),0,0,true,null,false)) }
+        compose.onNodeWithTag("music-symbol-palette").assertExists()
+        assertEquals(before,compose.onNodeWithTag("music-symbol-palette").fetchSemanticsNode().boundsInRoot)
     }
     @Test fun saveFailureDuringSecondPointerGestureKeepsBothCompletedStrokes() {
         open()

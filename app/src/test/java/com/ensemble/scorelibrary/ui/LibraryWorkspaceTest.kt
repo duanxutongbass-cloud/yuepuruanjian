@@ -17,6 +17,15 @@ import org.robolectric.annotation.Config
 class LibraryWorkspaceTest {
     @get:Rule val compose = createComposeRule()
     private val pieces = listOf(PieceSummary("a", "合成练习 A", "Alpha"), PieceSummary("b", "合成练习 B", "Beta"))
+    @Test fun secondarySortActionLivesInMenuWithoutTakingAnotherToolbarRow() {
+        compose.setContent { ScoreTheme { PieceWorkspace(pieces, "m") {} } }
+        compose.onNodeWithTag("library-sort").assertDoesNotExist()
+        compose.onNodeWithTag("library-more").performClick()
+        compose.onNodeWithTag("library-sort").assertExists().performClick()
+        compose.onNodeWithTag("library-sort").assertDoesNotExist()
+        compose.onNodeWithTag("library-search").assertIsDisplayed()
+        compose.onNodeWithTag("library-list").assertIsDisplayed()
+    }
     @Test fun searchComposerSelectThenOpenDetails() {
         var opened = ""
         compose.setContent { ScoreTheme { PieceWorkspace(pieces, "m") { opened = it } } }

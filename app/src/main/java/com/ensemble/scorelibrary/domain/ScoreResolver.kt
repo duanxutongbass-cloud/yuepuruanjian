@@ -48,6 +48,37 @@ data class LibrarySnapshot(
 )
 
 class ScoreResolver(private val data: LibrarySnapshot) {
+    // One transaction snapshot, one set of indexes. Never reuse indexes across authorization changes.
+    // Keep groups (rather than overwriting duplicate IDs) so ambiguous input still fails closed.
+    private val membersById=data.members.filterNot { it.isArchived }.groupBy { it.id }
+    private val piecesById=data.pieces.filterNot { it.isArchived }.groupBy { it.id }
+    private val definitionsById=data.definitions.groupBy { it.id }
+    private val activeDefinitions=data.definitions.filterNot { it.isArchived }.groupBy { it.id }
+    private val partsByPiece=data.parts.groupBy { it.pieceId }
+    private val partsById=data.parts.groupBy { it.id }
+    private val globalGrants=data.permissions.filterNot { it.isArchived }.groupBy { it.memberId }
+        .mapValues { (_,rows) -> rows.map { it.partDefinitionId }.toSet() }
+    private val extraGrants=data.extraPermissions.filterNot { it.isArchived }.groupBy { it.memberId }
+        .mapValues { (_,rows) -> rows.map { it.piecePartId }.toSet() }
+    private val assignmentsByMember=data.assignments.filterNot { it.isArchived }.groupBy { it.memberId }
+    private val danglingAssignments=assignmentsByMember.mapValues { (_,rows) -> rows.any { it.piecePartId !in partsById } }
+    private val bindingsByPart=data.bindings.filterNot { it.isArchived }.groupBy { it.piecePartId }
+    private val movementsByPiece=data.movements.filterNot { it.isArchived }.groupBy { it.pieceId }
+    private val pdfsById=data.pdfs.filterNot { it.isArchived }.groupBy { it.id }
+    private val versionsById=data.versions.groupBy { it.id }
+    private val cachesByVersion=data.caches.groupBy { it.scorePdfVersionId }
+    private val concertsById=data.concerts.filterNot { it.isArchived }.groupBy { it.id }
+    private val itemsByConcert=data.items.filter { it.isEnabled && !it.isArchived }.groupBy { it.concertId }
+    private fun concertVisibleTo(concert: ConcertEntity, member: MemberEntity): Boolean =
+        concertAudienceAllows(concert, member)
+    private fun summaryPartNames(member: MemberEntity, piece: PieceEntity): List<String> {
+        if(member.role != com.ensemble.scorelibrary.core.model.MemberRole.ADMIN)
+            return (visibleParts(member.id,piece.id) as? DomainResult.Success)?.value.orEmpty().map { it.name }
+        return partsByPiece[piece.id].orEmpty().filterNot { it.isArchived }.mapNotNull { part ->
+            activeDefinitions[part.partDefinitionId]?.firstOrNull()
+                ?.let { part.displayName ?: it.name }
+        }.distinct()
+    }
     fun dashboard(memberId: String?): DomainResult<Dashboard> = result {
         val choices = data.members.filterNot { it.isArchived }.sortedBy { it.displayName }
             .map { MemberChoice(it.id, it.displayName) }
@@ -60,8 +91,9 @@ class ScoreResolver(private val data: LibrarySnapshot) {
                         it.partDefinitionId == definition.id && !it.isArchived }
             }?.name,
             member.role == com.ensemble.scorelibrary.core.model.MemberRole.ADMIN),
-            data.pieces.filterNot { it.isArchived }.sortedBy { it.title }.map { PieceSummary(it.id, it.title, it.composer) },
-            data.concerts.filterNot { it.isArchived }.sortedWith(compareBy<ConcertEntity> { it.performanceAtEpochMillis ?: Long.MAX_VALUE }.thenBy { it.id })
+            data.pieces.filterNot { it.isArchived }.sortedBy { it.title }.map { PieceSummary(it.id, it.title, it.composer, it.categoryName, it.organizerSequence,
+                summaryPartNames(member, it), it.categoryCode) },
+            data.concerts.filter { !it.isArchived && (member.role == com.ensemble.scorelibrary.core.model.MemberRole.ADMIN || concertVisibleTo(it, member)) }.sortedWith(compareBy<ConcertEntity> { it.performanceAtEpochMillis ?: Long.MAX_VALUE }.thenBy { it.id })
                 .map { ConcertSummary(it.id, it.title) })
     }
 
@@ -78,55 +110,50 @@ class ScoreResolver(private val data: LibrarySnapshot) {
         DomainResult.Success(block())
     } catch (error: Invalid) { DomainResult.Failure(error.error) }
 
-    private fun member(id: String) = data.members.singleOrNull { it.id == id && !it.isArchived }
+    private fun member(id: String) = membersById[id]?.singleOrNull()
         ?: fail(ErrorCode.MEMBER_MISSING, id)
-    private fun piece(id: String) = data.pieces.singleOrNull { it.id == id && !it.isArchived }
+    private fun piece(id: String) = piecesById[id]?.singleOrNull()
         ?: fail(ErrorCode.PIECE_MISSING, id)
 
     private fun allowed(memberId: String, pieceId: String): List<PiecePartEntity> {
         member(memberId)
         piece(pieceId)
-        val global = data.permissions.filter { it.memberId == memberId && !it.isArchived }
-            .map { it.partDefinitionId }.toSet()
-        val extra = data.extraPermissions.filter { it.memberId == memberId && !it.isArchived }
-            .map { it.piecePartId }.toSet()
-        val definitions = data.definitions.filterNot { it.isArchived }.map { it.id }.toSet()
-        return data.parts.filter {
-            it.pieceId == pieceId && !it.isArchived && it.partDefinitionId in definitions &&
+        val global = globalGrants[memberId].orEmpty()
+        val extra = extraGrants[memberId].orEmpty()
+        return partsByPiece[pieceId].orEmpty().filter {
+            !it.isArchived && it.partDefinitionId in activeDefinitions &&
                 (it.partDefinitionId in global || it.id in extra)
         }
     }
 
     private fun visible(part: PiecePartEntity): VisiblePart {
-        val definition = data.definitions.single { it.id == part.partDefinitionId && !it.isArchived }
+        val definition = activeDefinitions[part.partDefinitionId].orEmpty().single()
         return VisiblePart(part.id, definition.id, part.displayName ?: definition.name)
     }
 
     fun visibleParts(memberId: String, pieceId: String): DomainResult<List<VisiblePart>> = result {
         allowed(memberId, pieceId).sortedWith(compareBy<PiecePartEntity> {
-            data.definitions.single { d -> d.id == it.partDefinitionId }.sortOrder
+            definitionsById[it.partDefinitionId].orEmpty().single().sortOrder
         }.thenBy { it.id }).map(::visible)
     }
 
     private fun selected(memberId: String, pieceId: String): PiecePartEntity {
         val member = member(memberId)
         val allowed = allowed(memberId, pieceId)
-        val overrides = data.assignments.filter { assignment ->
-            assignment.memberId == memberId && !assignment.isArchived &&
-                data.parts.any { it.id == assignment.piecePartId && it.pieceId == pieceId }
+        val overrides = assignmentsByMember[memberId].orEmpty().filter { assignment ->
+                partsById[assignment.piecePartId].orEmpty().any { it.pieceId == pieceId }
         }
         // A dangling assignment must never be silently replaced with the default.
-        if (data.assignments.any { it.memberId == memberId && !it.isArchived &&
-                data.parts.none { part -> part.id == it.piecePartId } }) {
+        if (danglingAssignments[memberId]==true) {
             fail(ErrorCode.PIECE_PART_MISSING, pieceId)
         }
         if (overrides.size > 1) fail(ErrorCode.AMBIGUOUS_ASSIGNMENT, pieceId)
         val selected = if (overrides.isNotEmpty()) {
-            data.parts.singleOrNull { it.id == overrides.single().piecePartId && !it.isArchived }
+            partsById[overrides.single().piecePartId].orEmpty().singleOrNull { !it.isArchived }
                 ?: fail(ErrorCode.PIECE_PART_MISSING, pieceId)
         } else {
             val default = member.defaultPartDefinitionId ?: fail(ErrorCode.DEFAULT_PART_MISSING, memberId)
-            data.parts.singleOrNull { it.pieceId == pieceId && it.partDefinitionId == default && !it.isArchived }
+            partsByPiece[pieceId].orEmpty().singleOrNull { it.partDefinitionId == default && !it.isArchived }
                 ?: fail(ErrorCode.PIECE_PART_MISSING, pieceId)
         }
         if (allowed.none { it.id == selected.id }) fail(ErrorCode.UNAUTHORIZED, pieceId)
@@ -134,13 +161,13 @@ class ScoreResolver(private val data: LibrarySnapshot) {
     }
 
     private fun segments(memberId: String, part: PiecePartEntity): List<ResolvedScoreSegment> {
-        val bindings = data.bindings.filter { it.piecePartId == part.id && !it.isArchived }
+        val bindings = bindingsByPart[part.id].orEmpty()
         if (bindings.isEmpty()) fail(ErrorCode.BINDING_MISSING, part.id)
         if (bindings.groupBy { it.movementId }.any { it.value.size > 1 } ||
             (bindings.any { it.movementId == null } && bindings.size > 1)) {
             fail(ErrorCode.AMBIGUOUS_BINDING, part.id)
         }
-        val movements = data.movements.filter { it.pieceId == part.pieceId && !it.isArchived }
+        val movements = movementsByPiece[part.pieceId].orEmpty()
         bindings.filter { it.movementId != null }.forEach { binding ->
             if (movements.none { it.id == binding.movementId }) fail(ErrorCode.MOVEMENT_MISMATCH, binding.id)
         }
@@ -149,16 +176,16 @@ class ScoreResolver(private val data: LibrarySnapshot) {
         return bindings.sortedWith(compareBy<PartScoreBindingEntity> { binding ->
             movements.firstOrNull { it.id == binding.movementId }?.sortOrder ?: -1
         }.thenBy { it.id }).map { binding ->
-            val pdf = data.pdfs.singleOrNull { it.id == binding.scorePdfId && !it.isArchived }
+            val pdf = pdfsById[binding.scorePdfId]?.singleOrNull()
                 ?: fail(ErrorCode.PDF_MISSING, binding.id)
-            val version = data.versions.singleOrNull { it.id == pdf.activeVersionId }
+            val version = versionsById[pdf.activeVersionId]?.singleOrNull()
                 ?: fail(ErrorCode.ACTIVE_VERSION_MISSING, pdf.id)
             if (version.scorePdfId != pdf.id) fail(ErrorCode.VERSION_MISMATCH, pdf.id)
             // Page ranges are inclusive and one-based; renderers convert at their boundary.
             if (binding.startPage < 1 || binding.endPage < binding.startPage ||
                 binding.endPage > version.pageCount) fail(ErrorCode.INVALID_PAGE_RANGE, binding.id)
-            val personal = data.caches.filter { it.scorePdfVersionId == version.id && it.memberId == memberId }
-            val shared = data.caches.filter { it.scorePdfVersionId == version.id && it.memberId == null }
+            val personal = cachesByVersion[version.id].orEmpty().filter { it.memberId == memberId }
+            val shared = cachesByVersion[version.id].orEmpty().filter { it.memberId == null }
             val cache = personal.ifEmpty { shared }
             if (cache.size > 1) fail(ErrorCode.AMBIGUOUS_CACHE, version.id)
             ResolvedScoreSegment(binding.id, binding.movementId, pdf.id, version.id,
@@ -176,9 +203,10 @@ class ScoreResolver(private val data: LibrarySnapshot) {
 
     fun resolveConcert(memberId: String, concertId: String): DomainResult<ResolvedConcert> = result {
         member(memberId)
-        val concert = data.concerts.singleOrNull { it.id == concertId && !it.isArchived }
+        val concert = concertsById[concertId]?.singleOrNull()
             ?: fail(ErrorCode.CONCERT_MISSING, concertId)
-        val items = data.items.filter { it.concertId == concertId && it.isEnabled && !it.isArchived }
+        if (!concertVisibleTo(concert, member(memberId))) fail(ErrorCode.UNAUTHORIZED, concertId)
+        val items = itemsByConcert[concertId].orEmpty()
             .sortedWith(compareBy<ConcertItemEntity> { it.sortOrder }.thenBy { it.id })
             .map { item ->
                 val piece = piece(item.pieceId)

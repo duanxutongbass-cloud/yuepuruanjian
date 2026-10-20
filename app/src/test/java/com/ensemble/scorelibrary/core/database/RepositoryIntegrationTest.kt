@@ -74,7 +74,7 @@ class RepositoryIntegrationTest {
             sqlite.version = 1
         }
         val db = Room.databaseBuilder(context, ScoreLibraryDatabase::class.java, name)
-            .addMigrations(ScoreLibraryDatabase.MIGRATION_1_2, ScoreLibraryDatabase.MIGRATION_2_3).build()
+            .addMigrations(ScoreLibraryDatabase.MIGRATION_1_2, ScoreLibraryDatabase.MIGRATION_2_3, ScoreLibraryDatabase.MIGRATION_3_4, ScoreLibraryDatabase.MIGRATION_4_5, ScoreLibraryDatabase.MIGRATION_5_6).build()
         try {
             runBlocking {
                 val snapshot = db.resolutionDao().snapshot()

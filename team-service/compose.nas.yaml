@@ -1,0 +1,35 @@
+# NAS staging configuration; verify this subnet is unused before deploying.
+# Only the NAS loopback port is published. TLS ingress is configured separately.
+services:
+  team-api:
+    build: .
+    image: yuepu-team-api:0.10.15
+    command: ["serve", "--host", "0.0.0.0", "--port", "8787", "--trusted-proxy", "172.30.87.1"]
+    ports:
+      - "127.0.0.1:8787:8787"
+    volumes:
+      - team-data:/data
+      - ./releases:/releases:ro
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 512m
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import http.client; c=http.client.HTTPConnection('127.0.0.1',8787,timeout=3); c.request('GET','/v1/me'); assert c.getresponse().status==403"]
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+      retries: 3
+volumes:
+  team-data:
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.30.87.0/24
+          gateway: 172.30.87.1

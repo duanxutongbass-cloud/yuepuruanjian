@@ -1,0 +1,18 @@
+services:
+  team-api:
+    build: .
+    command: ["serve", "--host", "0.0.0.0", "--port", "8787", "--trusted-proxy", "${TEAM_TRUSTED_PROXY:?Set the exact reverse-proxy source IP}"]
+    ports:
+      - "127.0.0.1:8787:8787"
+    volumes:
+      - team-data:/data
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+volumes:
+  team-data:

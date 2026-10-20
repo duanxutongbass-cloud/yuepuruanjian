@@ -1,0 +1,5 @@
+这些读取器是已交付0.1.4源码中的原始文件，未修改，用于实测旧版格式门禁；只被测试按文件导入，不参与程序运行。
+封存软件ZIP SHA256：1cc98fcf57d9a834e58a51324b749b197627e606a3b4123151bdf944a809f45c。
+portable_database_014.py：原storage/portable_database.py。
+expanded_database_014.py：原storage/expanded_database.py。
+main_014.py：原main.py。

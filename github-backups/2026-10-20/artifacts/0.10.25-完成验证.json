@@ -1,0 +1,55 @@
+{
+  "completedAt": "2026-10-19T08:08:20.920771+00:00",
+  "android": "0.10.25 (37)",
+  "diagnosis": {
+    "observedVersion": "0.10.24 (36)",
+    "actualBlockingStack": "TeamCatalog.parse:44 -> TeamOfflineStore.retire:71 -> TeamDeletionCoordinator.cleanLocal:124 -> TeamCleanupFailure",
+    "device": "WGR-W09",
+    "authorization": "explicit current user permission; human clicked retry",
+    "dataRead": "exception types and code locations only",
+    "diagnosticEnded": true,
+    "temporaryForwardRemoved": true
+  },
+  "fix": "Decode owned legacy checkpoint in its original protocol for retirement cleanup; preserve checkpoint protocol, strict current identity and retirement barriers; no new grant from old cache",
+  "reproduction": {
+    "tests": 2,
+    "failuresBeforeFix": 2
+  },
+  "related": {
+    "errors": 0,
+    "skipped": 0,
+    "classes": 6,
+    "tests": 52,
+    "failures": 0
+  },
+  "full": {
+    "tests": 728,
+    "classes": 119,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "lintErrors": 0,
+    "lintWarnings": 20
+  },
+  "room": 6,
+  "schemasUnchanged": true,
+  "service": "0.10.22",
+  "database": 4,
+  "naming": 2,
+  "sourceInputs": 312,
+  "sourceArchiveFiles": 733,
+  "nasPublished": true,
+  "previousApp36Retained": true,
+  "publicProof": "nas-0.10.25-public-verification.json",
+  "deploymentProof": "nas-0.10.25-deployment-verification.json",
+  "upload": "First upload failed at 32 percent and connection errors; retained task evidence; UI retry and full checks succeeded",
+  "publicationApproval": "Human explicitly answered 批准发布 0.10.25 after initial automatic approval rejection; published only after that answer",
+  "physicalAcceptance": "user has not installed yet",
+  "nativePersonalPdfAcceptance": "not run, retained 0.10.24 AndroidTest only",
+  "unchangedLimits": [
+    "Personal files are device-only and excluded from existing library/annotation backups",
+    "Native personal PDF/tablet acceptance pending user"
+  ],
+  "automation2": "paused",
+  "commercialPhase": "not started"
+}

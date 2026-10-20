@@ -1,0 +1,141 @@
+{
+  "version": "0.10.29",
+  "versionCode": 41,
+  "developed": [
+    16,
+    17,
+    18,
+    19
+  ],
+  "published": true,
+  "formalRelease": true,
+  "originalSigningCertificateSha256": "9f360690612dabcdc4c13c8fb0b89af99402a64782f8fdcba79cddfb2be745fa",
+  "appTests": {
+    "tests": 779,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "appClasses": 132,
+  "lint": {
+    "debug": {
+      "errors": 0,
+      "warnings": 22
+    },
+    "release": {
+      "errors": 0,
+      "warnings": 22
+    }
+  },
+  "serviceTests": {
+    "tests": 272,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "inputsUnchanged": true,
+    "results": [
+      [
+        0,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ]
+  },
+  "desktop": {
+    "version": "0.1.7",
+    "tests": 1195,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "desktopInputs": 149,
+    "sharedInputs": 31,
+    "sourceHashesVerified": true,
+    "isolatedExeStartupCases": 2,
+    "realPdfsReadOnly": true,
+    "acceptedPdfs": 1002,
+    "skippedPdfs": 25,
+    "compatibilityCopies": 256,
+    "originalsUnchanged": true,
+    "realNasUploadTested": false,
+    "userAcceptance": "待用户本人验收",
+    "zipBytes": 87853198,
+    "zipSha256": "2e4a3e37aa67cbc21b5b22eb193046729c2a85f70c74269568fbf7eddd5851d4",
+    "zipFiles": 535
+  },
+  "desktopFrozenAudit": {
+    "desktopInputs": 149,
+    "sharedInputs": 31,
+    "appInputs": 335,
+    "serviceInputs": 64,
+    "allInputHashesUnchanged": true,
+    "exeSha256": "9d24c0778e4f83b452644445296264482b530465d1ddccbd549cb8e0ec5afa84",
+    "frozenModulesMatchSource": [
+      "services.team_publish",
+      "services.pdf_upload_compat",
+      "services.archive_service",
+      "services.expanded_archive_service",
+      "ui.team_publish_dialog",
+      "ui.main_window"
+    ],
+    "pypdfIncluded": true
+  },
+  "sourceFiles": 559,
+  "nas": {
+    "image": "yuepu-team-api:0.10.29",
+    "container": "yuepu-team-api-0129-team-api-1",
+    "healthy": true,
+    "root": "/data/multiteam-0129",
+    "oldBusinessStopped": true,
+    "oldRootRetired": true,
+    "previous40ApkRetained": true,
+    "independentSingleRestore": true,
+    "independentMultiRestore": true,
+    "preservedPdfs": 5,
+    "accountsAndBusinessPreserved": true,
+    "backupDirectory": "/data/multiteam-0129",
+    "deploymentProof": "/data/multiteam-0129/deployment-0129.json"
+  },
+  "public": {
+    "verifiedAt": "2026-10-20T02:26:07.762136+00:00",
+    "origin": "https://124355.xyz:18443",
+    "normalTlsValidation": true,
+    "redirectsAllowed": false,
+    "release": {
+      "packageName": "com.ensemble.scorelibrary",
+      "versionCode": 41,
+      "versionName": "0.10.29",
+      "sha256": "280d2e865fd3dfb1b540387819166e555b4b87a0d9452541a84ba3c1740a9eb0",
+      "size": 13992557,
+      "notes": "新增我的团队：同账号创建、乐团码申请、分别审核与按团队名称切换；各团队曲谱、角色、授权、批注、回收站和编号隔离，个人文件保持本人账号。补齐整曲多选移入回收站／恢复、合并预览与确认；切换清理阅读、演出及版本对比。正式构建沿用原签名覆盖升级，无需卸载。保留压感侧键和编号释放；实际设备由用户更新后本人验收。",
+      "available": true
+    },
+    "fullDownload": {
+      "size": 13992557,
+      "sha256": "280d2e865fd3dfb1b540387819166e555b4b87a0d9452541a84ba3c1740a9eb0"
+    },
+    "contentLengthAndETagMatched": true,
+    "privateEndpoints": {
+      "/v1/catalog": 401,
+      "/v2/catalog": 401,
+      "/v1/admin/capabilities": 401,
+      "/v2/admin/capabilities": 401,
+      "/v1/me/teams": 401,
+      "/v1/me/team-operations/f94f28ce-82a4-4c79-8ed6-113c31320bea": 401
+    },
+    "physicalAcceptance": "待用户本人验收"
+  },
+  "physicalAcceptance": "待用户本人更新后验收",
+  "userActualDesktopUploadsPerformed": false,
+  "realTeamCreateOrJoinPerformed": false,
+  "realScoreDeleteOrNumberReleasePerformed": false,
+  "limits": [
+    "创建或切换团队需要联网",
+    "本人创建最多20团队、全站1000团队；写入与完整备份全局串行，未验证高并发容量",
+    "Windows现有1027份PDF记录中25份仍明确跳过：15结构、8加密、2活动/嵌入内容",
+    "真实平板、PDF渲染、笔压/侧键/延迟、实际团队流程由用户验收",
+    "不含收费、应用商店或新商用签名"
+  ]
+}

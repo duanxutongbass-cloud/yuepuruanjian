@@ -1,0 +1,54 @@
+{
+  "0.10.24-APK渠道发布工具.zip": {
+    "bytes": 5743,
+    "sha256": "492d4c95df979a2c0acbd656d988a25a7faa498e8f982c797989a683f238b014"
+  },
+  "0.10.24-NAS上线证据.zip": {
+    "bytes": 70512,
+    "sha256": "9ba7b8001a9a1b72a0f75db162b59e7b6516fba8024ab2fc734dfbb83adc4bf7"
+  },
+  "0.10.24-verification.json": {
+    "bytes": 47007,
+    "sha256": "a0e765fcbef11314711704c1e9ecdfef29311350f715ecf8d120a48872cb03c6"
+  },
+  "0.10.24-交付与验收说明.txt": {
+    "bytes": 4392,
+    "sha256": "b9d02213cc1079761d532ddfe111dc97be94a9bb89596a700a16128968ccaec1"
+  },
+  "0.10.24-完成验证.json": {
+    "bytes": 1529,
+    "sha256": "d394728d4f87d9db99e01adaec873428e130efac8db1f283bb7ca03767c1d493"
+  },
+  "0.10.24-完整源码.zip": {
+    "bytes": 4217614,
+    "sha256": "12eb9ae1d254e3de9a37245598d6a7090c98fbe0ebf1123c4e0f7499c3f3a740"
+  },
+  "0.10.24-测试证据.zip": {
+    "bytes": 163054,
+    "sha256": "cc9e3033a2395a2f259de5839c3fa08dbb1396562a7f372f1409dfe4369f8f14"
+  },
+  "0.10.24-源码校验.json": {
+    "bytes": 126207,
+    "sha256": "1f17d3b4b802ac558d879ab2f5bb327d37c8912b2adcb9ee782fd1e36da1d62d"
+  },
+  "nas-0.10.24-deployment-verification.json": {
+    "bytes": 1100,
+    "sha256": "fea093e9bb204af5ec50278350bc820b2822d54dd81b207294c8fbd96d3b30a6"
+  },
+  "nas-0.10.24-public-verification.json": {
+    "bytes": 1633,
+    "sha256": "c32ee14e214f7136075f2805b6c2f0526988251e9a2c7bd552b06704887e85ed"
+  },
+  "nas-0.10.24-published.png": {
+    "bytes": 77002,
+    "sha256": "813e8821b5d41a03684a561474d80f052e92bb9660ffebd5bcedd10f314b07a6"
+  },
+  "yuepuruanjian-0.10.24-androidTest.apk": {
+    "bytes": 1363687,
+    "sha256": "c08b5eb79688fc18deec7634d1938c8be1dfcea23442d3c8454ca5d774a2c044"
+  },
+  "yuepuruanjian-0.10.24-personal.apk": {
+    "bytes": 21287358,
+    "sha256": "8c187646809cad97292be34f25a55ad92d46f985f9527418e1e00a7a9f3daf9a"
+  }
+}

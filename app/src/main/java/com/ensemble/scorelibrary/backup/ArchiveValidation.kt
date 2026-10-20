@@ -1,5 +1,7 @@
 package com.ensemble.scorelibrary.backup
 
+import com.ensemble.scorelibrary.domain.ScoreNumber
+
 import com.ensemble.scorelibrary.annotation.AnnotationRepository
 import com.ensemble.scorelibrary.annotation.InkCodec
 import com.ensemble.scorelibrary.core.database.ScoreLibraryDatabase
@@ -8,6 +10,15 @@ import org.json.JSONObject
 
 internal suspend fun validateLibrary(db: ScoreLibraryDatabase) {
     val data = db.resolutionDao().snapshot()
+    for (concert in data.concerts) {
+        require(com.ensemble.scorelibrary.domain.audienceIds(concert.audienceMembers).all { id -> data.members.any { it.id == id } }) { "节目单可见成员无效" }
+        require(com.ensemble.scorelibrary.domain.audienceIds(concert.audienceParts).all { id -> data.definitions.any { it.id == id } }) { "节目单可见声部无效" }
+    }
+    for (piece in data.pieces) {
+        require((piece.categoryCode == null && piece.categoryName == null) ||
+            (piece.categoryCode?.matches(Regex("[0-9]{2}")) == true && !piece.categoryName.isNullOrBlank() && piece.categoryName.length <= 100)) { "曲目分类无效" }
+        require(piece.organizerSequence == null || runCatching { ScoreNumber.sequence(piece.organizerSequence) }.isSuccess) { "整理器曲目编号无效" }
+    }
     require(data.members.none { it.id == "shared" }) { "成员身份不能占用共享批注保留标识" }
     require(data.members.any { !it.isArchived && it.role == MemberRole.ADMIN }) { "母库没有有效管理员" }
     for (pdf in data.pdfs) if (pdf.activeVersionId != null)

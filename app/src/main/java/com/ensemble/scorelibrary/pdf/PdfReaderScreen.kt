@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.NavigateBefore
 import androidx.compose.material.icons.automirrored.outlined.NavigateNext
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Fullscreen
 import androidx.compose.material.icons.outlined.FullscreenExit
@@ -31,12 +32,14 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ensemble.scorelibrary.domain.ResolvedConcertItem
 import com.ensemble.scorelibrary.domain.ResolvedConcert
 import com.ensemble.scorelibrary.core.model.PedalAction
 
 val LocalPdfReader = staticCompositionLocalOf<PdfReaderViewModel?> { null }
+val LocalReaderBack = staticCompositionLocalOf<() -> Unit> { {} }
 
 @Composable
 fun PdfReaderScreen(member: String, score: ResolvedConcertItem, model: PdfReaderViewModel, offline: Boolean = false,
@@ -61,6 +64,13 @@ fun PdfReaderScreen(member: String, score: ResolvedConcertItem, model: PdfReader
     val activeScore = if (anchor == member to score) binding?.takeIf { it.first == member }?.second ?: score else score
     val state = if (anchor == member to score) rawState else PdfState.Loading
     val annotations = com.ensemble.scorelibrary.annotation.LocalAnnotations.current
+    val teamMode = com.ensemble.scorelibrary.sync.LocalTeamLibraryMode.current
+    val teamAccount = com.ensemble.scorelibrary.account.LocalTeamAccount.current
+    val teamIdentity = teamAccount?.state?.collectAsStateWithLifecycle()?.value
+    // NAS administrators still have a MEMBER projection for per-PDF authorization. That
+    // mother-library capability is independent of their authenticated shared-ink role.
+    val inkAdmin = if (teamMode) teamIdentity?.principal?.role == "admin" else canManage
+    val back = LocalReaderBack.current
     val pedal = com.ensemble.scorelibrary.core.pedal.LocalPedal.current
     val pedalState = pedal?.state?.collectAsStateWithLifecycle()?.value
     LaunchedEffect(pedalState?.message) {
@@ -71,8 +81,8 @@ fun PdfReaderScreen(member: String, score: ResolvedConcertItem, model: PdfReader
         com.ensemble.scorelibrary.annotation.AnnotationScope(member, activeScore.pieceId, activeScore.part.id,
             page.reference.segment.versionId, page.reference.pageIndex, activeScore.itemId.takeIf { it.isNotEmpty() })
     }
-    LaunchedEffect(annotations, pageScope) {
-        if (annotations != null && pageScope != null) {
+    LaunchedEffect(annotations, pageScope, playMode) {
+        if ((!playMode || concert == null) && annotations != null && pageScope != null) {
             val old = annotations.state.value.scope
             // A changed authority/projection is not an ordinary page turn: quarantine its draft.
             if (old != null && (old.member != pageScope.member || old.piece != pageScope.piece ||
@@ -82,22 +92,30 @@ fun PdfReaderScreen(member: String, score: ResolvedConcertItem, model: PdfReader
         }
     }
     LaunchedEffect(playMode, annotations, pageScope) {
-        if (playMode && annotations != null && pageScope != null) {
-            annotations.bind(pageScope)
-            annotations.tool(com.ensemble.scorelibrary.annotation.AnnotationTool.READ)
-            annotations.refreshPerformance()
+        if (playMode && annotations != null) {
+            if (concert != null) annotations.suspendSession()
+            else if (pageScope != null) {
+                annotations.bind(pageScope)
+                annotations.tool(com.ensemble.scorelibrary.annotation.AnnotationTool.READ)
+                annotations.refreshPerformance()
+            }
         }
     }
     val annotationRaw = annotations?.state?.collectAsStateWithLifecycle()?.value
-    val scopedAnnotation = annotationRaw?.takeIf { value -> value.scope?.let { scope ->
+    val frozenInk = pageScope?.takeIf { playMode && concert != null }?.let(model::performanceInk)
+    val scopedAnnotation = if (playMode && concert != null) frozenInk?.let { data ->
+        com.ensemble.scorelibrary.annotation.AnnotationState(scope = pageScope, data = data, editLocked = true)
+    } else annotationRaw?.takeIf { value -> value.scope?.let { scope ->
         scope.member == member && scope.piece == activeScore.pieceId && scope.part == activeScore.part.id &&
             scope.item == activeScore.itemId.takeIf { it.isNotEmpty() } && activeScore.segments.any { it.versionId == scope.version }
     } == true }?.let { current ->
-        if (canManage == false && current.data?.admin == true) current.copy(
+        if (inkAdmin == false && current.data?.admin == true) current.copy(
             data = current.data.copy(admin = false, draft = emptyList()), draftMode = false)
         else current
     }
     val annotationState = scopedAnnotation?.takeIf { it.scope == pageScope }
+    val editing = annotationRaw?.tool?.let { it != com.ensemble.scorelibrary.annotation.AnnotationTool.READ } == true
+    LaunchedEffect(editing, fullscreen) { if (editing && !fullscreen) model.fitForAnnotation() }
     LaunchedEffect(fullscreen, state is PdfState.Failure, scopedAnnotation?.error, performance) {
         if (fullscreen && (state is PdfState.Failure || scopedAnnotation?.error != null || performance is PerformanceState.Failure))
             model.setFullscreen(false)
@@ -105,15 +123,27 @@ fun PdfReaderScreen(member: String, score: ResolvedConcertItem, model: PdfReader
     LaunchedEffect(playMode, annotationState?.error) {
         if (playMode && annotationState?.error != null) model.invalidatePerformance(annotationState.error)
     }
-    LaunchedEffect(canManage, pageScope, annotationRaw?.data?.admin) {
-        if (annotations != null && annotationRaw != null && annotationRaw.scope == pageScope && canManage != null &&
-            annotationRaw.data?.admin != null && annotationRaw.data.admin != canManage) annotations.refreshAuthorization()
+    // Recheck on an authority/scope transition, never on the result of the recheck itself:
+    // null -> admin -> null could otherwise repeatedly suspend/load ink and flash controls.
+    LaunchedEffect(inkAdmin, pageScope, playMode) {
+        if ((!playMode || concert == null) && annotations != null && annotationRaw != null && annotationRaw.scope == pageScope && inkAdmin != null &&
+            annotationRaw.data?.admin != null && annotationRaw.data.admin != inkAdmin) annotations.refreshAuthorization()
+    }
+    LaunchedEffect(playMode, frozenInk, pageScope) {
+        if (playMode && concert != null && pageScope != null && frozenInk == null)
+            model.invalidatePerformance("本场已准备页面失效，请退出后重新核验")
     }
     var viewportSize by remember { mutableStateOf(androidx.compose.ui.unit.IntSize.Zero) }
+    var symbolsOpen by remember(member, score.itemId, score.pieceId, score.part.id) { mutableStateOf(false) }
+    LaunchedEffect(fullscreen, playMode) { if (fullscreen || playMode) symbolsOpen = false }
+    BackHandler(symbolsOpen && !fullscreen) { symbolsOpen = false }
     Column(Modifier.fillMaxSize()) {
         if (!fullscreen) {
+        Surface(Modifier.fillMaxWidth().testTag("reader-controls"), tonalElevation = 4.dp) {
+        Column {
         Row(Modifier.fillMaxWidth().padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween) {
+            IconButton(onClick = back, modifier = Modifier.testTag("back")) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, "返回") }
             val ready = state as? PdfState.Ready
             IconButton(onClick = model::previousPage, enabled = !preparing && scopedAnnotation?.transitionBlocked != true && ready != null && (ready.index > 0 || (model.itemNumber()?.first ?: 1) > 1),
                 modifier = Modifier.testTag("previous-page")) { Icon(Icons.AutoMirrored.Outlined.NavigateBefore, "上一页") }
@@ -160,6 +190,8 @@ fun PdfReaderScreen(member: String, score: ResolvedConcertItem, model: PdfReader
             }
         }
         Text(if (offline) "离线阅读" else "本地阅读", Modifier.padding(horizontal = 16.dp), style = MaterialTheme.typography.labelSmall)
+        if (concert != null) Text("演出中使用本场已锁定版本；退出或切到后台后需重新准备。",
+            Modifier.padding(horizontal = 16.dp), style = MaterialTheme.typography.labelSmall)
         when (val readiness = performance) {
             is PerformanceState.Checking -> Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp).testTag("performance-checking"),
                 verticalAlignment = Alignment.CenterVertically) {
@@ -172,10 +204,14 @@ fun PdfReaderScreen(member: String, score: ResolvedConcertItem, model: PdfReader
             else -> Unit
         }
         if (annotations != null && !playMode && !preparing) com.ensemble.scorelibrary.annotation.AnnotationToolbar(
-            annotationState ?: scopedAnnotation?.copy(busy = true)
-                ?: com.ensemble.scorelibrary.annotation.AnnotationState(busy = true), annotations)
+            (annotationState ?: scopedAnnotation?.copy(busy = true)
+                ?: com.ensemble.scorelibrary.annotation.AnnotationState(busy = true)).let {
+                if ((state as? PdfState.Ready)?.rendering == true) it.copy(busy = true) else it
+            }, annotations, onSymbols = { symbolsOpen = true })
         }
-        Box(Modifier.weight(1f).fillMaxWidth().background(com.ensemble.scorelibrary.ui.ScorePalette.Workspace).onSizeChanged { viewportSize = it; model.viewport(it.width, it.height) }, contentAlignment = Alignment.Center) {
+        }
+        }
+        Box(Modifier.weight(1f).fillMaxWidth().testTag("reader-viewport").background(com.ensemble.scorelibrary.ui.ScorePalette.Workspace).onSizeChanged { viewportSize = it; model.viewport(it.width, it.height) }, contentAlignment = Alignment.Center) {
             when (val page = state) {
                 PdfState.Loading -> CircularProgressIndicator(Modifier.testTag("pdf-loading"))
                 is PdfState.Failure -> Column(horizontalAlignment = Alignment.CenterHorizontally,
@@ -190,18 +226,15 @@ fun PdfReaderScreen(member: String, score: ResolvedConcertItem, model: PdfReader
                         CircularProgressIndicator()
                         return@Box
                     }
-                    if (page.frame.transform.viewportWidth != viewportSize.width || page.frame.transform.viewportHeight != viewportSize.height) {
-                        CircularProgressIndicator()
-                        return@Box
-                    }
+                    val fitted = page.frame.transform.viewportWidth == viewportSize.width && page.frame.transform.viewportHeight == viewportSize.height
                     Image(page.frame.bitmap.asImageBitmap(), "${activeScore.title}，PDF 第 ${page.sourcePage} 页",
                         modifier = Modifier.fillMaxSize().testTag("pdf-page").pointerInput(page.mode, page.reference,
                             page.frame.transform.viewportWidth, page.frame.transform.viewportHeight, annotationState?.tool, playMode,
-                            fullscreen, annotationState?.editLocked, annotationState?.transitionBlocked) {
+                            fullscreen, page.rendering, fitted, annotationState?.editLocked, annotationState?.transitionBlocked) {
                             val inkReady = annotations == null || annotationState?.let { !it.transitionBlocked && it.data != null && it.error == null } == true
                             val reading = fullscreen || playMode || annotationState == null || annotationState.editLocked ||
                                 annotationState.tool == com.ensemble.scorelibrary.annotation.AnnotationTool.READ
-                            if (inkReady && !preparing && reading) {
+                            if (inkReady && !preparing && !page.rendering && fitted && reading) {
                                 awaitEachGesture {
                                     awaitFirstDown(requireUnconsumed = false)
                                     var dx = 0f
@@ -225,18 +258,25 @@ fun PdfReaderScreen(member: String, score: ResolvedConcertItem, model: PdfReader
                                         if (moved || multi) event.changes.forEach { it.consume() }
                                     } while (event.changes.any { it.pressed })
                                     if (!multi && !wasZoomed && moved) readerSwipe(dx, dy, 64.dp.toPx())?.let(model::action)
-                                    if (!moved && !multi && fullscreen) model.setFullscreen(false)
+                                    if (!moved && !multi) model.setFullscreen(!fullscreen)
                                 }
                             }
-                        }, contentScale = androidx.compose.ui.layout.ContentScale.FillBounds)
-                    if (annotations != null && annotationState?.data != null) {
+                        }, contentScale = if (fitted) androidx.compose.ui.layout.ContentScale.FillBounds else androidx.compose.ui.layout.ContentScale.Fit)
+                    if (fitted && annotations != null && annotationState?.data != null) {
                         com.ensemble.scorelibrary.annotation.AnnotationOverlay(page.frame.transform,
-                            if (playMode) annotationState.copy(tool = com.ensemble.scorelibrary.annotation.AnnotationTool.READ,
+                            if (page.rendering) annotationState.copy(tool = com.ensemble.scorelibrary.annotation.AnnotationTool.READ, editLocked = true, selection = emptySet())
+                            else if (playMode) annotationState.copy(tool = com.ensemble.scorelibrary.annotation.AnnotationTool.READ,
                                 draftMode = false, showShared = true, showPersonal = true, selection = emptySet())
                             else if (fullscreen) annotationState.copy(tool = com.ensemble.scorelibrary.annotation.AnnotationTool.READ, selection = emptySet())
                             else annotationState, annotations)
                     }
                 }
+            }
+            if (symbolsOpen && !fullscreen && !playMode && annotations != null) {
+                com.ensemble.scorelibrary.annotation.MusicSymbolPalette(
+                    annotationState ?: com.ensemble.scorelibrary.annotation.AnnotationState(busy = true),
+                    choose = { annotations.symbol(it); symbolsOpen = false }, close = { symbolsOpen = false },
+                    modifier = Modifier.align(Alignment.TopEnd).zIndex(2f))
             }
         }
     }
@@ -248,4 +288,5 @@ fun readerErrorText(error: ReaderError) = when (error) {
     ReaderError.INVALID_PAGE_RANGE -> "曲谱页码范围无效"
     ReaderError.LOAD_FAILED -> "曲谱加载失败"
     ReaderError.PROGRAM_CHANGED -> "节目单或曲谱已更新，请重新打开并确认"
+    ReaderError.RENDER_TIMEOUT -> "本机页面渲染等待过久，请返回或重试；已接收的曲谱无需重复下载。"
 }

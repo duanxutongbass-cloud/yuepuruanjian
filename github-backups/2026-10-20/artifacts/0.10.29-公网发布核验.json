@@ -1,0 +1,29 @@
+{
+  "verifiedAt": "2026-10-20T02:26:07.762136+00:00",
+  "origin": "https://124355.xyz:18443",
+  "normalTlsValidation": true,
+  "redirectsAllowed": false,
+  "release": {
+    "packageName": "com.ensemble.scorelibrary",
+    "versionCode": 41,
+    "versionName": "0.10.29",
+    "sha256": "280d2e865fd3dfb1b540387819166e555b4b87a0d9452541a84ba3c1740a9eb0",
+    "size": 13992557,
+    "notes": "新增我的团队：同账号创建、乐团码申请、分别审核与按团队名称切换；各团队曲谱、角色、授权、批注、回收站和编号隔离，个人文件保持本人账号。补齐整曲多选移入回收站／恢复、合并预览与确认；切换清理阅读、演出及版本对比。正式构建沿用原签名覆盖升级，无需卸载。保留压感侧键和编号释放；实际设备由用户更新后本人验收。",
+    "available": true
+  },
+  "fullDownload": {
+    "size": 13992557,
+    "sha256": "280d2e865fd3dfb1b540387819166e555b4b87a0d9452541a84ba3c1740a9eb0"
+  },
+  "contentLengthAndETagMatched": true,
+  "privateEndpoints": {
+    "/v1/catalog": 401,
+    "/v2/catalog": 401,
+    "/v1/admin/capabilities": 401,
+    "/v2/admin/capabilities": 401,
+    "/v1/me/teams": 401,
+    "/v1/me/team-operations/f94f28ce-82a4-4c79-8ed6-113c31320bea": 401
+  },
+  "physicalAcceptance": "待用户本人验收"
+}

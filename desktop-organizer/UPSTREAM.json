@@ -1,0 +1,6 @@
+{
+  "repository": "https://github.com/duanxutongbass-cloud/yuepuruanjianqianzhi",
+  "commit": "ad4d8d0da6a1d4e7d8339857b418762bef80dca5",
+  "role": "Windows companion for the Android score library",
+  "source_changes": "Optional companion data-directory environment variable; read-only Android naming-dictionary export in Settings and CLI. Core organizer behavior retained."
+}

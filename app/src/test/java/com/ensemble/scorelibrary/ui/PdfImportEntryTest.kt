@@ -100,4 +100,19 @@ class PdfImportEntryTest {
         compose.onNodeWithTag("import-select-pdf").assertDoesNotExist()
         compose.onNodeWithTag("import-confirm").assertDoesNotExist()
     }
+    @Test fun numberedPdfSuggestsInstrumentCategoryAndNumberWithoutChangingManualFields() {
+        resultUri = Uri.parse("content://import-test/0201007天空之城.pdf")
+        show()
+        compose.onNodeWithTag("import-select-pdf").performScrollTo().performClick()
+        compose.onNodeWithText("天空之城").assertExists()
+        compose.onNodeWithText("第二小提琴").assertExists()
+        compose.onNodeWithText("久石让").assertExists()
+        compose.onNodeWithText("007").assertExists()
+        compose.onNodeWithTag("import-confirm").performScrollTo().assertIsEnabled()
+        compose.onNodeWithText("声部名称").performScrollTo().performTextReplacement("Manual instrument")
+        resultUri = Uri.parse("content://import-test/0402008其他曲目.pdf")
+        compose.onNodeWithTag("import-select-pdf").performScrollTo().performClick()
+        compose.onNodeWithText("Manual instrument").assertExists()
+        compose.onNodeWithText("电影音乐").assertExists()
+    }
 }

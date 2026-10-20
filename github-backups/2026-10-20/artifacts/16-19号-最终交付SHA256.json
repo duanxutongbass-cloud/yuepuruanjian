@@ -1,0 +1,54 @@
+{
+  "16-19号-完成与发布说明.txt": {
+    "bytes": 3087,
+    "sha256": "c49e847bc1b0e4bb2b974f4397c263f4e73696012a0358de0290be90d2e436e5"
+  },
+  "16-19号-完成与发布核验.json": {
+    "bytes": 4533,
+    "sha256": "3f3e358cad1c8d74717a51c54bd8b08d89ca7169314c8f29a69babc6ba217545"
+  },
+  "16-19号-三端统一源码.zip": {
+    "bytes": 1539609,
+    "sha256": "b47734e69414b2fe91b04e4aa88f03d9b8ca21d45176053120200c67ca532c97"
+  },
+  "16-19号-统一源码SHA256.json": {
+    "bytes": 99823,
+    "sha256": "c6405244142d4140f3919c421e8e8af6bb3c61c127e4b15119de218c639bd4b1"
+  },
+  "16-19号-最终验证证据.zip": {
+    "bytes": 386123,
+    "sha256": "9b5f7188743c073ddc55d66bb860093066a1231d57e7a6cd57ea4c3363bb02bd"
+  },
+  "0.10.29-实际部署工具留档.zip": {
+    "bytes": 13464014,
+    "sha256": "81b6629002cb1f7cba8706ceec33e7fc7f3a7532772ce95328ecda7ff746c17c"
+  },
+  "0.10.29-公网发布核验.json": {
+    "bytes": 1358,
+    "sha256": "85efe9736af43354d43a05e2672dafca91420430221a2ab9e577d86a83f11646"
+  },
+  "yuepuruanjian-0.10.29-release.apk": {
+    "bytes": 13992557,
+    "sha256": "280d2e865fd3dfb1b540387819166e555b4b87a0d9452541a84ba3c1740a9eb0"
+  },
+  "ScoreOrganizer-0.1.7-upload.zip": {
+    "bytes": 87853198,
+    "sha256": "2e4a3e37aa67cbc21b5b22eb193046729c2a85f70c74269568fbf7eddd5851d4"
+  },
+  "电脑整理器0.1.7-完整验证.json": {
+    "bytes": 555,
+    "sha256": "f6a60b66748f67bb9a8c314941bf996585c24a0e1fc6f27548be6aae62146aa1"
+  },
+  "电脑整理器0.1.7-使用说明.txt": {
+    "bytes": 1748,
+    "sha256": "e0e8a276158f69506615824bd121b00d8e008392fb59dbe949911ddac0978bef"
+  },
+  "0.10.29-NAS业务健康.png": {
+    "bytes": 46104,
+    "sha256": "30f868ad5df640a2e0a3617f551d7433ec1bdf91c8ff01084da3af18173c0515"
+  },
+  "0.10.29-NAS发布核验通过.png": {
+    "bytes": 63253,
+    "sha256": "62f4cbadcf01441dd70fc6342f7f90ece9f7894180d701ea33489d9e9a23d4ad"
+  }
+}

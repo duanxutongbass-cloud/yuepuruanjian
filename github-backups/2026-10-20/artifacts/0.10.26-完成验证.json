@@ -1,0 +1,45 @@
+{
+  "completedAt": "2026-10-19T10:05:02.651115+00:00",
+  "android": "0.10.26 (38)",
+  "full": {
+    "tests": 736,
+    "classes": 122,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "lintErrors": 0,
+    "lintWarnings": 20
+  },
+  "related": [
+    {
+      "tests": 20,
+      "classes": 4
+    },
+    {
+      "tests": 76,
+      "classes": 14
+    }
+  ],
+  "room": 6,
+  "schemasUnchanged": true,
+  "service": "0.10.22",
+  "database": 4,
+  "naming": 2,
+  "sourceInputs": 317,
+  "sourceArchiveFiles": 739,
+  "nasPublished": true,
+  "previousApp37Retained": true,
+  "publicProof": "nas-0.10.26-public-verification.json",
+  "deploymentProof": "nas-0.10.26-deployment-verification.json",
+  "workflow": "Develop and local automated validation -> publish existing NAS APK channel and verify -> user updates/tests on physical device -> repair and republish",
+  "authorization": "Human explicitly corrected the order and instructed publish first; ongoing same-scope APK workflow recorded in AGENTS section7",
+  "upload": "All three files completed100%; browser timeout recovered in existing tab",
+  "publicationTest": "First sandbox dependency ACL failure retained; escalated isolated real HTTP fixture passed retention/retry/tamper rejection",
+  "physicalAcceptance": "pending user after published update",
+  "nativePersonalPdfAcceptance": "compiled AndroidTest; not run",
+  "automation2": "paused",
+  "multipleTeams": "deferred roadmap19",
+  "productionScoreOperations": false,
+  "serviceRestarted": false,
+  "databaseMigrated": false
+}

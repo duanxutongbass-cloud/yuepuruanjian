@@ -49,6 +49,46 @@ class AssetArchiveTest {
         val json = JSONObject(requireNotNull(it["manifest.json"]).toString(Charsets.UTF_8)); change(json)
         it["manifest.json"] = json.toString().toByteArray()
     }
+    @Test fun organizerMetadataSurvivesNewArchiveRestore() = runBlocking {
+        val piece = source.resolutionDao().pieces().first { it.id == "p" }
+        source.libraryDao().updatePiece(piece.copy(categoryCode = "01", categoryName = "久石让", organizerSequence = "007"))
+        val saved = archive()
+        assertEquals(3, root(saved).getInt("formatVersion")); assertEquals(5, root(saved).getInt("databaseVersion"))
+        restore(saved)
+        val restored = target.resolutionDao().pieces().first { it.id == "p" }
+        assertEquals("久石让", restored.categoryName); assertEquals("007", restored.organizerSequence)
+    }
+    @Test fun legacySchemaThreeArchiveRestoresWithoutInventingCategoriesOrNumbers() = runBlocking {
+        val legacy = editManifest(archive()) { manifest ->
+            manifest.put("formatVersion", 1).put("databaseVersion", 3)
+            ArchiveFormat.rows(manifest.getJSONObject("tables").getJSONArray("concerts")).forEach { row -> row.remove("audienceMembers"); row.remove("audienceParts") }
+            ArchiveFormat.rows(manifest.getJSONObject("tables").getJSONArray("pieces")).forEach { row ->
+                row.remove("categoryCode"); row.remove("categoryName"); row.remove("organizerSequence")
+            }
+        }
+        restore(legacy)
+        assertEquals(source.resolutionDao().pieces().map { it.id }.sorted(), target.resolutionDao().pieces().map { it.id }.sorted())
+        assertTrue(target.resolutionDao().pieces().all { it.categoryCode == null && it.organizerSequence == null })
+    }
+    @Test fun previousSchemaFourArchiveRestoresAsUnrestrictedConcerts() = runBlocking {
+        val legacy=editManifest(archive()) { manifest ->
+            manifest.put("formatVersion",2).put("databaseVersion",4)
+            ArchiveFormat.rows(manifest.getJSONObject("tables").getJSONArray("concerts")).forEach { row -> row.remove("audienceMembers");row.remove("audienceParts") }
+        }
+        restore(legacy)
+        assertTrue(target.resolutionDao().concerts().all { it.audienceMembers==null && it.audienceParts==null })
+    }
+    @Test fun audienceRestoresAndInvalidAudienceReferenceIsRejected() = runBlocking {
+        val concert=source.resolutionDao().concerts().first()
+        source.libraryDao().updateConcert(concert.copy(audienceMembers="[\"m\"]",audienceParts="[]"))
+        val saved=archive()
+        val bad=editManifest(saved) { manifest -> manifest.getJSONObject("tables").getJSONArray("concerts").getJSONObject(0).put("audienceMembers","[\"missing\"]") }
+        rejected { restore(bad) }
+        assertTrue(target.resolutionDao().members().isEmpty())
+        restore(saved)
+        assertEquals("[\"m\"]",target.resolutionDao().concerts().first{it.id==concert.id}.audienceMembers)
+        assertEquals(ErrorCode.UNAUTHORIZED,(ScoreResolver(target.resolutionDao().snapshot()).resolveConcert("other",concert.id) as DomainResult.Failure).error.code)
+    }
     private suspend fun rejected(block: suspend () -> Unit) {
         try { block(); fail("Unsafe operation must fail") } catch (e: Exception) { if (e is CancellationException) throw e }
     }
@@ -131,7 +171,7 @@ class AssetArchiveTest {
     }
     @Test fun unsupportedFormatAndInvalidActiveVersionOrSnapshotAreRejected() = runBlocking {
         val mother = archive()
-        val bad = listOf(editManifest(mother) { it.put("formatVersion", 2) },
+        val bad = listOf(editManifest(mother) { it.put("formatVersion", 99) },
             editManifest(mother) { it.getJSONObject("tables").getJSONArray("score_pdfs").getJSONObject(0).put("activeVersionId", "missing") },
             editManifest(mother) { it.getJSONObject("tables").getJSONArray("annotation_concert_snapshots").getJSONObject(0).put("manifest", "wrong") },
             editManifest(mother) { it.getJSONObject("tables").getJSONArray("pieces").getJSONObject(0).put("unknown", "field") })

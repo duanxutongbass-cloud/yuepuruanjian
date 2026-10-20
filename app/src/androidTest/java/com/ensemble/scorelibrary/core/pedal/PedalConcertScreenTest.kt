@@ -77,7 +77,7 @@ class PedalConcertScreenTest {
         (view is android.view.ViewGroup && (0 until view.childCount).any { screenOn(view.getChildAt(it)) })
     private fun seed(locked: Boolean = true) {
         val db = Room.databaseBuilder(context, ScoreLibraryDatabase::class.java, "ensemble-score-library.db")
-            .addMigrations(ScoreLibraryDatabase.MIGRATION_1_2, ScoreLibraryDatabase.MIGRATION_2_3).build()
+            .addMigrations(ScoreLibraryDatabase.MIGRATION_1_2, ScoreLibraryDatabase.MIGRATION_2_3, ScoreLibraryDatabase.MIGRATION_3_4, ScoreLibraryDatabase.MIGRATION_4_5, ScoreLibraryDatabase.MIGRATION_5_6).build()
         try { runBlocking {
             val dao = db.libraryDao()
             (0..2).forEach { n -> dao.insertPartDefinition(PartDefinitionEntity(id = id("definition$n"),
@@ -217,7 +217,7 @@ class PedalConcertScreenTest {
         compose.onNodeWithTag("performance-error").assertTextContains("未锁定", substring = true)
         assertFalse(reader().playMode.value); assertFalse(screenOn(compose.activity.window.decorView))
         val db = Room.databaseBuilder(context, ScoreLibraryDatabase::class.java, "ensemble-score-library.db")
-            .addMigrations(ScoreLibraryDatabase.MIGRATION_1_2, ScoreLibraryDatabase.MIGRATION_2_3).build()
+            .addMigrations(ScoreLibraryDatabase.MIGRATION_1_2, ScoreLibraryDatabase.MIGRATION_2_3, ScoreLibraryDatabase.MIGRATION_3_4, ScoreLibraryDatabase.MIGRATION_4_5, ScoreLibraryDatabase.MIGRATION_5_6).build()
         try { runBlocking { com.ensemble.scorelibrary.annotation.AnnotationRepository(db).freeze(
             com.ensemble.scorelibrary.annotation.AnnotationScope(id("admin"), id("piece0"), id("part0-0"), id("version0"), 1, id("item0"))) } }
         finally { db.close() }

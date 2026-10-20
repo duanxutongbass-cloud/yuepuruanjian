@@ -1,0 +1,44 @@
+{
+  "verifiedAt": "2026-10-19T05:50:42.879385+00:00",
+  "metadata": {
+    "packageName": "com.ensemble.scorelibrary",
+    "versionCode": 36,
+    "versionName": "0.10.24",
+    "sha256": "8c187646809cad97292be34f25a55ad92d46f985f9527418e1e00a7a9f3daf9a",
+    "size": 21287358,
+    "notes": "保留本机退休清理修复；新增普通登录账号的个人PDF文件区（仅本机），可导入、阅读、移入回收站、恢复及勾选确认彻底删除。按服务器和账号隔离；不随团队同步，现有曲库备份不包含此区，外部原件保留。",
+    "available": true
+  },
+  "fullDownload": {
+    "size": 21287358,
+    "sha256": "8c187646809cad97292be34f25a55ad92d46f985f9527418e1e00a7a9f3daf9a"
+  },
+  "anonymousPrivate": {
+    "/v1/me": 401,
+    "/v1/catalog": 401,
+    "/v2/catalog": 401,
+    "/v1/admin/artifacts": 401,
+    "/v2/admin/artifacts": 401,
+    "/v1/admin/capabilities": 401,
+    "/v2/admin/capabilities": 401,
+    "/v1/admin/number-inventory": 401,
+    "/v2/admin/number-inventory": 401,
+    "/v1/admin/uploads": 401,
+    "/v2/admin/uploads": 401,
+    "/v1/admin/publications": 401,
+    "/v2/admin/publications": 401,
+    "/v1/admin/grants": 401,
+    "/v2/admin/grants": 401,
+    "/v1/annotations": 401,
+    "/v1/personal-folders": 401,
+    "/v1/admin/programs": 401,
+    "/v1/deletions": 401,
+    "/v2/deletions": 401
+  },
+  "tlsVerification": true,
+  "transport": "Direct HTTPS with default certificate verification; system proxy configuration unchanged",
+  "serviceChanged": false,
+  "databaseMigrated": false,
+  "productionScoreOperations": false,
+  "physicalAcceptance": "pending user"
+}

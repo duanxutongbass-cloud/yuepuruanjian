@@ -9,7 +9,7 @@ import com.ensemble.scorelibrary.core.model.ConcertStatus
 import com.ensemble.scorelibrary.core.model.MemberRole
 import java.util.UUID
 
-@Entity(tableName = "pieces")
+@Entity(tableName = "pieces", indices = [Index(value = ["organizerSequence"], unique = true)])
 data class PieceEntity(
     @PrimaryKey val id: String = UUID.randomUUID().toString(),
     val title: String,
@@ -17,7 +17,10 @@ data class PieceEntity(
     val arranger: String? = null,
     val notes: String? = null,
     val isArchived: Boolean = false,
-    val createdAtEpochMillis: Long = System.currentTimeMillis()
+    val createdAtEpochMillis: Long = System.currentTimeMillis(),
+    val categoryCode: String? = null,
+    val categoryName: String? = null,
+    val organizerSequence: String? = null
 )
 
 @Entity(
@@ -260,7 +263,9 @@ data class ConcertEntity(
     val title: String,
     val performanceAtEpochMillis: Long? = null,
     val status: ConcertStatus = ConcertStatus.DRAFT,
-    val isArchived: Boolean = false
+    val isArchived: Boolean = false,
+    val audienceMembers: String? = null,
+    val audienceParts: String? = null
 )
 
 @Entity(

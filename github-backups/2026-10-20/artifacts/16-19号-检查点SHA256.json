@@ -1,0 +1,38 @@
+{
+  "16-19号-本机验证与待合并事项.json": {
+    "bytes": 3581,
+    "sha256": "fdeaa495fdd824aec3146c504b4d584e2b4ee3a002ae769b87e86f31848546eb"
+  },
+  "16-19号-开发检查点与待合并说明.txt": {
+    "bytes": 2206,
+    "sha256": "e6544ddf5ac53d8655551055e618b6faec87209f4f85d6001fac492e81a5fcb8"
+  },
+  "0.10.29-App本机验证.json": {
+    "bytes": 1135,
+    "sha256": "a42e3dd3e7173b96efeb759c4e566e004b633936131ee59262435324db92f34b"
+  },
+  "yuepuruanjian-0.10.29-release.apk": {
+    "bytes": 13992557,
+    "sha256": "280d2e865fd3dfb1b540387819166e555b4b87a0d9452541a84ba3c1740a9eb0"
+  },
+  "yuepuruanjian-0.10.29-androidTest.apk": {
+    "bytes": 1363687,
+    "sha256": "de5cc09f2dd2ec3086dc9fbd5fec51680afcee4b15a456b57572ece3e5dce45a"
+  },
+  "0.10.29-待发布候选工具.zip": {
+    "bytes": 13464008,
+    "sha256": "87a0630ba47bf8d20319b9d23881079fd94173d02574705c086240b20e51c348"
+  },
+  "0.10.29-本机测试证据.zip": {
+    "bytes": 193262,
+    "sha256": "d56237ecabf862828ce5220edc6d9447ced457dad7d5433ede0791f0f4e0f28e"
+  },
+  "0.10.29-App与服务源码检查点.zip": {
+    "bytes": 1014565,
+    "sha256": "d4525543ce8869fbf4393072bb849cd96bfccab51f53379489b78deca6cb6e97"
+  },
+  "0.10.29-源码检查点SHA256.json": {
+    "bytes": 73397,
+    "sha256": "3f8114ad0cddd0ae4f8476964272fd552a11b70c258130f7251a4878c76a4261"
+  }
+}

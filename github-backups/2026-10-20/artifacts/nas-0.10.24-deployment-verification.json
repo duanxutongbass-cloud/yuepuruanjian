@@ -1,0 +1,24 @@
+{
+  "release": {
+    "packageName": "com.ensemble.scorelibrary",
+    "versionCode": 36,
+    "versionName": "0.10.24",
+    "sha256": "8c187646809cad97292be34f25a55ad92d46f985f9527418e1e00a7a9f3daf9a",
+    "size": 21287358,
+    "notes": "保留本机退休清理修复；新增普通登录账号的个人PDF文件区（仅本机），可导入、阅读、移入回收站、恢复及勾选确认彻底删除。按服务器和账号隔离；不随团队同步，现有曲库备份不包含此区，外部原件保留。"
+  },
+  "previousReleaseRetained": true,
+  "fullPublicDownload": {
+    "size": 21287358,
+    "sha256": "8c187646809cad97292be34f25a55ad92d46f985f9527418e1e00a7a9f3daf9a"
+  },
+  "serviceChanged": false,
+  "databaseMigrated": false,
+  "productionScoreOperations": false,
+  "physicalAcceptance": "pending user",
+  "backup": "/data/expanded-0122/app-releases/before-0.10.24.json",
+  "publicProof": "nas-0.10.24-public-verification.json",
+  "serviceImage": "yuepu-team-api:0.10.22",
+  "productionRoot": "/data/expanded-0122",
+  "publisherProject": "yuepu-app-0124"
+}

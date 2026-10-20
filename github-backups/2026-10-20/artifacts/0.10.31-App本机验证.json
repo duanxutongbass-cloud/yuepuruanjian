@@ -1,0 +1,56 @@
+{
+  "versionName": "0.10.31",
+  "versionCode": 43,
+  "tests": {
+    "tests": 791,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "classes": 136,
+  "behaviorTestsExecutedBuild": "0.10.30(42)",
+  "versionOnlyReplacements": [
+    "versionCode 42 to 43",
+    "versionName 0.10.30 to 0.10.31"
+  ],
+  "releaseVersionTests": {
+    "tests": 5,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "releaseVersionTestClasses": 2,
+  "lint": {
+    "debug": {
+      "errors": 0,
+      "warnings": 22
+    },
+    "release": {
+      "errors": 0,
+      "warnings": 22
+    }
+  },
+  "inputFiles": 341,
+  "inputsUnchanged": true,
+  "behaviorInputsPreserved": 340,
+  "roomSchemaUnchanged": true,
+  "releaseNonDebuggable": true,
+  "operationLogs": false,
+  "testReleaseHistory": false,
+  "httpTest": false,
+  "existingCertificatePreserved": true,
+  "certificateSha256": "9f360690612dabcdc4c13c8fb0b89af99402a64782f8fdcba79cddfb2be745fa",
+  "backendPythonFilesUnchanged": 64,
+  "nativeRasterAcceptance": "compiled androidTest; not executed on physical device or emulator",
+  "physicalReaderSpeedVerified": false,
+  "physicalAcceptance": "pending user after NAS publication",
+  "published": false,
+  "yuepuruanjian-0.10.31-release.apk": {
+    "bytes": 14008937,
+    "sha256": "4323e8dc0fe9eb4751c7ece68300362944354ef6418cf93226a4fead5c9b338d"
+  },
+  "yuepuruanjian-0.10.31-androidTest.apk": {
+    "bytes": 1363687,
+    "sha256": "f6e85794c372ab23890e160bf0f4771c44ef638807d8bbe9fbee991a615d0a03"
+  }
+}

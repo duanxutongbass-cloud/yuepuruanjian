@@ -35,6 +35,91 @@ class PdfReaderViewModelTest {
         listOf(ResolvedScoreSegment("b", "movement", "pdf", version, "file", "hash", 3, 5, CacheStatus.NOT_CACHED)))
     private fun model() = PdfReaderViewModel(engine, saved, PerformancePreparation(engine, TestPerformanceAnnotations())).also { store.put("model", it) }
 
+    @Test fun stalledNativePageEndsSpinnerAndCannotPublishLateFrame() = runTest(dispatcher) {
+        val release=CompletableDeferred<Unit>();var late:Bitmap?=null;var stalled=true
+        val delayed=object:PdfEngine {
+            override suspend fun inspect(segments:List<ResolvedScoreSegment>)=listOf(PageSize(600,900))
+            override suspend fun render(page:PdfPageRef,width:Int,height:Int,mode:FitMode,scroll:Float):PdfFrame {
+                if(stalled)withContext(NonCancellable){release.await()}
+                val bitmap=Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888)
+                if(stalled)late=bitmap
+                return PdfFrame(bitmap,PdfPageTransform.fit(PageSize(600,900),width,height,mode))
+            }
+        }
+        val vm=PdfReaderViewModel(delayed,saved,PerformancePreparation(delayed,TestPerformanceAnnotations())).also {store.put("model",it)}
+        vm.bind("member","library",score());vm.viewport(800,1000);runCurrent()
+        assertEquals(PdfState.Loading,vm.state.value)
+        advanceTimeBy(30_001);runCurrent()
+        assertEquals(ReaderError.RENDER_TIMEOUT,(vm.state.value as PdfState.Failure).error)
+        release.complete(Unit);runCurrent();assertTrue(late!!.isRecycled)
+        assertTrue(vm.state.value is PdfState.Failure)
+        stalled=false;vm.retry();runCurrent();assertTrue(vm.state.value is PdfState.Ready)
+    }
+
+    @Test fun delayedPageTurnKeepsPreviousFrameVisibleAndBlocksRepeatedNavigation() = runTest(dispatcher) {
+        val gate = CompletableDeferred<Unit>()
+        val delayed = object : PdfEngine {
+            override suspend fun inspect(segments: List<ResolvedScoreSegment>) = listOf(PageSize(600, 900))
+            override suspend fun render(page: PdfPageRef, width: Int, height: Int, mode: FitMode, scroll: Float): PdfFrame {
+                if (page.pageIndex == 3) gate.await()
+                return PdfFrame(Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888), PdfPageTransform.fit(PageSize(600, 900), width, height, mode))
+            }
+        }
+        val vm = PdfReaderViewModel(delayed, saved, PerformancePreparation(delayed, TestPerformanceAnnotations()))
+        store.put("delayed", vm)
+        vm.bind("member", "library", score()); vm.viewport(800, 1000); runCurrent()
+        val previous = vm.state.value as PdfState.Ready
+        vm.nextPage(); runCurrent()
+        val waiting = vm.state.value as PdfState.Ready
+        assertTrue(waiting.rendering)
+        assertSame(previous.frame, waiting.frame)
+        assertEquals(3, waiting.sourcePage)
+        vm.nextPage(); runCurrent()
+        gate.complete(Unit); runCurrent()
+        val ready = vm.state.value as PdfState.Ready
+        assertFalse(ready.rendering)
+        assertEquals(4, ready.sourcePage)
+    }
+
+    @Test fun failedReplacementClearsTheRetainedPageInsteadOfLeavingStaleContent() = runTest(dispatcher) {
+        val gate = CompletableDeferred<Unit>()
+        val delayed = object : PdfEngine {
+            override suspend fun inspect(segments: List<ResolvedScoreSegment>) = listOf(PageSize(600, 900))
+            override suspend fun render(page: PdfPageRef, width: Int, height: Int, mode: FitMode, scroll: Float): PdfFrame {
+                if (page.pageIndex == 3) { gate.await(); throw PdfFailure(ReaderError.CORRUPTED) }
+                return PdfFrame(Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888), PdfPageTransform.fit(PageSize(600, 900), width, height, mode))
+            }
+        }
+        val vm = PdfReaderViewModel(delayed, saved, PerformancePreparation(delayed, TestPerformanceAnnotations()))
+        store.put("failure", vm)
+        vm.bind("member", "library", score()); vm.viewport(800, 1000); runCurrent()
+        vm.nextPage(); runCurrent(); assertTrue((vm.state.value as PdfState.Ready).rendering)
+        gate.complete(Unit); runCurrent()
+        assertEquals(PdfState.Failure(ReaderError.CORRUPTED), vm.state.value)
+    }
+
+    @Test fun readingStartsFullscreenAndTogglingToolsDoesNotRenderAnotherPdfFrame() = runTest(dispatcher) {
+        val vm=model();vm.bind("member","library",score());vm.viewport(800,1000);runCurrent()
+        assertTrue(vm.fullscreen.value)
+        val count=rendered.size
+        vm.setFullscreen(false);runCurrent();assertFalse(vm.fullscreen.value)
+        vm.setFullscreen(true);runCurrent();assertTrue(vm.fullscreen.value)
+        assertEquals(count,rendered.size)
+        vm.setFullscreen(false);vm.detach();vm.bind("member","library",score());runCurrent()
+        assertTrue(vm.fullscreen.value)
+    }
+    @Test fun startingAnnotationFitsTheWholePageAndResetsOldZoomOnlyOnce() = runTest(dispatcher) {
+        val vm=model();vm.bind("member","library",score());vm.viewport(800,700);runCurrent()
+        vm.fit(FitMode.WIDTH);runCurrent()
+        vm.transform(2f,0f,0f);advanceUntilIdle()
+        vm.fitForAnnotation();runCurrent()
+        assertEquals(FitMode.PAGE,(vm.state.value as PdfState.Ready).mode)
+        assertEquals(1f,vm.zoom(),.001f)
+        val count=rendered.size
+        vm.fitForAnnotation();runCurrent()
+        assertEquals(count,rendered.size)
+    }
+
     @Test fun zoomStateIsClampedRestoredAndSeparatedByMemberAndVersion() = runTest(dispatcher) {
         var vm = model(); vm.bind("member", "library", score()); vm.viewport(800, 1000); runCurrent()
         vm.transform(2f, 10f, -20f); advanceUntilIdle(); assertEquals(2f, vm.zoom(), .001f)

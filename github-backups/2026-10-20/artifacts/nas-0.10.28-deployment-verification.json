@@ -1,0 +1,45 @@
+{
+  "app": {
+    "release": {
+      "packageName": "com.ensemble.scorelibrary",
+      "versionCode": 40,
+      "versionName": "0.10.28",
+      "sha256": "6a9996c553d449fc452ddfa98942f69340b9030b8b26e33fb63f05b3714ccc66",
+      "size": 21370470,
+      "notes": "新增已彻底删除曲目的编号释放：管理员在曲库管理→检查编号／补空号中多选、预览并勾选备份后释放。仅整曲彻底删除且无现存/回收站/待传占用时可释放，其他曲目保持原号，新曲优先补空号。保留删除台账和旧分谱ID屏障，同号新曲身份与旧缓存/批注隔离；出现复用曲目后旧阅读端需更新。保留27手写笔与26曲库/回收站改进。"
+    },
+    "previousReleaseRetained": true,
+    "fullPublicDownload": {
+      "size": 21370470,
+      "sha256": "6a9996c553d449fc452ddfa98942f69340b9030b8b26e33fb63f05b3714ccc66"
+    },
+    "serviceChanged": false,
+    "databaseMigrated": false,
+    "productionScoreOperations": false,
+    "physicalAcceptance": "pending user",
+    "backup": "/data/expanded-0122/app-releases/before-0.10.28.json"
+  },
+  "service": {
+    "serviceUpdated": true,
+    "databaseMigrated": false,
+    "independentRestore": true,
+    "pdfs": 0,
+    "sourceInputs": 26
+  },
+  "publicProof": "nas-0.10.28-public-verification.json",
+  "newPrivateAuthProof": "nas-0.10.28-number-release-auth.json",
+  "serviceImage": "yuepu-team-api:0.10.28",
+  "previousServiceImage": "yuepu-team-api:0.10.27",
+  "productionRoot": "/data/expanded-0122",
+  "businessProject": "yuepu-team-api-0128",
+  "previousBusiness": "yuepu-team-api-0127-final-team-api-1",
+  "previousBusinessStoppedObserved": true,
+  "previousBusinessObservation": "Normal Stop followed by 已停止 and 启动 visible in NAS UI before new project completion",
+  "backup": "/data/expanded-0122/backups/before-service-0128/backup.zip",
+  "backupProof": "/data/expanded-0122/backups/before-service-0128/verified.json",
+  "databaseMigrated": false,
+  "productionScoreOperations": false,
+  "productionNumberReleasePerformed": false,
+  "registeredSourcePdfs": 0,
+  "note": "APK component serviceChanged=false describes channel-only operation; overall service27->28 updated first. Current NAS has zero registered PDFs; real deletion history and all business table fingerprints were verified, no historical PDF count substituted."
+}

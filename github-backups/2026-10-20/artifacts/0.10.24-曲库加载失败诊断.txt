@@ -1,0 +1,14 @@
+0.10.24（36）团队曲库加载失败：本次只读诊断
+2026-10-19，Asia/Shanghai
+
+用户明确允许本次连接诊断，并自行点击一次“重试进入团队曲库”。设备WGR-W09，实际App版本0.10.24／36，原进程15547。
+
+实际阻断异常：java.lang.IllegalArgumentException，TeamCatalog.parse（TeamScoreClient.kt:44）。
+调用链：TeamCatalog.parse:44 → TeamOfflineStore.retire:71 → TeamDeletionCoordinator.cleanLocal:124 → clean:96 → TeamCleanupFailure。
+第44行明确要求缓存principal.numberingProtocol与当前session.principal.numberingProtocol相同。这是离线授权缓存清理时的协议不一致；不是凭通用提示推测网络故障。上次InkDraftStore根目录检查已通过，执行到了后续离线授权清理。
+
+监听只读取异常类型与代码位置，不读取异常消息、局部变量、账号凭据、缓存JSON、PDF或笔迹。内部Keystore abort和临时文件remove异常存在后续执行，不能混为最终阻断；本次最终异常已完整捕获。06:09:43Z开始，06:10:15Z捕获并自动结束（北京时间14:09:43至14:10:15）。finally恢复事件线程并断开，随后移除本次唯一转发，确认App原进程仍运行。未安装、卸载、清数据、退出账号或重新提交NAS删除；重试由用户本人点击。
+
+下一步：在隔离测试中复现旧协议缓存升级后的退休清理，保留同服务器／团队／账号／成员绑定、完整旧格式校验和持久退休屏障，只在本机清理阶段按缓存自身已校验协议解码，不把旧缓存升级为新授权。通过专项与完整回归后提供修复候选。当前此诊断不等同于已修复或真机已验收。
+
+原始只含类型与代码栈的证据：0.10.24-曲库清理异常栈.txt。

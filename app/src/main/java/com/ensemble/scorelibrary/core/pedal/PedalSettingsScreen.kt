@@ -46,6 +46,7 @@ fun PedalSettingsScreen(model: PedalViewModel) {
                 Text(if (state.selected == "default") "默认映射" else state.devices.firstOrNull { it.profile == state.selected }?.name ?: "已保存的设备")
             }
             DropdownMenu(menu, { menu = false }) {
+                DropdownMenuItem(text = { Text("关闭菜单") }, onClick = { menu = false })
                 val choices = (listOf("default") + state.devices.map { it.profile } + state.configuration?.profiles?.keys.orEmpty()).distinct()
                 choices.forEachIndexed { index, profile -> DropdownMenuItem(text = { Text(if (profile == "default") "默认映射"
                     else state.devices.firstOrNull { it.profile == profile }?.name ?: "已保存的设备 $index") },

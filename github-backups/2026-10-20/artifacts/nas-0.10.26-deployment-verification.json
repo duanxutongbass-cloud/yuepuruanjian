@@ -1,0 +1,25 @@
+{
+  "release": {
+    "packageName": "com.ensemble.scorelibrary",
+    "versionCode": 38,
+    "versionName": "0.10.26",
+    "sha256": "131466fb0b7ae08ce48be13311ebf896a99536afa58e254a01014ea7a94a2a26",
+    "size": 21320602,
+    "notes": "曲库直接选择个人（仅本机）与当前团队名称；未入团可使用个人文件。团队管理员及本人个人回收站支持多选、合并预览勾选确认彻底删除，删除后保留回收站和搜索。保留最近阅读、收藏、页码恢复及25清理修复。多团队按19号后续开发；个人文件不随团队同步，现有备份不含。"
+  },
+  "previousReleaseRetained": true,
+  "fullPublicDownload": {
+    "size": 21320602,
+    "sha256": "131466fb0b7ae08ce48be13311ebf896a99536afa58e254a01014ea7a94a2a26"
+  },
+  "serviceChanged": false,
+  "databaseMigrated": false,
+  "productionScoreOperations": false,
+  "physicalAcceptance": "pending user",
+  "backup": "/data/expanded-0122/app-releases/before-0.10.26.json",
+  "publicProof": "nas-0.10.26-public-verification.json",
+  "serviceImage": "yuepu-team-api:0.10.22",
+  "productionRoot": "/data/expanded-0122",
+  "publisherProject": "yuepu-app-0126",
+  "observedBusinessContainer": "yuepu-team-api-0122-team-api-1 Up for 14 hours"
+}

@@ -1,0 +1,43 @@
+{
+  "verifiedAt": "2026-10-18T19:50:05.260909+00:00",
+  "origin": "https://124355.xyz:18443",
+  "metadata": {
+    "packageName": "com.ensemble.scorelibrary",
+    "versionCode": 34,
+    "versionName": "0.10.22",
+    "sha256": "37035a4900fd077adb835fe39c1856867c1fa440d47bbbe0e11ba4eec409731d",
+    "size": 21205026,
+    "notes": "编号13：扩位编号、全库最小空号及三端兼容。升级保留数据，真机功能待本人验收。",
+    "available": true
+  },
+  "completeDownload": {
+    "bytes": 21205026,
+    "sha256": "37035a4900fd077adb835fe39c1856867c1fa440d47bbbe0e11ba4eec409731d",
+    "matchesSealedCandidate": true
+  },
+  "anonymousPrivate": {
+    "/v1/me": 401,
+    "/v1/catalog": 401,
+    "/v2/catalog": 401,
+    "/v1/admin/artifacts": 401,
+    "/v2/admin/artifacts": 401,
+    "/v1/admin/capabilities": 401,
+    "/v2/admin/capabilities": 401,
+    "/v1/admin/number-inventory": 401,
+    "/v2/admin/number-inventory": 401,
+    "/v1/admin/uploads": 401,
+    "/v2/admin/uploads": 401,
+    "/v1/admin/publications": 401,
+    "/v2/admin/publications": 401,
+    "/v1/admin/grants": 401,
+    "/v2/admin/grants": 401,
+    "/v1/annotations": 401,
+    "/v1/personal-folders": 401,
+    "/v1/admin/programs": 401,
+    "/v1/deletions": 401,
+    "/v2/deletions": 401
+  },
+  "tlsVerification": true,
+  "nasPublished": true,
+  "physicalAcceptance": "pending user"
+}

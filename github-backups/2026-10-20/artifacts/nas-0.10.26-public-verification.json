@@ -1,0 +1,44 @@
+{
+  "verifiedAt": "2026-10-19T09:58:12.628720+00:00",
+  "metadata": {
+    "packageName": "com.ensemble.scorelibrary",
+    "versionCode": 38,
+    "versionName": "0.10.26",
+    "sha256": "131466fb0b7ae08ce48be13311ebf896a99536afa58e254a01014ea7a94a2a26",
+    "size": 21320602,
+    "notes": "曲库直接选择个人（仅本机）与当前团队名称；未入团可使用个人文件。团队管理员及本人个人回收站支持多选、合并预览勾选确认彻底删除，删除后保留回收站和搜索。保留最近阅读、收藏、页码恢复及25清理修复。多团队按19号后续开发；个人文件不随团队同步，现有备份不含。",
+    "available": true
+  },
+  "fullDownload": {
+    "size": 21320602,
+    "sha256": "131466fb0b7ae08ce48be13311ebf896a99536afa58e254a01014ea7a94a2a26"
+  },
+  "anonymousPrivate": {
+    "/v1/me": 401,
+    "/v1/catalog": 401,
+    "/v2/catalog": 401,
+    "/v1/admin/artifacts": 401,
+    "/v2/admin/artifacts": 401,
+    "/v1/admin/capabilities": 401,
+    "/v2/admin/capabilities": 401,
+    "/v1/admin/number-inventory": 401,
+    "/v2/admin/number-inventory": 401,
+    "/v1/admin/uploads": 401,
+    "/v2/admin/uploads": 401,
+    "/v1/admin/publications": 401,
+    "/v2/admin/publications": 401,
+    "/v1/admin/grants": 401,
+    "/v2/admin/grants": 401,
+    "/v1/annotations": 401,
+    "/v1/personal-folders": 401,
+    "/v1/admin/programs": 401,
+    "/v1/deletions": 401,
+    "/v2/deletions": 401
+  },
+  "tlsVerification": true,
+  "transport": "Direct HTTPS with default certificate verification; system proxy configuration unchanged",
+  "serviceChanged": false,
+  "databaseMigrated": false,
+  "productionScoreOperations": false,
+  "physicalAcceptance": "pending user"
+}

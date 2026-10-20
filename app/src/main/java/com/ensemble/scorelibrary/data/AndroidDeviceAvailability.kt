@@ -35,9 +35,10 @@ class AndroidDeviceAvailability @Inject constructor(@param:ApplicationContext pr
 
     override suspend fun filesAvailable(segments: List<ResolvedScoreSegment>) = withContext(Dispatchers.IO) {
         val root = context.filesDir.canonicalFile
+        val teamRoot = File(context.noBackupFilesDir, "team-libraries").canonicalFile
         fun readable(path: String): Boolean {
             val file = File(path).let { if (it.isAbsolute) it else File(root, path) }.canonicalFile
-            return file.path.startsWith(root.path + File.separator) && file.isFile && file.canRead()
+            return (file.path.startsWith(root.path + File.separator) || file.path.startsWith(teamRoot.path + File.separator)) && file.isFile && file.canRead()
         }
         segments.isNotEmpty() && segments.all { segment ->
             readable(segment.managedFilePath) ||

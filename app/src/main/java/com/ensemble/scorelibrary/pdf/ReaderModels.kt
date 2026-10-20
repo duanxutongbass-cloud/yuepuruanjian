@@ -4,7 +4,7 @@ import com.ensemble.scorelibrary.domain.ResolvedScoreSegment
 import kotlin.math.min
 
 enum class FitMode { WIDTH, PAGE }
-enum class ReaderError { FILE_MISSING, CORRUPTED, ACTIVE_VERSION_MISSING, INVALID_PAGE_RANGE, LOAD_FAILED, PROGRAM_CHANGED }
+enum class ReaderError { FILE_MISSING, CORRUPTED, ACTIVE_VERSION_MISSING, INVALID_PAGE_RANGE, LOAD_FAILED, PROGRAM_CHANGED, RENDER_TIMEOUT }
 enum class ReaderAction { NEXT_PAGE, PREVIOUS_PAGE }
 data class ReaderView(val zoom: Float = 1f, val x: Float = .5f, val y: Float = 0f)
 

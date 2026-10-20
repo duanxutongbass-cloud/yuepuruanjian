@@ -1,0 +1,27 @@
+{
+  "checkedAt": "2026-10-19T07:50:50.393659+00:00",
+  "candidate": {
+    "versionCode": 37,
+    "versionName": "0.10.25",
+    "size": 21287526,
+    "sha256": "2de632a9ae65047fb7341ebf5bf2549338078ca2d6c2a8dc6f40bf0f8c2181d3",
+    "previousSha256": "8c187646809cad97292be34f25a55ad92d46f985f9527418e1e00a7a9f3daf9a",
+    "bundleSize": 20710801,
+    "bundleSha256": "87bf993dc2ec524488148588edb39c1e8b3e0d399546c8a2b2eb55f95ee52ea1"
+  },
+  "currentPublic": {
+    "packageName": "com.ensemble.scorelibrary",
+    "versionCode": 36,
+    "versionName": "0.10.24",
+    "sha256": "8c187646809cad97292be34f25a55ad92d46f985f9527418e1e00a7a9f3daf9a",
+    "size": 21287358,
+    "notes": "保留本机退休清理修复；新增普通登录账号的个人PDF文件区（仅本机），可导入、阅读、移入回收站、恢复及勾选确认彻底删除。按服务器和账号隔离；不随团队同步，现有曲库备份不包含此区，外部原件保留。",
+    "available": true
+  },
+  "nasPublished": false,
+  "blocked": "Automatic approval rejected final Create Project Finish: authorization did not explicitly cover 0.10.25 production publication",
+  "approvalRequested": "Publish 0.10.25 APK only, retain 0.10.24, no business service restart/migration/score deletion",
+  "preparation": "Three files uploaded 100 percent after UI retries; candidate same signature, 728 full tests passed; wizard prepared but not executed",
+  "physicalAcceptance": "pending user",
+  "diagnostic": "Captured current real failure; temporary debugger and forward ended"
+}

@@ -1,0 +1,42 @@
+{
+  "completedAt": "2026-10-19T05:56:14.577602+00:00",
+  "item13": "implementation, automated/isolated verification and NAS deployment complete; physical acceptance pending user",
+  "android": "0.10.24 (36)",
+  "windows": "0.1.3",
+  "service": "0.10.22",
+  "database": 4,
+  "naming": 2,
+  "room": 6,
+  "currentAndroidFullRegression": {
+    "tests": 723,
+    "classes": 119,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "lintErrors": 0,
+    "lintWarnings": 20
+  },
+  "personalHostTests": 21,
+  "earlierUnchangedSourceRegressions": {
+    "windows": 1094,
+    "service": 245
+  },
+  "nasPublished": true,
+  "publicProof": "nas-0.10.24-public-verification.json",
+  "deploymentProof": "nas-0.10.24-deployment-verification.json",
+  "personalScope": "Own logged-in account device-only PDF copies; import, basic reading, trash, restore, preview and explicit permanent confirmation",
+  "limitations": [
+    "Personal files do not sync between devices",
+    "Existing library/annotation backups exclude the new personal file space; external originals retained",
+    "Native Android personal PDF acceptance test compiled into AndroidTest but not run; two unsupported Robolectric host attempts retained",
+    "Physical tablet and real business acceptance pending human user"
+  ],
+  "preserved": {
+    "number13": true,
+    "emergencyCleanupFix": true,
+    "previousApp35": true,
+    "serviceDatabaseAndScores": true,
+    "automation2": "paused",
+    "commercialPhase": "not started"
+  }
+}

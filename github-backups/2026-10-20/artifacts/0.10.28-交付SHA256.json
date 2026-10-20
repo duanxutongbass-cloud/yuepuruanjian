@@ -1,0 +1,62 @@
+{
+  "0.10.28-NAS上线证据.zip": {
+    "size": 95636,
+    "sha256": "b74b81cea31bd29c00deabca761bda49fda07503f50d3e67a012c2341ad7a148"
+  },
+  "0.10.28-交付与验收说明.txt": {
+    "size": 3112,
+    "sha256": "ba48dfb8fe1047ad7ff3eeada06b526d4bc886ce9ff24cea6b4618e457f67aa7"
+  },
+  "0.10.28-完成验证.json": {
+    "size": 2390,
+    "sha256": "2bc478a7d59d1fe434482f97d976d08160978e0672a60093a117738c72874e63"
+  },
+  "0.10.28-完整源码.zip": {
+    "size": 4322035,
+    "sha256": "3775fa219b92a1ecb0444df86dcb65ca088d34a5d007fd847d92e92f6f433cab"
+  },
+  "0.10.28-测试证据.zip": {
+    "size": 341153,
+    "sha256": "c80e102dcdd8ad2b0771023c3aac063f61608ad1e36d73728b01a1edb8933620"
+  },
+  "0.10.28-源码校验.json": {
+    "size": 132209,
+    "sha256": "6b38f2c29305af32d487c65b32235c85cc1c9384dee8e470a07d16b573929ee3"
+  },
+  "0.10.28-编号释放界面.png": {
+    "size": 46077,
+    "sha256": "1382e87b2464359a3b54476f56dcca1100cad77aff2ff55768252a426e90f07b"
+  },
+  "0.10.28-部署发布工具.zip": {
+    "size": 65734,
+    "sha256": "8062e2b89d847aa79257360bcd662ff95c1a749c7e234a8e1304a377d6984dcd"
+  },
+  "0.10.28-验证报告.json": {
+    "size": 52072,
+    "sha256": "3eadae28711dacb5d90c8212baa3a9ac8c6d1deb55d7e21bd0690715835d0c2f"
+  },
+  "nas-0.10.28-deployment-verification.json": {
+    "size": 2403,
+    "sha256": "042c81c64ed6e71701c77ea26117c1ef5fad8d0a6e58affd6da33fff650753c0"
+  },
+  "nas-0.10.28-live.png": {
+    "size": 100098,
+    "sha256": "b35ff01695e1e63c1e6f20ae7b45db9c63d9e50570ba4714d1488c61edda0dac"
+  },
+  "nas-0.10.28-number-release-auth.json": {
+    "size": 308,
+    "sha256": "0bb73375cdf2345dbdf961c2106cc775a897253fa24a5e6e3c13caf26e7363a0"
+  },
+  "nas-0.10.28-public-verification.json": {
+    "size": 1839,
+    "sha256": "de26455a65df020367def60525e820c033a8732d1e0333cbde4d97e604b32a11"
+  },
+  "yuepuruanjian-0.10.28-androidTest.apk": {
+    "size": 1363687,
+    "sha256": "de5cc09f2dd2ec3086dc9fbd5fec51680afcee4b15a456b57572ece3e5dce45a"
+  },
+  "yuepuruanjian-0.10.28-number-release.apk": {
+    "size": 21370470,
+    "sha256": "6a9996c553d449fc452ddfa98942f69340b9030b8b26e33fb63f05b3714ccc66"
+  }
+}

@@ -30,6 +30,10 @@ fun ManagementConsole(actor: String, tab: Int, vm: ManagementViewModel, initialI
     val state by vm.state.collectAsStateWithLifecycle()
     val catalog=state.catalog?.takeIf{state.actor==actor}
     var archives by rememberSaveable(actor,tab){mutableStateOf(false)}
+    var pieceQuery by rememberSaveable(actor) { mutableStateOf("") }
+    var pieceCategory by rememberSaveable(actor) { mutableStateOf<String?>(null) }
+    var pieceDefinition by rememberSaveable(actor) { mutableStateOf<String?>(null) }
+    var piecePdf by rememberSaveable(actor) { mutableStateOf<String?>(null) }
     var selection by rememberSaveable(actor,tab){mutableStateOf(initialId)}
     var openedInitial by rememberSaveable(actor, tab) { mutableStateOf(false) }
     var editKind by rememberSaveable(actor,tab){mutableStateOf<String?>(null)}
@@ -61,7 +65,8 @@ fun ManagementConsole(actor: String, tab: Int, vm: ManagementViewModel, initialI
         }; return
     }
     val d=catalog.data
-    val rows=when(tab){1->d.pieces.filter{archives || !it.isArchived}.map{it.id to (it.title+if(it.isArchived)"（归档）" else "")}
+    val pieceRows = remember(d, archives) { managedPieceRows(d, archives) }
+    val rows=when(tab){1->filterManagedPieces(pieceRows,pieceQuery,pieceCategory,pieceDefinition,piecePdf).map{it.piece.id to (it.heading+if(it.piece.isArchived)"（归档）" else "")}
         2->d.members.filter{archives || !it.isArchived}.map{it.id to (it.displayName+if(it.isArchived)"（归档）" else "")}
         3->d.definitions.filter{archives || !it.isArchived}.map{it.id to (it.name+if(it.isArchived)"（归档）" else "")}
         4->d.concerts.filter{archives || !it.isArchived}.map{it.id to (it.title+if(it.id in catalog.lockedConcerts)" · 锁定" else if(it.isArchived)"（归档）" else "")}
@@ -81,6 +86,18 @@ fun ManagementConsole(actor: String, tab: Int, vm: ManagementViewModel, initialI
             }
         }
         if(state.busy) LinearProgressIndicator(Modifier.fillMaxWidth())
+        if (tab == 1) {
+            OutlinedTextField(pieceQuery, { pieceQuery=it }, label={Text("搜索曲名、编号、分类、乐器、作曲／编曲")},
+                singleLine=true,modifier=Modifier.fillMaxWidth().testTag("admin-piece-search"))
+            Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(8.dp)) {
+                Box(Modifier.weight(1f)) { AdminChoice("分类",pieceCategory,listOf(null to "全部分类")+
+                    pieceRows.map{it.piece.categoryName ?: "未分类"}.distinct().sorted().map{it to it},tag="admin-category",change={pieceCategory=it}) }
+                Box(Modifier.weight(1f)) { AdminChoice("乐器／声部",pieceDefinition,listOf(null to "全部声部")+
+                    d.definitions.filterNot{it.isArchived}.map{it.id to it.name},tag="admin-instrument",change={pieceDefinition=it}) }
+                Box(Modifier.weight(1f)) { AdminChoice("配谱状态",piecePdf,listOf(null to "全部状态","ready" to "已有乐谱","missing" to "待补乐谱"),
+                    tag="admin-pdf-state",change={piecePdf=it}) }
+            }
+        }
         state.message?.let{Text(it,Modifier.padding(vertical=8.dp).testTag("management-message"),style=MaterialTheme.typography.bodySmall)}
         BoxWithConstraints(Modifier.weight(1f).fillMaxWidth()) {
             val wide=maxWidth>=840.dp
@@ -88,7 +105,13 @@ fun ManagementConsole(actor: String, tab: Int, vm: ManagementViewModel, initialI
                 LazyColumn(modifier.testTag("management-list")) {
                     if(rows.isEmpty()) item{Text("暂无记录",Modifier.padding(16.dp))}
                     items(rows,key={it.first}){(id,label)->
-                        ListItem(headlineContent={Text(label,maxLines=2)},modifier=Modifier.clickable{selection=id}.testTag("managed-$id"),
+                        ListItem(headlineContent={Text(label,maxLines=2)},supportingContent={if(tab==1) {
+                            val piece=d.pieces.first{it.id==id}
+                            val instruments=d.parts.filter{it.pieceId==id && !it.isArchived}.mapNotNull { part ->
+                                part.displayName ?: d.definitions.firstOrNull{it.id==part.partDefinitionId && !it.isArchived}?.name
+                            }.distinct()
+                            Text((listOfNotNull(piece.categoryName)+instruments).joinToString(" · "),style=MaterialTheme.typography.bodySmall)
+                        }},modifier=Modifier.clickable{selection=id}.testTag("managed-$id"),
                             trailingContent={AdminIcon("编辑",Icons.Outlined.Edit,!state.busy,"edit-$id"){open(kind,id)}})
                         HorizontalDivider()
                     }

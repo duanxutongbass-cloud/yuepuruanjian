@@ -46,12 +46,66 @@ class ScorePreviewViewModelTest {
     @Before fun setup() { Dispatchers.setMain(dispatcher) }
     @After fun close() { store.clear(); Dispatchers.resetMain() }
     private fun model() = ScorePreviewViewModel(repository, engine).also { store.put("preview", it) }
+    @Test fun noDefaultPartOffersSelectionWithoutRenderingAnArbitraryAuthorizedPart()=runTest(dispatcher) {
+        results.emit(DomainResult.Success(Presentation(Dashboard(emptyList(),Profile("m","Synthetic",null,false)),
+            DomainResult.Failure(DomainError(ErrorCode.DEFAULT_PART_MISSING,"m")))))
+        val vm=model();vm.bind("m","p",100,150);runCurrent()
+        val state=vm.state.value as ScorePreviewState.Failure
+        assertTrue(state.choosePart);assertEquals("请先选择要阅读的声部",state.message)
+        assertEquals(-1,renderedPage);assertTrue(bitmaps.isEmpty())
+        results.emit(DomainResult.Failure(DomainError(ErrorCode.UNAUTHORIZED,"p")));runCurrent()
+        assertFalse((vm.state.value as ScorePreviewState.Failure).choosePart)
+    }
+    @Test fun stalePaneDisposalCannotClearPreviewOwnedByNewPane() = runTest(dispatcher) {
+        results.emit(ready());val vm=model();val old=Any();val current=Any()
+        vm.bind("m","p",100,150,old);runCurrent()
+        vm.bind("m","p",100,150,current);runCurrent()
+        val ready=vm.state.value as ScorePreviewState.Ready
+        vm.clear(old);assertSame(ready,vm.state.value)
+        vm.clear(current);assertEquals(ScorePreviewState.Empty,vm.state.value)
+    }
     @Test fun previewUsesFirstAuthorizedSourcePageAndBoundsBitmap() = runTest(dispatcher) {
         results.emit(ready()); val vm = model(); vm.bind("m", "p", 2400, 3200); runCurrent()
         val state = vm.state.value as ScorePreviewState.Ready
         assertEquals(1, renderedPage)
         assertEquals(1200, state.frame.bitmap.width); assertEquals(1800, state.frame.bitmap.height)
         vm.bind("m", "p", 2400, 3200); assertSame(state, vm.state.value)
+    }
+    @Test fun repeatedUnchangedSyncResultsKeepTheExistingBitmapWithoutLoadingAgain() = runTest(dispatcher) {
+        results.emit(ready()); val vm=model(); vm.bind("m","p",100,150); runCurrent()
+        val displayed=vm.state.value as ScorePreviewState.Ready
+        repeat(5) { results.emit(ready());runCurrent();assertSame(displayed,vm.state.value) }
+        assertEquals(1,bitmaps.size)
+        assertFalse(displayed.frame.bitmap.isRecycled)
+        results.emit(DomainResult.Failure(DomainError(ErrorCode.UNAUTHORIZED,"p")));runCurrent()
+        assertTrue(vm.state.value is ScorePreviewState.Failure)
+        assertTrue(displayed.frame.bitmap.isRecycled)
+    }
+    @Test fun unrelatedDashboardChangesDoNotClearOrRerenderTheSelectedPreview()=runTest(dispatcher) {
+        val original=ready();results.emit(original)
+        val vm=model();vm.bind("m","p",100,150);runCurrent()
+        val displayed=vm.state.value as ScorePreviewState.Ready
+        repeat(8) { i ->
+            results.emit(DomainResult.Success(original.value.copy(dashboard=original.value.dashboard.copy(
+                pieces=listOf(PieceSummary("other-$i","Other work $i",null)),
+                concerts=listOf(ConcertSummary("concert-$i","Rehearsal $i")),
+                profile=original.value.dashboard.profile!!.copy(name="Updated name $i",canManage=i%2==0)))))
+            runCurrent();assertSame(displayed,vm.state.value)
+        }
+        assertEquals(1,bitmaps.size);assertFalse(displayed.frame.bitmap.isRecycled)
+    }
+    @Test fun profileMismatchOrContentRevocationCannotReuseTheOldPreview()=runTest(dispatcher) {
+        val original=ready();results.emit(original)
+        val vm=model();vm.bind("m","p",100,150);runCurrent()
+        val displayed=vm.state.value as ScorePreviewState.Ready
+        results.emit(DomainResult.Success(original.value.copy(dashboard=original.value.dashboard.copy(
+            profile=original.value.dashboard.profile!!.copy(id="other-account")))))
+        runCurrent();assertTrue(vm.state.value is ScorePreviewState.Failure)
+        assertTrue(displayed.frame.bitmap.isRecycled)
+        results.emit(original);runCurrent();assertTrue(vm.state.value is ScorePreviewState.Ready)
+        val newFrame=vm.state.value as ScorePreviewState.Ready
+        results.emit(DomainResult.Success(original.value.copy(content=DomainResult.Failure(DomainError(ErrorCode.UNAUTHORIZED,"p")))))
+        runCurrent();assertTrue(vm.state.value is ScorePreviewState.Failure);assertTrue(newFrame.frame.bitmap.isRecycled)
     }
     @Test fun memberSwitchAndClearRejectLateNonCancellableRender() = runTest(dispatcher) {
         val wait = CompletableDeferred<Unit>(); gate = wait

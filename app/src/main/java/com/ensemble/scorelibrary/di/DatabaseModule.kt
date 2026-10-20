@@ -21,7 +21,7 @@ object DatabaseModule {
             context,
             ScoreLibraryDatabase::class.java,
             if (com.ensemble.scorelibrary.BuildConfig.HTTP_TEST) "synthetic-http-library.db" else "ensemble-score-library.db"
-        ).addMigrations(ScoreLibraryDatabase.MIGRATION_1_2, ScoreLibraryDatabase.MIGRATION_2_3).build()
+        ).addMigrations(ScoreLibraryDatabase.MIGRATION_1_2, ScoreLibraryDatabase.MIGRATION_2_3, ScoreLibraryDatabase.MIGRATION_3_4, ScoreLibraryDatabase.MIGRATION_4_5, ScoreLibraryDatabase.MIGRATION_5_6).build()
 
     @Provides
     fun provideLibraryDao(database: ScoreLibraryDatabase): LibraryDao = database.libraryDao()

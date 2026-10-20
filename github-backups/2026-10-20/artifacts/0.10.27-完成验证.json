@@ -1,0 +1,68 @@
+{
+  "completedAt": "2026-10-19T14:13:41.641139+00:00",
+  "android": "0.10.27 (39)",
+  "full": {
+    "tests": 757,
+    "classes": 125,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "lintErrors": 0,
+    "lintWarnings": 22
+  },
+  "serviceFull": {
+    "tests": 248,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "originalEnvironmentFailures": 1,
+    "correctedFixtureRetests": 1,
+    "note": "All28 files covered; 247 passed initially; one missing desktop fixture import retested successfully after PYTHONPATH correction; original failures retained"
+  },
+  "sourceInputs": 323,
+  "sourceArchiveFiles": 746,
+  "related": [
+    {
+      "tests": 61,
+      "classes": 8
+    },
+    {
+      "tests": 19,
+      "classes": 3
+    }
+  ],
+  "room": 6,
+  "schemasUnchanged": true,
+  "service": "0.10.27",
+  "database": 4,
+  "naming": 2,
+  "nasPublished": true,
+  "previousApp38Retained": true,
+  "serviceUpdated": true,
+  "databaseMigrated": false,
+  "productionScoreOperations": false,
+  "workflow": "Develop/local validation -> publish NAS and verify -> user personally updates/tests -> repair and republish",
+  "physicalAcceptance": "pending user after published update",
+  "nativePersonalPdfAcceptance": "AndroidTest compiled; physical device not run",
+  "automation2": "paused",
+  "multipleTeams": "deferred roadmap19",
+  "upload": "Final three files verified complete and moved to releases before stopping old service",
+  "serviceBackup": "Full archive and independent restore from current root before startup; business rows and source PDF fingerprints preserved",
+  "registeredSourcePdfs": 0,
+  "helperV2Test": "Real synthetic v4 deletion history: reproduce old helper mismatch, strict rebinding normalization, independent restore, retry, business field/storage binding/image tamper rejection passed",
+  "publicationProof": "nas-0.10.27-deployment-verification.json",
+  "publicProof": "nas-0.10.27-public-verification.json",
+  "failuresRetained": [
+    "Pressure contour winding failure fixed/retested61",
+    "Queued fixture host HttpServer unavailable; standard ServerSocket fixture passed19",
+    "First full command wrong cwd retained",
+    "Service fixture missing PYTHONPATH: original247 pass/1fail; that same case retested pass",
+    "First NAS prepare false mismatch from restored deletion plan storageId rebinding; blocked before new service/APK; fixed helper v2 and fresh backup passed",
+    "New helper fixture first missing dependency path, then invalid synthetic APK ZIP; third complete test passed; all logs retained"
+  ],
+  "limits": [
+    "Only system-reported stylus pressure/primary-secondary buttons",
+    "No proprietary pen gestures or physical latency acceptance",
+    "Personal local PDF reader does not yet support these annotations"
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "frozenModulesPresent": [
+    "score_organizer.services.batch_library_transfer",
+    "score_organizer.services.transfer_batch",
+    "score_organizer.services.library_transfer",
+    "score_organizer.ui.library_transfer_dialog",
+    "score_organizer.storage.portable_database"
+  ],
+  "cases": [
+    {
+      "numberingVersion": 1,
+      "markerVersion": 2,
+      "usableSongs": 2,
+      "skippedSongs": 1,
+      "archivedScores": 6,
+      "allScoreRecordsPreserved": true,
+      "startupAliveForSeconds": 8,
+      "silentFallback": false,
+      "log": "C:\\Users\\dxt\\Documents\\Codex\\2026-10-18\\yuepu-number13\\work\\frozen-017-qa-final\\legacy\\exe-startup.log",
+      "processId": 50656
+    },
+    {
+      "numberingVersion": 2,
+      "markerVersion": 2,
+      "usableSongs": 2,
+      "skippedSongs": 1,
+      "archivedScores": 6,
+      "allScoreRecordsPreserved": true,
+      "startupAliveForSeconds": 8,
+      "silentFallback": false,
+      "log": "C:\\Users\\dxt\\Documents\\Codex\\2026-10-18\\yuepu-number13\\work\\frozen-017-qa-final\\expanded\\exe-startup.log",
+      "processId": 50876
+    }
+  ],
+  "userActualLibraryOperated": false,
+  "userActualPdfsUsed": false,
+  "offscreenStartup": true
+}

@@ -1,3 +1,21 @@
+# 2026-10-14 格式 3 / 数据库 5
+
+2026-10-17 补充：0.10.10 的本人文件夹/封面已接入独立 NAS 同步，成功同步的最新头和幂等回执进入 NAS 完整 SQLite 备份；尚未上传的离线修改和客户端加密同步日志仍只在该设备，不能宣称 NAS 已备份。独立文件夹 ZIP 可主动导出，旧资产格式不变；见 [文件夹同步](FOLDER_SYNC_0110.md)。
+
+2026-10-16 补充：0.10.9 的本人文件夹/封面使用独立 ZIP 格式，不改变本资产格式及其权限/恢复范围；规范与验收见 [文件夹备份](FOLDER_BACKUP_0109.md)。该版本的 NAS 原始 PDF/数据库备份不包含平板本机偏好；0.10.10 后成功同步部分的范围见上文。
+
+Android 0.9.9 输出 formatVersion3/databaseVersion5。concerts 新增可空 audienceMembers/audienceParts（身份数组 JSON），分别引用成员与标准声部；两者均空表示旧版不限制的行为，启用限制但数组为空表示未选择可见成员。恢复时验证格式、字段和引用。
+
+继续接收格式 1/数据库 3 与格式 2/数据库 4，旧 concerts 补入空可见范围字段；格式 1 的曲目同时补入空分类/编号字段。个人文件夹和图片封面属于本机设置，当前不在 ZIP 备份内。旧 Android/local-manager 不支持格式 3；批注新增符号也需要能理解相应符号值的版本。完整说明见 [READER_AND_LIBRARY_099.md](READER_AND_LIBRARY_099.md)。
+
+---
+
+# 2026-10-14 格式升级说明
+
+Android 0.9.8/schema4 输出 formatVersion2/databaseVersion4，pieces新增可空 categoryCode/categoryName/organizerSequence，并校验分类成对、序号有效且唯一。其他表、PDF路径、共享/个人隔离和身份/源页原则保持。可接受旧 formatVersion1/databaseVersion3，旧曲目新增字段置空，未重新生成身份。旧版 Android 和 local-manager 原型不支持新备份，Windows附属整理器也不直接恢复 Android 数据库。自定义识别字典是设备设置，需同时保存电脑端导出的 JSON；曲目已确认的分类/编号属于新版母库资产。下文 v1 描述保留为旧格式说明，最新兼容边界见 ORGANIZER_COMPANION。
+
+---
+
 # 本地资产备份格式 v1
 
 这是独立可读的开放数据格式，不是数据库文件拷贝，不依赖在线服务或专有解密接口。Android 当前支持 formatVersion 1 / databaseVersion 3。未识别版本或字段拒绝恢复；后续 schema/编号/分类演进必须明确兼容转换和旧档恢复验证。

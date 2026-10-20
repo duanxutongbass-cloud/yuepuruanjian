@@ -19,6 +19,8 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface LibraryDao {
+    @Update suspend fun updateVersion(entity: ScorePdfVersionEntity)
+    @Update suspend fun updateCache(entity: com.ensemble.scorelibrary.core.database.entity.ScoreCacheEntryEntity)
     @Update suspend fun updatePiece(entity: PieceEntity)
     @Update suspend fun updateMovement(entity: MovementEntity)
     @Update suspend fun updatePartDefinition(entity: PartDefinitionEntity)

@@ -35,7 +35,7 @@ class ArchiveRecoveryAcceptanceTest {
     private val owned = mutableListOf<File>()
     private val stage = InstrumentationRegistry.getArguments().getString("archiveStage")
     private fun open() = if (stage != null) Room.databaseBuilder(context, ScoreLibraryDatabase::class.java, "ensemble-score-library.db")
-        .addMigrations(ScoreLibraryDatabase.MIGRATION_1_2, ScoreLibraryDatabase.MIGRATION_2_3).build()
+        .addMigrations(ScoreLibraryDatabase.MIGRATION_1_2, ScoreLibraryDatabase.MIGRATION_2_3, ScoreLibraryDatabase.MIGRATION_3_4, ScoreLibraryDatabase.MIGRATION_4_5, ScoreLibraryDatabase.MIGRATION_5_6).build()
         else Room.inMemoryDatabaseBuilder(context, ScoreLibraryDatabase::class.java).build()
     private fun service(db: ScoreLibraryDatabase) = AssetArchiveService(context, db, ArchivePdfVerifier())
     private fun file(name: String) = File(context.cacheDir, "${UUID.randomUUID()}-$name").also { owned += it }

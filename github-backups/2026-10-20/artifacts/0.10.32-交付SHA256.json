@@ -1,0 +1,30 @@
+{
+  "0.10.32-未建团导航修复说明.txt": {
+    "bytes": 2558,
+    "sha256": "89fea71cf4ba49a62658150f78482d4cb9eb441985bed336d6f0fb8614082b2a"
+  },
+  "0.10.32-发布核验.json": {
+    "bytes": 3805,
+    "sha256": "f288e6bcef78a497e55a4bf845b21ca1ab3a35cfcb042bb97d7510f54928fc2d"
+  },
+  "0.10.32-完整源码.zip": {
+    "bytes": 1565005,
+    "sha256": "93bd7e9364973fd67ec8d782699cb70a527babf079ad83bfbecfbfeb1aff8537"
+  },
+  "0.10.32-验证与部署留档.zip": {
+    "bytes": 13807438,
+    "sha256": "12423e37ffe96250fd008de7113a3b2888b9d7060e6d1c091816277660f04f52"
+  },
+  "0.10.32-NAS发布核验通过.png": {
+    "bytes": 104215,
+    "sha256": "650c02d6eaed887389efa56c1858d1116bde3b54fbfb3f4d4593fa4b6d341222"
+  },
+  "0.10.32-公网发布核验.json": {
+    "bytes": 1286,
+    "sha256": "ea702ebd22ff1a7c6f7d686a0deb315ba8317831ed24b00c56e86ce2e6d720bd"
+  },
+  "yuepuruanjian-0.10.32-release.apk": {
+    "bytes": 14025325,
+    "sha256": "b80be12f6211a78fd0d66948075a7dcfd61f165ab6c26c069096d5a40443d73b"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "0.10.25-APK渠道发布工具.zip": {
+    "bytes": 5774,
+    "sha256": "be14650e5aeabef68264f899830f95e62400d1ac85f01d13910bccd50f29e202"
+  },
+  "0.10.25-NAS上线证据.zip": {
+    "bytes": 140118,
+    "sha256": "c09b0c9cead1599f7478fdfc572bbf859e877b898593c9db9a55b6f8d43d8c40"
+  },
+  "0.10.25-verification.json": {
+    "bytes": 47102,
+    "sha256": "58c792e7d9d2e761f111a182b5954ed3aa5284466c95625e32d9bdcfa463e50e"
+  },
+  "0.10.25-交付与验收说明.txt": {
+    "bytes": 3630,
+    "sha256": "2c82e61764d1695b67aeadda3140b549d3876485ef2bf392e9d67a148c7a8ac2"
+  },
+  "0.10.25-发布待确认.json": {
+    "bytes": 1581,
+    "sha256": "672a71299293a01055507b30126cae4e717bd597535fd2a16f837715503664a3"
+  },
+  "0.10.25-完成验证.json": {
+    "bytes": 2083,
+    "sha256": "9462443a2d3688ddd5bb3851780f2838dd2e55f7e1e32b375709ef016ddc6984"
+  },
+  "0.10.25-完整源码.zip": {
+    "bytes": 4221946,
+    "sha256": "037b7080d2be779370a423a06e8a67f42d2ddb4574ec7b291d92ae920d4ed54b"
+  },
+  "0.10.25-测试证据.zip": {
+    "bytes": 124838,
+    "sha256": "b532e14709daead599e48f1717cb1e5bd05c7f5cfb6b2359f6353b67fb001e3d"
+  },
+  "0.10.25-源码校验.json": {
+    "bytes": 126343,
+    "sha256": "ee0d3ff6ca8b13d5ec08a1de0edfaf7da7d21d858a62053e9b4a92aa9f4fb4aa"
+  },
+  "nas-0.10.25-deployment-verification.json": {
+    "bytes": 1142,
+    "sha256": "06644ddfb1731d758c351be374dfeb5a7db9bb3a11869bc2bfa6f73527bc0f2e"
+  },
+  "nas-0.10.25-public-verification.json": {
+    "bytes": 1675,
+    "sha256": "2d19b5848bf73da407b69858e04f81c460a3831ca5465ef40abc622565749a1e"
+  },
+  "nas-0.10.25-published.png": {
+    "bytes": 77383,
+    "sha256": "833e9e3cf0700fd7f350be67edb5ab80dc82ff1c4be43323002817f86daf3347"
+  },
+  "nas-0.10.25-ready.png": {
+    "bytes": 81038,
+    "sha256": "55a19575c863ff3a72ad3071a4479320f888bde48ab03602e7bdd35e22f62e6a"
+  },
+  "yuepuruanjian-0.10.25-androidTest.apk": {
+    "bytes": 1363687,
+    "sha256": "c08b5eb79688fc18deec7634d1938c8be1dfcea23442d3c8454ca5d774a2c044"
+  },
+  "yuepuruanjian-0.10.25-personal.apk": {
+    "bytes": 21287526,
+    "sha256": "2de632a9ae65047fb7341ebf5bf2549338078ca2d6c2a8dc6f40bf0f8c2181d3"
+  }
+}

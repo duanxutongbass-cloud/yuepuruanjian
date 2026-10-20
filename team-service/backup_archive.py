@@ -1,0 +1,180 @@
+"""Consistent account + immutable PDF backup; restore only to a new directory."""
+from contextlib import closing
+import hashlib
+import json
+import os
+from pathlib import Path
+import sqlite3
+import tempfile
+import zipfile
+
+from service import UUID, require
+
+MAX_TOTAL = 20 * 1024 ** 3
+MAX_ENTRIES = 10002
+
+
+def plain_path(path):
+    path = Path(path).absolute()
+    require(not any(p.is_symlink() or p.is_junction() for p in (path, *path.parents)),
+            "backup_link_rejected")
+    return path
+
+
+def fingerprint(path):
+    digest, size = hashlib.sha256(), 0
+    with path.open("rb") as source:
+        while chunk := source.read(1024 * 1024):
+            size += len(chunk)
+            require(size <= MAX_TOTAL, "backup_too_large")
+            digest.update(chunk)
+    return dict(size=size, sha256=digest.hexdigest())
+
+
+def create_archive(service, destination):
+    destination = plain_path(destination)
+    require(destination.parent.is_dir() and not destination.exists(), "backup_target_exists", 409)
+    from catalog import Catalog
+    Catalog(service)
+    with tempfile.TemporaryDirectory(prefix=".team-backup-", dir=destination.parent) as tmp:
+        stage = Path(tmp)
+        archive = stage / "backup.zip"
+        # Hold the same database writer lock as publication while capturing its snapshot.
+        # Committed artifact PDFs are immutable; pending uploads are deliberately excluded.
+        with service.connection() as db:
+            rows = list(db.execute("SELECT id,hash,size FROM artifacts ORDER BY id"))
+            require(len(rows) + 2 <= MAX_ENTRIES, "backup_too_large")
+            database = stage / "team.sqlite3"
+            service.backup(database)
+            with closing(sqlite3.connect(database)) as copy:
+                copy.execute("DELETE FROM invitations")
+                copy.commit()
+                copy.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+                copy.execute("PRAGMA journal_mode=DELETE")
+            files = {"team.sqlite3": fingerprint(database)}
+            with zipfile.ZipFile(archive, "x", zipfile.ZIP_DEFLATED, allowZip64=True) as bundle:
+                bundle.write(database, "team.sqlite3")
+                for row in rows:
+                    require(UUID.fullmatch(row["id"]), "backup_invalid_catalog", 500)
+                    name = "artifacts/" + row["id"] + ".pdf"
+                    source = plain_path(service.directory / name)
+                    require(source.is_file(), "backup_missing_pdf", 409)
+                    expected = dict(size=row["size"], sha256=row["hash"])
+                    require(fingerprint(source) == expected, "backup_changed_pdf", 409)
+                    files[name] = expected
+                    require(sum(f["size"] for f in files.values()) <= MAX_TOTAL, "backup_too_large")
+                    bundle.write(source, name)
+                bundle.writestr("manifest.json", json.dumps(dict(format="score-team-backup-v1", files=files)))
+        # Verify the completed archive before publishing its name; never replace an old backup.
+        with tempfile.TemporaryDirectory(prefix=".team-verify-", dir=stage) as checked:
+            validate_archive(archive, Path(checked))
+        archive.chmod(0o600)
+        with archive.open("r+b") as completed:
+            os.fsync(completed.fileno())
+        os.link(archive, destination)
+    return destination
+
+
+def unique_object(pairs):
+    result = {}
+    for key, value in pairs:
+        require(key not in result, "backup_duplicate_key")
+        result[key] = value
+    return result
+
+
+def _extract_archive(archive, stage, expected_format, extra_fields=(), *, entry_allowed=None):
+    """Shared bounded extraction. Public v1 validation keeps its own schema gate."""
+    with zipfile.ZipFile(plain_path(archive)) as bundle:
+        entries = bundle.infolist()
+        names = [item.filename for item in entries]
+        require(len(entries) <= MAX_ENTRIES and len(names) == len(set(names)), "backup_duplicate_or_excess_entries")
+        require("manifest.json" in names and bundle.getinfo("manifest.json").file_size <= 4 * 1024 * 1024,
+                "backup_invalid_manifest")
+        manifest = json.loads(bundle.read("manifest.json"), object_pairs_hook=unique_object)
+        require(isinstance(manifest, dict) and set(manifest) == {"format", "files"} | set(extra_fields) and
+                manifest["format"] == expected_format and isinstance(manifest["files"], dict), "backup_invalid_manifest")
+        files = manifest["files"]
+        require(set(names) == set(files) | {"manifest.json"} and "team.sqlite3" in files, "backup_file_set_mismatch")
+        require(sum(item.file_size for item in entries) <= MAX_TOTAL, "backup_too_large")
+        for name, expected in files.items():
+            valid_pdf = name.startswith("artifacts/") and name.endswith(".pdf") and UUID.fullmatch(name[10:-4])
+            require(entry_allowed(name) if entry_allowed is not None else name == "team.sqlite3" or valid_pdf, "backup_unsafe_path")
+            require(isinstance(expected, dict) and set(expected) == {"size", "sha256"} and
+                    type(expected["size"]) is int and 0 < expected["size"] <= MAX_TOTAL and
+                    isinstance(expected["sha256"], str) and len(expected["sha256"]) == 64, "backup_invalid_manifest")
+            entry = bundle.getinfo(name)
+            require(entry.file_size == expected["size"] and not entry.is_dir() and
+                    (entry.external_attr >> 16 & 0o170000) != 0o120000, "backup_invalid_entry")
+            target = stage / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            with bundle.open(entry) as source, target.open("xb") as output:
+                remaining = expected["size"]
+                while remaining:
+                    chunk = source.read(min(1024 * 1024, remaining))
+                    require(chunk, "backup_truncated")
+                    output.write(chunk)
+                    remaining -= len(chunk)
+                require(not source.read(1), "backup_size_mismatch")
+            require(fingerprint(target) == expected, "backup_checksum_mismatch")
+    return manifest
+
+
+def validate_archive(archive, stage):
+    """Legacy format and database versions are deliberately not expanded."""
+    files = _extract_archive(archive, stage, 'score-team-backup-v1')['files']
+    with closing(sqlite3.connect(stage / "team.sqlite3")) as db:
+        version = db.execute("PRAGMA user_version").fetchone()[0]
+        require(version in (1, 2) and
+                db.execute("PRAGMA integrity_check").fetchone()[0] == "ok" and
+                not db.execute("PRAGMA foreign_key_check").fetchall(), "backup_invalid_database")
+        if version == 2:
+            require(not db.execute("""SELECT 1 FROM accounts a LEFT JOIN account_memberships m
+                ON m.account=a.id WHERE m.account IS NULL LIMIT 1""").fetchone() and
+                db.execute("SELECT count(*) FROM join_code WHERE singleton=1").fetchone()[0] == 1,
+                "backup_invalid_database")
+        rows = db.execute("SELECT id,hash,size FROM artifacts").fetchall()
+        expected_files = {"artifacts/" + row[0] + ".pdf": dict(size=row[2], sha256=row[1]) for row in rows}
+        require({k: v for k, v in files.items() if k != "team.sqlite3"} == expected_files,
+                "backup_catalog_mismatch")
+        # Do not trust session state even if a backup was produced by an older tool.
+        db.execute("DELETE FROM sessions")
+        db.execute("DELETE FROM invitations")
+        db.commit()
+        db.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+        db.execute("PRAGMA journal_mode=DELETE")
+    return dict(artifacts=len(rows), bytes=sum(v["size"] for v in files.values()))
+
+
+def restore_archive(archive, destination):
+    destination = plain_path(destination)
+    require(destination.parent.is_dir() and not destination.exists(), "restore_requires_new_directory", 409)
+    with tempfile.TemporaryDirectory(prefix=".team-restore-", dir=destination.parent) as tmp:
+        stage = Path(tmp)
+        result = validate_archive(archive, stage)
+        destination.mkdir(mode=0o700, exist_ok=False)
+        created, directories = [], []
+        try:
+            for source in sorted(stage.rglob("*")):
+                target = destination / source.relative_to(stage)
+                if source.is_dir():
+                    target.mkdir(mode=0o700, exist_ok=False)
+                    directories.append(target)
+                else:
+                    with target.open("xb") as output:
+                        created.append(target)
+                        target.chmod(0o600)
+                        with source.open("rb") as content:
+                            while chunk := content.read(1024 * 1024):
+                                output.write(chunk)
+                        output.flush()
+                        os.fsync(output.fileno())
+        except BaseException:
+            # Only paths created by this operation are removed; never recursively delete a target.
+            for path in reversed(created):
+                path.unlink()
+            for path in reversed(directories):
+                path.rmdir()
+            destination.rmdir()
+            raise
+    return result

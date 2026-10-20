@@ -104,7 +104,7 @@ class AssetArchiveService @Inject constructor(@param:ApplicationContext private 
                 require(metadataBytes <= ArchiveFormat.JSON_LIMIT) { "备份元数据过大" }
                 tables.put(table, rows)
             } else tables.put("annotation_pages", ArchiveFormat.read(sql, "annotation_pages", "WHERE ownerKey = ?", arrayOf(actor)))
-            JSONObject().put("format", ArchiveFormat.NAME).put("formatVersion", 1).put("databaseVersion", 3)
+            JSONObject().put("format", ArchiveFormat.NAME).put("formatVersion", 3).put("databaseVersion", 5)
                 .put("kind", kind.name).put("owner", actor).put("createdAtEpochMillis", System.currentTimeMillis())
                 .put("tables", tables).put("files", JSONArray()).put("versionReferences", JSONArray().apply {
                     if (kind == ArchiveKind.PERSONAL) {
@@ -142,7 +142,7 @@ class AssetArchiveService @Inject constructor(@param:ApplicationContext private 
             require(manifest.size <= ArchiveFormat.JSON_LIMIT) { "备份元数据超过 16 MiB 安全上限" }
             zip.putNextEntry(ZipEntry("manifest.json")); zip.write(manifest); zip.closeEntry()
             zip.putNextEntry(ZipEntry("README.txt"))
-            zip.write(("Ensemble Score Library archive v1. UTF-8 JSON + original PDFs.\n" +
+            zip.write(("Ensemble Score Library archive v3 / database 5. UTF-8 JSON + original PDFs, including organizer categories and numbers.\n" +
                 "LIBRARY excludes all personal annotations. PERSONAL contains one owner's annotations and no PDFs.\n" +
                 "Restore LIBRARY into an empty installation, then restore each owner's PERSONAL archive.\n" +
                 "IDs, source page indexes and version hashes must match. Existing conflicting data is never overwritten.\n" +
@@ -179,11 +179,25 @@ class AssetArchiveService @Inject constructor(@param:ApplicationContext private 
             val text = buffer.toString("UTF-8"); ArchiveFormat.depthCheck(text)
             val root = JSONObject(text)
             require(ArchiveFormat.keys(root) == setOf("format", "formatVersion", "databaseVersion", "kind", "owner", "createdAtEpochMillis", "tables", "files", "versionReferences"))
-            require(root.getString("format") == ArchiveFormat.NAME && root.get("formatVersion") == 1 && root.get("databaseVersion") == 3) { "不支持的备份格式版本" }
+            val legacy = root.get("formatVersion") == 1 && root.get("databaseVersion") == 3
+            require(root.getString("format") == ArchiveFormat.NAME && (legacy || root.get("formatVersion") == 2 && root.get("databaseVersion") == 4 || root.get("formatVersion") == 3 && root.get("databaseVersion") == 5)) { "不支持的备份格式版本" }
             val kind = ArchiveKind.valueOf(root.getString("kind"))
             require(root.getString("owner").isNotBlank() && root.getString("owner") != "shared")
             val tables = root.getJSONObject("tables")
             require(ArchiveFormat.keys(tables) == if (kind == ArchiveKind.LIBRARY) ArchiveFormat.tables.toSet() else setOf("annotation_pages"))
+            if (root.get("formatVersion") != 3 && kind == ArchiveKind.LIBRARY) {
+                ArchiveFormat.rows(root.getJSONObject("tables").getJSONArray("concerts")).forEach { row ->
+                    for(column in listOf("audienceMembers", "audienceParts")) { require(!row.has(column)); row.put(column, JSONObject.NULL) }
+                }
+            }
+            if (legacy && kind == ArchiveKind.LIBRARY) {
+                for (row in ArchiveFormat.rows(tables.getJSONArray("pieces"))) {
+                    for (column in listOf("categoryCode", "categoryName", "organizerSequence")) {
+                        require(!row.has(column)) { "旧版备份含未知整理器字段" }
+                        row.put(column, JSONObject.NULL)
+                    }
+                }
+            }
             val records = ArchiveFormat.rows(root.getJSONArray("files"))
             require(records.map { it.getString("versionId") }.toSet().size == records.size)
             val expected = records.map { it.getString("entry") }.toSet() + setOf("manifest.json", "README.txt")

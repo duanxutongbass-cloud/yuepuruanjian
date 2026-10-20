@@ -1,0 +1,45 @@
+{
+  "verifiedAt": "2026-10-19T16:56:24.701564+00:00",
+  "metadata": {
+    "packageName": "com.ensemble.scorelibrary",
+    "versionCode": 40,
+    "versionName": "0.10.28",
+    "sha256": "6a9996c553d449fc452ddfa98942f69340b9030b8b26e33fb63f05b3714ccc66",
+    "size": 21370470,
+    "notes": "新增已彻底删除曲目的编号释放：管理员在曲库管理→检查编号／补空号中多选、预览并勾选备份后释放。仅整曲彻底删除且无现存/回收站/待传占用时可释放，其他曲目保持原号，新曲优先补空号。保留删除台账和旧分谱ID屏障，同号新曲身份与旧缓存/批注隔离；出现复用曲目后旧阅读端需更新。保留27手写笔与26曲库/回收站改进。",
+    "available": true
+  },
+  "fullDownload": {
+    "size": 21370470,
+    "sha256": "6a9996c553d449fc452ddfa98942f69340b9030b8b26e33fb63f05b3714ccc66"
+  },
+  "anonymousPrivate": {
+    "/v1/me": 401,
+    "/v1/catalog": 401,
+    "/v2/catalog": 401,
+    "/v1/admin/artifacts": 401,
+    "/v2/admin/artifacts": 401,
+    "/v1/admin/capabilities": 401,
+    "/v2/admin/capabilities": 401,
+    "/v1/admin/number-inventory": 401,
+    "/v2/admin/number-inventory": 401,
+    "/v1/admin/uploads": 401,
+    "/v2/admin/uploads": 401,
+    "/v1/admin/publications": 401,
+    "/v2/admin/publications": 401,
+    "/v1/admin/grants": 401,
+    "/v2/admin/grants": 401,
+    "/v1/annotations": 401,
+    "/v1/personal-folders": 401,
+    "/v1/admin/programs": 401,
+    "/v1/deletions": 401,
+    "/v2/deletions": 401
+  },
+  "tlsVerification": true,
+  "transport": "Direct HTTPS with default certificate verification; system proxy configuration unchanged",
+  "serviceChanged": true,
+  "serviceImage": "yuepu-team-api:0.10.28",
+  "databaseMigrated": false,
+  "productionScoreOperations": false,
+  "physicalAcceptance": "pending user"
+}

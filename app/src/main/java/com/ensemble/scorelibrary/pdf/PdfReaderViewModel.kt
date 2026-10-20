@@ -11,21 +11,31 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.security.MessageDigest
 import javax.inject.Inject
+import com.ensemble.scorelibrary.diagnostics.*
+import com.ensemble.scorelibrary.reading.ReadingActivity
 
 sealed interface PdfState {
     data object Loading : PdfState
     data class Failure(val error: ReaderError) : PdfState
     data class Ready(val frame: PdfFrame, val index: Int, val total: Int, val sourcePage: Int, val mode: FitMode,
-        val reference: PdfPageRef) : PdfState
+        val reference: PdfPageRef, val rendering: Boolean = false) : PdfState
 }
 
 @HiltViewModel
 class PdfReaderViewModel @Inject constructor(private val engine: PdfEngine, private val saved: SavedStateHandle,
-    private val preparation: PerformancePreparation) : ViewModel() {
+    private val preparation: PerformancePreparation, private val runs: PerformanceRuns = PerformanceRuns(),
+    private val operations: TestOperations? = null, private val activity: ReadingActivity? = null) : ViewModel() {
+    private var activitySession: ReadingActivity.Session? = null
+    private var activityLoad: Job? = null
+    private var waitingForHistory = false
+    val running = runs.active
+    private var runId: String? = null
+    private var runExpiry: Job? = null
     private val mutablePerformance = MutableStateFlow<PerformanceState>(PerformanceState.Idle)
     val performance = mutablePerformance.asStateFlow()
     private var preparationJob: Job? = null
@@ -56,6 +66,7 @@ class PdfReaderViewModel @Inject constructor(private val engine: PdfEngine, priv
     private var pendingRequest: Request? = null
     private val lock = Mutex()
     private var job: Job? = null
+    private var renderWatchdog: Job? = null
     private var sequence: PageSequence? = null
     private var identity: String? = null
     private var score: ResolvedConcertItem? = null
@@ -67,6 +78,19 @@ class PdfReaderViewModel @Inject constructor(private val engine: PdfEngine, priv
     private var height = 0
     private var inspected = false
     private var generation = 0L
+    init { viewModelScope.launch { runs.active.collect { run ->
+        if (runId != null && run?.id != runId) interruptPerformance()
+    } } }
+    fun frozenViewer(member: String?, request: com.ensemble.scorelibrary.domain.ScreenRequest) =
+        runs.viewer(member, request)?.takeIf { it.id == runId }
+    fun performanceInk(scope: com.ensemble.scorelibrary.annotation.AnnotationScope) = runs.page(runId, scope)
+    fun interruptPerformance() {
+        if (mutablePlayMode.value || mutablePerformance.value is PerformanceState.Checking || runId != null) {
+            stopPreparation(); mutablePlayMode.value = false
+            programKey?.let { saved["play-$it"] = false }
+        }
+    }
+    override fun onCleared() { engine.endReadingSession(); activity?.retire(activitySession); runId?.let(runs::end); super.onCleared() }
 
     fun bind(member: String, context: String, item: ResolvedConcertItem, concert: ResolvedConcert? = null) {
         val items = concert?.items ?: listOf(item)
@@ -99,19 +123,22 @@ class PdfReaderViewModel @Inject constructor(private val engine: PdfEngine, priv
             mutable.value = PdfState.Failure(ReaderError.PROGRAM_CHANGED); return
         }
         currentAnchor.value = member to item; programKey = key; programContext = context
-        mutableFullscreen.value = saved.get<Boolean>("fullscreen-$key") ?: false
+        mutableFullscreen.value = true
         pendingRequest = null; mutableNotice.value = null
-        val restorePlay = saved.get<Boolean>("play-$key") ?: false
+        // Reader position may restore, but an entered scene never revives from SavedStateHandle.
+        saved["play-$key"] = false
         programIndex = concert?.items?.indexOfFirst { it.itemId == saved.get<String>("item-$key") }
             ?.takeIf { it >= 0 } ?: selected
         val active = concert?.items?.get(programIndex) ?: item
         activate(member, active)
-        if (restorePlay) preparePerformance()
     }
     private fun digest(values: List<String>) = MessageDigest.getInstance("SHA-256")
         .digest(values.joinToString("\u0000").toByteArray()).joinToString("") { "%02x".format(it) }
 
     private fun activate(member: String, item: ResolvedConcertItem, forcedPage: Int? = null) {
+        engine.beginReadingSession()
+        activity?.retire(activitySession); activityLoad?.cancel(); waitingForHistory = false
+        activitySession = runCatching { activity?.session(member, item) }.getOrNull()
         val context = if (cursor == null) programContext else "$programKey:${item.itemId}"
         val signature = listOf(member, context, item.pieceId, item.part.id) + item.segments.flatMap {
             listOf(it.bindingId, it.versionId, it.fileHash, it.startPage.toString(), it.endPage.toString()) }
@@ -127,12 +154,31 @@ class PdfReaderViewModel @Inject constructor(private val engine: PdfEngine, priv
         sequence = try { PageSequence(item.segments) } catch (_: IllegalArgumentException) {
             mutable.value = PdfState.Failure(ReaderError.INVALID_PAGE_RANGE); null
         }
-        index = (forcedPage ?: saved.get<Int>("page-$key") ?: 0).coerceIn(0, (sequence?.count ?: 1) - 1)
-        saved["page-$key"] = index
+        val savedPage = saved.get<Int>("page-$key")
+        index = (forcedPage ?: savedPage ?: 0).coerceIn(0, (sequence?.count ?: 1) - 1)
         if (forcedPage == null) mode = saved.get<String>("program-fit-$programKey")
             ?.let { runCatching { FitMode.valueOf(it) }.getOrNull() }
             ?: saved.get<String>("mode-$key")?.let { runCatching { FitMode.valueOf(it) }.getOrNull() } ?: FitMode.PAGE
-        render()
+        val session = activitySession
+        // A concert starts from its freshly authorized cursor. Persistent history never revives a scene.
+        if (cursor == null && forcedPage == null && savedPage == null && session != null) {
+            waitingForHistory = true
+            val token = generation
+            activityLoad = viewModelScope.launch {
+                val resume = try { activity?.resume(session) }
+                    catch (cancelled: CancellationException) { throw cancelled }
+                    catch (_: Exception) { activity?.failed(session.identity); null }
+                if (token != generation || identity != key) return@launch
+                if (runCatching { session.identity.guard() }.isFailure) {
+                    waitingForHistory = false; renderFailure(ReaderError.LOAD_FAILED); return@launch
+                }
+                index = (resume?.page ?: 0).coerceIn(0, (sequence?.count ?: 1) - 1)
+                saved["page-$key"] = index
+                waitingForHistory = false
+                if (resume?.changed == true) feedback("乐谱版本或绑定已变化，已从第一页打开")
+                render()
+            }
+        } else { saved["page-$key"] = index; render() }
     }
     fun viewport(w: Int, h: Int) {
         if (width == w && height == h) return
@@ -143,7 +189,7 @@ class PdfReaderViewModel @Inject constructor(private val engine: PdfEngine, priv
     }
     fun action(action: PedalAction) {
         if (mutablePerformance.value is PerformanceState.Checking) return
-        if (mutable.value is PdfState.Loading || pendingRequest != null) return
+        if (mutable.value is PdfState.Loading || (mutable.value as? PdfState.Ready)?.rendering == true || pendingRequest != null) return
         if (action == PedalAction.TOGGLE_PLAY_MODE) {
             if (mutable.value !is PdfState.Ready) return
             if (mutablePlayMode.value) {
@@ -177,6 +223,9 @@ class PdfReaderViewModel @Inject constructor(private val engine: PdfEngine, priv
     fun nextPage() = action(ReaderAction.NEXT_PAGE)
     fun previousPage() = action(ReaderAction.PREVIOUS_PAGE)
     private fun stopPreparation() {
+        runExpiry?.cancel(); runExpiry = null
+        val ended = runId; runId = null
+        if (ended != null) runs.end(ended)
         preparationJob?.cancel(); preparationEpoch++
         mutablePerformance.value = PerformanceState.Idle
     }
@@ -194,16 +243,24 @@ class PdfReaderViewModel @Inject constructor(private val engine: PdfEngine, priv
         mutablePerformance.value = PerformanceState.Checking(0, 0)
         preparationJob = viewModelScope.launch {
             try {
-                val count = lock.withLock {
-                    preparation.check(member, items, cursor != null) { checked, total ->
+                val prepared = lock.withLock {
+                    preparation.prepare(member, items, cursor != null) { checked, total ->
                         if (token == preparationEpoch) mutablePerformance.value = PerformanceState.Checking(checked, total)
                     }
                 }
                 mutable.first { it is PdfState.Ready || it is PdfState.Failure }
                 ensureActive()
                 if (token == preparationEpoch && key == programKey && pendingRequest == null && mutable.value is PdfState.Ready) {
-                    mutablePerformance.value = PerformanceState.Ready(count)
-                    mutablePlayMode.value = true; saved["play-$key"] = true
+                    cursor?.concert?.let { concert ->
+                        val run = runs.begin(member, programContext, checkNotNull(currentAnchor.value).second, concert, prepared)
+                        runId = run.id
+                        if (run.deadline != Long.MAX_VALUE) runExpiry = viewModelScope.launch {
+                            delay((run.deadline * 1000 - System.currentTimeMillis()).coerceAtLeast(0))
+                            if (runId == run.id) interruptPerformance()
+                        }
+                    }
+                    mutablePerformance.value = PerformanceState.Ready(prepared.pages)
+                    mutablePlayMode.value = true; mutableFullscreen.value = true; saved["play-$key"] = true
                 } else if (token == preparationEpoch) mutablePerformance.value = PerformanceState.Idle
             } catch (cancelled: CancellationException) { throw cancelled }
             catch (failure: Exception) {
@@ -249,6 +306,13 @@ class PdfReaderViewModel @Inject constructor(private val engine: PdfEngine, priv
             if (overflowY > 0) (if (anchor != null) (anchor.y * t.scale - focus.y - dy) / overflowY else readerView.y - dy / overflowY).coerceIn(0f, 1f) else 0f)
         saveView(); render(debounce = true)
     }
+    fun fitForAnnotation() {
+        if (mode == FitMode.PAGE && readerView == ReaderView()) return
+        mode = FitMode.PAGE; scroll = 0f; readerView = ReaderView(); saveView()
+        identity?.let { saved["mode-$it"] = mode.name }
+        programKey?.let { saved["program-fit-$it"] = mode.name }
+        render()
+    }
     fun resetView() { readerView = ReaderView(); saveView(); render() }
     fun zoom() = readerView.zoom
     private fun saveView() { identity?.let { key ->
@@ -257,9 +321,12 @@ class PdfReaderViewModel @Inject constructor(private val engine: PdfEngine, priv
     fun retry() {
         pendingRequest?.let { request -> programKey = null; pendingRequest = null
             bind(request.member, request.context, request.item, request.concert); return }
-        inspected = false; render()
+        engine.beginReadingSession(); inspected = false; render()
     }
     fun detach() {
+        renderWatchdog?.cancel(); engine.endReadingSession()
+        activity?.retire(activitySession); activitySession = null
+        activityLoad?.cancel(); activityLoad = null; waitingForHistory = false
         stopPreparation()
         job?.cancel(); generation++; identity = null; score = null; sequence = null
         width = 0; height = 0; inspected = false; mutable.value = PdfState.Loading
@@ -269,40 +336,67 @@ class PdfReaderViewModel @Inject constructor(private val engine: PdfEngine, priv
         mutableFullscreen.value = false
     }
     private fun render(debounce: Boolean = false) {
-        if (pendingRequest != null) return
+        if (pendingRequest != null || waitingForHistory) return
         job?.cancel()
+        renderWatchdog?.cancel()
         val token = ++generation
         val pages = sequence ?: return
         if (width <= 0 || height <= 0) return
         val selected = pages.page(index)
         val w = width; val h = height; val fit = mode; val position = index; val view = readerView
-        if (!debounce) mutable.value = PdfState.Loading
+        val operation = operations?.record(TestEvent.PDF_RENDER,TestResult.START,width=w,height=h)
+        val started = android.os.SystemClock.elapsedRealtime()
+        // Keep the last authorized page visible until its replacement is ready.
+        // Binding changes and failures still explicitly clear this frame.
+        mutable.value = (mutable.value as? PdfState.Ready)?.copy(rendering = true) ?: PdfState.Loading
         job = viewModelScope.launch {
             var unpublished: PdfFrame? = null
             try {
                 if (debounce) delay(100)
                 lock.withLock {
                     ensureActive()
+                    if (runCatching { activitySession?.identity?.guard?.invoke() }.isFailure) throw PdfFailure(ReaderError.LOAD_FAILED)
                     if (!inspected) {
-                        engine.inspect(pages.segments); ensureActive()
+                        engine.inspectForReading(listOf(selected.segment)); ensureActive()
                         if (token != generation) return@withLock
                         inspected = true
                     }
                     unpublished = engine.renderView(selected, w, h, fit, view)
                     ensureActive()
                     if (token != generation) return@withLock
+                    if (runCatching { activitySession?.identity?.guard?.invoke() }.isFailure) throw PdfFailure(ReaderError.LOAD_FAILED)
                     mutable.value = PdfState.Ready(unpublished!!, position, pages.count, selected.pageIndex + 1, fit, selected)
+                    activitySession?.let { activity?.record(it, position) }
+                    if(operation!=null) operations?.record(TestEvent.PDF_RENDER, operation=operation,
+                        elapsed=android.os.SystemClock.elapsedRealtime()-started,width=w,height=h)
                     unpublished = null
                 }
-            } catch (error: CancellationException) { throw error }
-            catch (error: PdfFailure) { if (token == generation) renderFailure(error.reason) }
-            catch (_: Exception) { if (token == generation) renderFailure(ReaderError.LOAD_FAILED) }
-            finally { unpublished?.bitmap?.recycle() }
+            } catch (error: CancellationException) {
+                if(operation!=null) operations?.record(TestEvent.PDF_RENDER,TestResult.CANCELLED,operation=operation)
+                throw error
+            }
+            catch (error: PdfFailure) {
+                if(operation!=null) operations?.record(TestEvent.PDF_RENDER,TestResult.ERROR,operation=operation,code=TestCode.FILE_INVALID)
+                if (token == generation) renderFailure(error.reason)
+            }
+            catch (error: Exception) {
+                if(operation!=null) operations?.record(TestEvent.PDF_RENDER,TestResult.ERROR,operation=operation,code=TestOperations.error(error))
+                if (token == generation) renderFailure(ReaderError.LOAD_FAILED)
+            }
+            finally { if(token==generation)renderWatchdog?.cancel(); unpublished?.bitmap?.recycle() }
+        }
+        renderWatchdog=viewModelScope.launch {
+            delay(30_000)
+            if(token==generation && job?.isActive==true) {
+                generation++;job?.cancel();engine.endReadingSession()
+                renderFailure(ReaderError.RENDER_TIMEOUT)
+            }
         }
     }
     private fun renderFailure(error: ReaderError) {
         mutable.value = PdfState.Failure(error)
         if (mutablePlayMode.value) {
+            stopPreparation()
             mutablePlayMode.value = false
             mutablePerformance.value = PerformanceState.Failure(readerErrorText(error))
             programKey?.let { saved["play-$it"] = false }

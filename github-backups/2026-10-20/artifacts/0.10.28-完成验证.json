@@ -1,0 +1,57 @@
+{
+  "completedAt": "2026-10-19T17:06:32.607207+00:00",
+  "android": "0.10.28 (40)",
+  "full": {
+    "tests": 767,
+    "classes": 127,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "lintErrors": 0,
+    "lintWarnings": 22
+  },
+  "serviceFull": {
+    "tests": 258,
+    "files": 29,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "originalEnvironmentFailures": [
+      "part0: one rapidfuzz missing import",
+      "part1: collection missing rapidfuzz"
+    ],
+    "retest": "whole partition1 plus exact failed part0 case; all passed",
+    "inputsUnchanged": true
+  },
+  "sourceInputs": 327,
+  "sourceArchiveFiles": 766,
+  "nasPublished": true,
+  "previousApp39Retained": true,
+  "serviceUpdated": true,
+  "databaseMigrated": false,
+  "roomVersion": 6,
+  "databaseVersion": 4,
+  "namingVersion": 2,
+  "productionScoreOperations": false,
+  "productionNumberReleasePerformed": false,
+  "physicalAcceptance": "pending user after published update",
+  "workflow": "Develop/local validation -> publish NAS and verify -> user personally updates/tests -> repair and republish",
+  "multipleTeams": "deferred roadmap19",
+  "automation2": "paused",
+  "registeredSourcePdfs": 0,
+  "publicationProof": "nas-0.10.28-deployment-verification.json",
+  "publicProof": "nas-0.10.28-public-verification.json",
+  "limits": [
+    "No physical device operation/acceptance by Codex",
+    "Release does not clear PC organizer history",
+    "Current full backup required for restore activation after number reuse; old snapshots missing current release ledger/reused files refused"
+  ],
+  "failuresRetained": [
+    "Service initial missing rapidfuzz dependency: whole partition1 and exact part0 case passed after environment fix",
+    "First Android full run missing TEAM_SERVICE_TEST_PYTHON: 740 passed/27 fixture startup failures; rerun all767 passed",
+    "Second full command PowerShell split Gradle -P option: no tests; quoted parameters and full run passed",
+    "Related first run 40 passed/2 fixture issues: substring match and actual retired Room cleanup flow; all42 plus extra VM test passed",
+    "Earlier service synthetic fixtures/duplicate collection retained; final10 new tests passed",
+    "Initial synthetic UI screenshot captured activity behind dialog; changed capture to actual Dialog and visually checked final image"
+  ]
+}

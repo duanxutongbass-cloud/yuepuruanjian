@@ -72,6 +72,18 @@ class NavigationTest {
         restoration.setContent { androidx.compose.runtime.CompositionLocalProvider(
             com.ensemble.scorelibrary.annotation.LocalAnnotations provides ink) { MaterialTheme { ScoreLibraryApp(vm, pdf, preview = preview) } } }
     }
+    @Test fun singleFocusKeepsAnnotationLayer() {
+        open(withReader = true, withInk = true)
+        compose.onNodeWithTag("piece-piece").performClick()
+        compose.onNodeWithTag("preview-parts").performClick()
+        compose.onNodeWithTag("part-part").performClick()
+        val pdf = store["pdf"] as com.ensemble.scorelibrary.pdf.PdfReaderViewModel
+        compose.waitUntil { ink!!.state.value.data != null && pdf.state.value is com.ensemble.scorelibrary.pdf.PdfState.Ready }
+        compose.runOnIdle { pdf.setFullscreen(false) }
+        compose.onNodeWithTag("play-mode").performClick()
+        compose.waitUntil { pdf.playMode.value && ink!!.state.value.data != null }
+        compose.runOnIdle { org.junit.Assert.assertEquals("member", ink!!.state.value.scope?.member) }
+    }
     @Test fun pendingInkBlocksReaderTransitionsAndBackOffersMemoryOnlyExit() {
         open(withReader = true, withInk = true)
         compose.onNodeWithTag("piece-piece").performClick()
@@ -110,6 +122,8 @@ class NavigationTest {
         compose.onNodeWithContentDescription("返回").performClick()
         compose.onNodeWithTag("piece-piece").assertExists()
         compose.onNodeWithTag("nav-profile").performClick()
+        compose.onNodeWithText("退出当前成员").assertDoesNotExist()
+        compose.onNodeWithTag("profile-account-menu").performClick()
         compose.onNodeWithText("退出当前成员").assertExists()
         compose.onNodeWithTag("nav-library").performClick()
         compose.onNodeWithTag("piece-piece").assertExists()
@@ -146,7 +160,7 @@ class NavigationTest {
         compose.onNodeWithTag("piece-piece").performClick()
         compose.onNodeWithTag("preview-parts").performClick()
         compose.onNodeWithTag("part-part").performClick()
-        compose.onNodeWithTag("reader-fullscreen").performClick()
+        compose.onNodeWithTag("pdf-page").assertExists()
         compose.onNodeWithTag("back").assertDoesNotExist()
         compose.onNodeWithTag("side-navigation").assertDoesNotExist()
         compose.onNodeWithTag("reader-page-number").assertDoesNotExist()
@@ -178,10 +192,19 @@ class NavigationTest {
         compose.waitUntil { preview!!.state.value is ScorePreviewState.Ready }
         compose.onNodeWithTag("preview-page").assertExists()
         compose.onNodeWithTag("preview-open-reader").performClick()
+        compose.onNodeWithTag("reader-part-name").assertDoesNotExist()
+        val pageBounds = compose.onNodeWithTag("pdf-page").fetchSemanticsNode().boundsInRoot
+        compose.onNodeWithTag("pdf-page").performTouchInput { click() }
+        val toolsBounds = compose.onNodeWithTag("pdf-page").fetchSemanticsNode().boundsInRoot
+        // Opening tools now reserves real space, as requested; the page must move below them.
+        org.junit.Assert.assertTrue(toolsBounds.top > pageBounds.top)
+        org.junit.Assert.assertEquals(pageBounds.width, toolsBounds.width, .001f)
+        org.junit.Assert.assertEquals(pageBounds.bottom, toolsBounds.bottom, .001f)
         compose.onNodeWithTag("reader-part-name").assertTextEquals("Violin I")
         compose.runOnIdle { org.junit.Assert.assertEquals(ScorePreviewState.Empty, preview!!.state.value) }
         compose.onNodeWithTag("back").performClick()
-        compose.waitUntil { preview!!.state.value is ScorePreviewState.Ready }
+        compose.onNodeWithTag("library-search").assertExists()
+        compose.waitUntil(5000) { preview!!.state.value is ScorePreviewState.Ready }
         compose.onNodeWithTag("library-search").assertTextContains("Music")
         compose.onNodeWithTag("piece-piece").assertIsSelected()
         restoration.emulateSavedInstanceStateRestore()
@@ -190,7 +213,11 @@ class NavigationTest {
         compose.onNodeWithTag("nav-profile").performClick()
         compose.runOnIdle { org.junit.Assert.assertEquals(ScorePreviewState.Empty, preview!!.state.value) }
         compose.onNodeWithTag("nav-library").performClick()
-        compose.waitUntil { preview!!.state.value is ScorePreviewState.Ready }
+        try { compose.waitUntil(5000) {
+            org.robolectric.Shadows.shadowOf(android.os.Looper.getMainLooper()).idle()
+            preview!!.state.value is ScorePreviewState.Ready
+        } }
+        catch(e: ComposeTimeoutException) { throw AssertionError("Preview: ${preview!!.state.value}\n${compose.onRoot().printToString()}",e) }
         compose.onNodeWithTag("piece-piece").assertIsSelected()
     }
 

@@ -18,3 +18,11 @@ sources/
 .env.*
 
 __pycache__/
+team-service/data/
+team-service/.venv/
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+
+# Source-only legacy test fixture; no credentials or user data.
+!team-service/fixtures/legacy-account-0.10.17.zip

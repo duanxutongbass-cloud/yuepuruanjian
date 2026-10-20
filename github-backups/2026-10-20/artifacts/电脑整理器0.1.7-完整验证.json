@@ -1,0 +1,21 @@
+{
+  "version": "0.1.7",
+  "tests": 1195,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "desktopInputs": 149,
+  "sharedInputs": 31,
+  "sourceHashesVerified": true,
+  "isolatedExeStartupCases": 2,
+  "realPdfsReadOnly": true,
+  "acceptedPdfs": 1002,
+  "skippedPdfs": 25,
+  "compatibilityCopies": 256,
+  "originalsUnchanged": true,
+  "realNasUploadTested": false,
+  "userAcceptance": "待用户本人验收",
+  "zipBytes": 87853198,
+  "zipSha256": "2e4a3e37aa67cbc21b5b22eb193046729c2a85f70c74269568fbf7eddd5851d4",
+  "zipFiles": 535
+}

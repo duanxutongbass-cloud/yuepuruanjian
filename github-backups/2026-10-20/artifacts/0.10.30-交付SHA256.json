@@ -1,0 +1,30 @@
+{
+  "0.10.30-排查修复与发布说明.txt": {
+    "bytes": 2936,
+    "sha256": "0506f9193c87ad0fbc9300aa94d01c595bbac0b6a59af941afcb41f7d1fd65de"
+  },
+  "0.10.30-排查修复与发布核验.json": {
+    "bytes": 5807,
+    "sha256": "335f86e27e9a9ed1024434a2c31a174b7e651dbcc50e9c6a38f424d09079f22b"
+  },
+  "0.10.30-完整源码.zip": {
+    "bytes": 1551063,
+    "sha256": "97064fdb9241ced6cb9821934766881deb46661bca885edcdb7fb99c23750d82"
+  },
+  "0.10.30-验证与部署留档.zip": {
+    "bytes": 13848865,
+    "sha256": "b23ba80a5d021e69276f782e8b4bcb8abe5e0d13f7f9574c52f4e985024a7d98"
+  },
+  "0.10.30-NAS发布核验通过.png": {
+    "bytes": 64903,
+    "sha256": "88d8cb94f740d69cea4fc72aa55e047408f9979e0ba144c44c73c9d73fb448a3"
+  },
+  "0.10.30-公网发布核验.json": {
+    "bytes": 1271,
+    "sha256": "b93ac9958e60b8b15d7f4f935442280959d688469c7627aed3947509e89d7b1a"
+  },
+  "yuepuruanjian-0.10.30-release.apk": {
+    "bytes": 13992553,
+    "sha256": "b734a1c0a645ea6870930a16310fab81bdcf1d70198332fb9979ddc8d799223a"
+  }
+}

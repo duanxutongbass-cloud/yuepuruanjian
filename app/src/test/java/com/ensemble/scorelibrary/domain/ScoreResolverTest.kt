@@ -21,6 +21,12 @@ class ScoreResolverTest {
         items = listOf(ConcertItemEntity(id = "i", concertId = "c", pieceId = "p", sortOrder = 0))
     )
     private fun resolve(data: LibrarySnapshot) = ScoreResolver(data).resolveConcert("m", "c")
+    @Test fun managersCanSeeInstrumentMetadataWithoutBeingGrantedPdfAccess() {
+        val data=fixture().let { it.copy(members=it.members.map { member -> member.copy(role=com.ensemble.scorelibrary.core.model.MemberRole.ADMIN) }, permissions=emptyList()) }
+        val dashboard=(ScoreResolver(data).dashboard("m") as DomainResult.Success).value
+        assertEquals(setOf("I","II"),dashboard.pieces.single().partNames.toSet())
+        error(ErrorCode.UNAUTHORIZED,data)
+    }
     private fun value(data: LibrarySnapshot) = (resolve(data) as DomainResult.Success).value
     private fun error(code: ErrorCode, data: LibrarySnapshot) {
         assertEquals(code, (resolve(data) as DomainResult.Failure).error.code)
